@@ -1,0 +1,8 @@
+{
+  "name": "Sistema de Fiscalização de Contratos - 71º BI Mtz",
+  "description": "Sistema de gestão, acompanhamento, auditoria e aprovação da fiscalização de contratos administrativos do 71º Batalhão de Infantaria Motorizado.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
