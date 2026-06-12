@@ -40,6 +40,8 @@ async function seed() {
     const { error: dbError } = await supabase.from('users').insert({
       id,
       nome: 'Administrador (Ricardo)',
+      posto_graduacao: 'Cel',
+      nome_guerra: 'Ricardo',
       cpf: cpf,
       email,
       telefone: '(00) 00000-0000',

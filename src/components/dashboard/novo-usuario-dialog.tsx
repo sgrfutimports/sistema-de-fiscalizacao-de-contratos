@@ -84,7 +84,40 @@ export function NovoUsuarioDialog() {
           
           <div className="space-y-2">
             <Label htmlFor="nome">Nome Completo</Label>
-            <Input id="nome" name="nome" required placeholder="Ex: 3º Sgt João..." />
+            <Input id="nome" name="nome" required placeholder="Ex: João da Silva" />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="posto_graduacao">Posto / Graduação</Label>
+              <Select name="posto_graduacao" defaultValue="3º Sgt">
+                <SelectTrigger id="posto_graduacao">
+                  <SelectValue placeholder="Selecione" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Gen Ex">Gen Ex</SelectItem>
+                  <SelectItem value="Gen Div">Gen Div</SelectItem>
+                  <SelectItem value="Gen Bda">Gen Bda</SelectItem>
+                  <SelectItem value="Cel">Cel</SelectItem>
+                  <SelectItem value="Ten Cel">Ten Cel</SelectItem>
+                  <SelectItem value="Maj">Maj</SelectItem>
+                  <SelectItem value="Cap">Cap</SelectItem>
+                  <SelectItem value="1º Ten">1º Ten</SelectItem>
+                  <SelectItem value="2º Ten">2º Ten</SelectItem>
+                  <SelectItem value="Asp">Asp</SelectItem>
+                  <SelectItem value="S Ten">S Ten</SelectItem>
+                  <SelectItem value="1º Sgt">1º Sgt</SelectItem>
+                  <SelectItem value="2º Sgt">2º Sgt</SelectItem>
+                  <SelectItem value="3º Sgt">3º Sgt</SelectItem>
+                  <SelectItem value="Cb">Cb</SelectItem>
+                  <SelectItem value="Sd">Sd</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="nome_guerra">Nome de Guerra</Label>
+              <Input id="nome_guerra" name="nome_guerra" required placeholder="Ex: Silva" />
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
@@ -105,12 +138,13 @@ export function NovoUsuarioDialog() {
 
           <div className="space-y-2">
             <Label htmlFor="perfil">Perfil de Acesso</Label>
-            <Select name="perfil" defaultValue="FISCAL">
-              <SelectTrigger>
+            <Select name="perfil" defaultValue="FISCAL_TITULAR">
+              <SelectTrigger id="perfil">
                 <SelectValue placeholder="Selecione um perfil" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="FISCAL">Fiscal</SelectItem>
+                <SelectItem value="FISCAL_TITULAR">Fiscal Titular</SelectItem>
+                <SelectItem value="FISCAL_SUBSTITUTO">Fiscal Substituto</SelectItem>
                 <SelectItem value="ADMIN">Administrador</SelectItem>
               </SelectContent>
             </Select>

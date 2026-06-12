@@ -1,5 +1,5 @@
 -- ENUMS
-CREATE TYPE perfil_enum AS ENUM ('ADMIN', 'FISCAL');
+CREATE TYPE perfil_enum AS ENUM ('ADMIN', 'FISCAL_TITULAR', 'FISCAL_SUBSTITUTO');
 CREATE TYPE status_contrato_enum AS ENUM ('ATIVO', 'SUSPENSO', 'ENCERRADO');
 CREATE TYPE status_relatorio_enum AS ENUM ('ENVIADO', 'EM_ANALISE', 'APROVADO', 'DEVOLVIDO', 'ARQUIVADO');
 
@@ -7,10 +7,12 @@ CREATE TYPE status_relatorio_enum AS ENUM ('ENVIADO', 'EM_ANALISE', 'APROVADO', 
 CREATE TABLE public.users (
     id UUID REFERENCES auth.users(id) PRIMARY KEY,
     nome TEXT NOT NULL,
+    posto_graduacao TEXT NOT NULL,
+    nome_guerra TEXT NOT NULL,
     cpf TEXT UNIQUE NOT NULL,
     email TEXT UNIQUE NOT NULL,
     telefone TEXT,
-    perfil perfil_enum DEFAULT 'FISCAL'::perfil_enum NOT NULL,
+    perfil perfil_enum DEFAULT 'FISCAL_TITULAR'::perfil_enum NOT NULL,
     ativo BOOLEAN DEFAULT true NOT NULL,
     primeiro_acesso BOOLEAN DEFAULT true NOT NULL,
     ultimo_acesso TIMESTAMP WITH TIME ZONE,

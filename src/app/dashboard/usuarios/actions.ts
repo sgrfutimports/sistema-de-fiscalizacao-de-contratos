@@ -16,10 +16,12 @@ export async function createUsuario(formData: FormData) {
   if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem criar usuários.' }
 
   const nome = formData.get('nome') as string
+  const posto_graduacao = formData.get('posto_graduacao') as string
+  const nome_guerra = formData.get('nome_guerra') as string
   const cpf = formData.get('cpf') as string
   const email = formData.get('email') as string
   const telefone = formData.get('telefone') as string
-  const perfil = formData.get('perfil') as 'ADMIN' | 'FISCAL'
+  const perfil = formData.get('perfil') as 'ADMIN' | 'FISCAL_TITULAR' | 'FISCAL_SUBSTITUTO'
 
   const cleanCpf = cpf.replace(/\D/g, '')
   if (cleanCpf.length !== 11) {
@@ -53,6 +55,8 @@ export async function createUsuario(formData: FormData) {
   const { error: dbError } = await supabase.from('users').insert({
     id: authUser.user.id,
     nome,
+    posto_graduacao,
+    nome_guerra,
     cpf: cleanCpf,
     email,
     telefone,
@@ -86,7 +90,7 @@ export async function resetUsuarioPassword(userId: string) {
   // Obter o CPF do usuário
   const { data: targetUser, error: fetchError } = await supabase
     .from('users')
-    .select('cpf, nome')
+    .select('cpf, nome, posto_graduacao, nome_guerra')
     .eq('id', userId)
     .single()
 
@@ -124,7 +128,7 @@ export async function resetUsuarioPassword(userId: string) {
     cpf: targetUser.cpf,
     perfil: 'ADMIN',
     operacao: 'RESET_SENHA',
-    descricao: `Redefinida a senha do militar ${targetUser.nome} para o padrão (CPF).`
+    descricao: `Redefinida a senha do militar ${targetUser.posto_graduacao} ${targetUser.nome_guerra} para o padrão (CPF).`
   })
 
   revalidatePath('/dashboard/usuarios')

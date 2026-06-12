@@ -31,6 +31,20 @@ export default async function UsuariosPage() {
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
   }
 
+  const formatPerfil = (perfil: string) => {
+    if (perfil === 'ADMIN') return 'Administrador'
+    if (perfil === 'FISCAL_TITULAR') return 'Fiscal Titular'
+    if (perfil === 'FISCAL_SUBSTITUTO') return 'Fiscal Substituto'
+    return perfil
+  }
+
+  const getPerfilColor = (perfil: string) => {
+    if (perfil === 'ADMIN') return 'border-purple-500 text-purple-400'
+    if (perfil === 'FISCAL_TITULAR') return 'border-blue-500 text-blue-400'
+    if (perfil === 'FISCAL_SUBSTITUTO') return 'border-amber-500 text-amber-400'
+    return 'border-gray-500 text-gray-300'
+  }
+
   return (
     <div className="space-y-8 bg-white p-6 rounded-xl shadow-sm min-h-full">
       {/* Cabeçalho */}
@@ -95,7 +109,10 @@ export default async function UsuariosPage() {
                 usuarios.map((usr) => (
                   <tr key={usr.id} className="hover:bg-[#202a3a] transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-white mb-1">{usr.nome}</div>
+                      <div className="font-bold text-white mb-0.5">
+                        {usr.posto_graduacao} {usr.nome_guerra}
+                      </div>
+                      <div className="text-xs text-gray-400 mb-1">{usr.nome}</div>
                       <div className="text-[0.65rem] text-gray-500 tracking-wider">Reg: USR-{usr.id.substring(0, 4).toUpperCase()}</div>
                     </td>
                     <td className="px-6 py-4 font-mono text-xs">
@@ -114,9 +131,9 @@ export default async function UsuariosPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">
                         <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
-                          usr.perfil === 'ADMIN' ? 'border-purple-500 text-purple-400' : 'border-gray-500 text-gray-300'
+                          getPerfilColor(usr.perfil)
                         }`}>
-                          {usr.perfil}
+                          {formatPerfil(usr.perfil)}
                         </span>
                         <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
                           usr.ativo ? 'border-green-500 text-green-400' : 'border-red-500 text-red-400'
@@ -128,7 +145,7 @@ export default async function UsuariosPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
                         {usr.perfil !== 'ADMIN' && (
-                          <ResetarSenhaButton userId={usr.id} userName={usr.nome} />
+                          <ResetarSenhaButton userId={usr.id} userName={`${usr.posto_graduacao} ${usr.nome_guerra}`} />
                         )}
                         <button className="flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold text-white border border-gray-600 rounded hover:bg-gray-700 transition-colors uppercase tracking-wider">
                           <Edit className="h-3 w-3" />

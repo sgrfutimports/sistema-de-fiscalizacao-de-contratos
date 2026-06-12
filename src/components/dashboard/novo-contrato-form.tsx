@@ -20,6 +20,15 @@ interface Fiscal {
   id: string
   nome: string
   perfil: string
+  posto_graduacao?: string
+  nome_guerra?: string
+}
+
+const formatPerfil = (perfil: string) => {
+  if (perfil === 'ADMIN') return 'Administrador'
+  if (perfil === 'FISCAL_TITULAR') return 'Fiscal Titular'
+  if (perfil === 'FISCAL_SUBSTITUTO') return 'Fiscal Substituto'
+  return perfil
 }
 
 export function NovoContratoForm({ fiscais }: { fiscais: Fiscal[] }) {
@@ -105,7 +114,9 @@ export function NovoContratoForm({ fiscais }: { fiscais: Fiscal[] }) {
                 </SelectTrigger>
                 <SelectContent>
                   {fiscais.map(f => (
-                    <SelectItem key={f.id} value={f.id}>{f.nome} ({f.perfil})</SelectItem>
+                    <SelectItem key={f.id} value={f.id}>
+                      {f.posto_graduacao} {f.nome_guerra} ({formatPerfil(f.perfil)})
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -118,7 +129,9 @@ export function NovoContratoForm({ fiscais }: { fiscais: Fiscal[] }) {
                 </SelectTrigger>
                 <SelectContent>
                   {fiscais.map(f => (
-                    <SelectItem key={f.id} value={f.id}>{f.nome} ({f.perfil})</SelectItem>
+                    <SelectItem key={f.id} value={f.id}>
+                      {f.posto_graduacao} {f.nome_guerra} ({formatPerfil(f.perfil)})
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>

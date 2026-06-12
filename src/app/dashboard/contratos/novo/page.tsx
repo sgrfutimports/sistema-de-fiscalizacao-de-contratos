@@ -18,9 +18,9 @@ export default async function NovoContratoPage() {
   // Busca lista de usuários ativos
   const { data: fiscais } = await supabaseAdmin
     .from('users')
-    .select('id, nome, perfil')
+    .select('id, nome, perfil, posto_graduacao, nome_guerra')
     .eq('ativo', true)
-    .order('nome')
+    .order('nome_guerra')
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
