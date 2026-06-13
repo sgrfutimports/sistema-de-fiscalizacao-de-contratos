@@ -15,8 +15,21 @@ export default async function AuditoriaPage() {
     redirect('/dashboard')
   }
 
-  // Dados mockados baseados na imagem para evitar tela vazia caso não haja tabela real
-  const logs = [
+  // Busca logs reais da tabela 'logs' no banco de dados do Supabase
+  const { data: dbLogs } = await supabaseAdmin
+    .from('logs')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(50)
+
+  // Fallback caso não haja logs gravados no banco de dados
+  const logs = dbLogs && dbLogs.length > 0 ? dbLogs.map(l => ({
+    id: l.id,
+    data_hora: new Date(l.created_at).toLocaleString('pt-BR'),
+    tipo: l.operacao,
+    descricao: l.descricao,
+    usuario: `${l.usuario} (${l.cpf})`
+  })) : [
     {
       id: 1,
       data_hora: '12/06/2026, 16:34:07',
@@ -36,17 +49,17 @@ export default async function AuditoriaPage() {
   return (
     <div className="space-y-8 bg-white p-6 rounded-xl shadow-sm min-h-full">
       {/* Cabeçalho */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-gray-200 pb-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 border-b border-gray-200 pb-4">
         <div>
           <h1 className="text-2xl font-bold flex items-center gap-2 text-orange-500">
             <TerminalSquare className="h-6 w-6" />
-            &gt;_ Auditoria & Alertas de Notificações
+            Auditoria & Alertas de Notificações
           </h1>
           <p className="text-sm text-gray-500 mt-1 font-medium">
             Rastreamento completo e irrefutável de transações militares, logins, assinaturas digitais e disparador de cobranças.
           </p>
         </div>
-        <button className="flex items-center gap-2 bg-[#ff9800] hover:bg-[#f57c00] text-black px-5 py-2.5 rounded-lg font-bold text-sm transition-colors shadow-md uppercase tracking-wider">
+        <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors shadow-md uppercase tracking-wider shrink-0 whitespace-nowrap">
           <Bell className="h-4 w-4" />
           Notificar Atrasados (E-mail)
         </button>
@@ -65,9 +78,9 @@ export default async function AuditoriaPage() {
       </div>
 
       {/* Consola de Auditoria */}
-      <div className="rounded-xl overflow-hidden shadow-lg border border-[#0d1421]">
+      <div className="rounded-xl overflow-hidden shadow-lg border border-[#2a3441]">
         {/* Header da Consola */}
-        <div className="bg-[#0b101a] px-6 py-4 flex justify-between items-center">
+        <div className="bg-[#131924] px-6 py-4 flex justify-between items-center border-b border-[#2a3441]">
           <div className="flex items-center gap-3">
             <div className="h-2.5 w-2.5 rounded-full bg-orange-500 shadow-[0_0_8px_rgba(249,115,22,0.6)]"></div>
             <h3 className="text-xs font-bold text-[#71859c] uppercase tracking-widest">Consola de Auditoria do Aquartelamento</h3>
@@ -76,24 +89,24 @@ export default async function AuditoriaPage() {
         </div>
 
         {/* Corpo da Consola (Eventos) */}
-        <div className="flex flex-col bg-[#616c7c]">
-          {logs.map((log, index) => (
+        <div className="flex flex-col bg-[#1b2331] divide-y divide-[#2a3441]">
+          {logs.map((log) => (
             <div 
               key={log.id} 
-              className={`px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 ${index !== logs.length - 1 ? 'border-b border-[#4f5968]' : ''}`}
+              className="px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#202a3a] transition-colors"
             >
               <div className="flex flex-col gap-1.5">
-                <div className="text-xs font-bold text-[#a6b1c2] tracking-wider flex items-center gap-2">
+                <div className="text-xs font-bold text-gray-400 tracking-wider flex items-center gap-2">
                   {log.data_hora} 
                   <span className="text-orange-400">[{log.tipo}]</span>
                 </div>
-                <div className="text-[0.95rem] font-medium text-white">
+                <div className="text-[0.95rem] font-bold text-white">
                   {log.descricao}
                 </div>
               </div>
               
-              <div className="text-xs font-bold text-[#a6b1c2]">
-                Por: <span className="text-[#c1c9d6]">{log.usuario}</span>
+              <div className="text-xs font-bold text-gray-400">
+                Por: <span className="text-gray-200">{log.usuario}</span>
               </div>
             </div>
           ))}

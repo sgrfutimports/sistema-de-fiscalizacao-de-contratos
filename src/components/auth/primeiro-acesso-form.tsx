@@ -6,11 +6,13 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { KeyRound } from 'lucide-react'
+import { KeyRound, Eye, EyeOff } from 'lucide-react'
 
 export function PrimeiroAcessoForm() {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -49,25 +51,43 @@ export function PrimeiroAcessoForm() {
           )}
           <div className="space-y-2">
             <Label htmlFor="password" className="text-foreground font-semibold">Nova Senha</Label>
-            <Input 
-              id="password" 
-              name="password" 
-              type="password" 
-              required 
-              minLength={6}
-              className="h-11 border-input focus:border-primary/50"
-            />
+            <div className="relative">
+              <Input 
+                id="password" 
+                name="password" 
+                type={showPassword ? 'text' : 'password'} 
+                required 
+                minLength={6}
+                className="h-11 border-input focus:border-primary/50 pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              >
+                {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="confirmPassword" className="text-foreground font-semibold">Confirmar Senha</Label>
-            <Input 
-              id="confirmPassword" 
-              name="confirmPassword" 
-              type="password" 
-              required 
-              minLength={6}
-              className="h-11 border-input focus:border-primary/50"
-            />
+            <div className="relative">
+              <Input 
+                id="confirmPassword" 
+                name="confirmPassword" 
+                type={showConfirmPassword ? 'text' : 'password'} 
+                required 
+                minLength={6}
+                className="h-11 border-input focus:border-primary/50 pr-10"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+              >
+                {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+              </button>
+            </div>
           </div>
         </CardContent>
         <CardFooter className="pt-2">

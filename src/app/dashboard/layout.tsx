@@ -23,6 +23,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .eq('id', user.id)
     .single()
 
+  // Redireciona para o primeiro acesso se ainda não tiver alterado a senha inicial
+  if (userData?.primeiro_acesso) {
+    redirect('/primeiro-acesso')
+  }
+
   const userPerfil = userData?.perfil || 'FISCAL'
 
   // Formatar CPF
@@ -31,11 +36,33 @@ export default async function DashboardLayout({ children }: { children: React.Re
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
   }
 
+  // Função para formatar a data completa por extenso
+  const formatFullDate = () => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }
+    const formatter = new Intl.DateTimeFormat('pt-BR', options)
+    const formatted = formatter.format(new Date())
+    // Forçar capitalização correta do dia da semana (ex: Sábado, 13 de Junho...)
+    return formatted.charAt(0).toUpperCase() + formatted.slice(1)
+  }
+
+  // Abreviação do perfil
+  const formatPerfilAbreviado = (perfil: string) => {
+    if (perfil === 'ADMIN') return 'Admin'
+    if (perfil === 'FISCAL_TITULAR') return 'Fiscal Titular'
+    if (perfil === 'FISCAL_SUBSTITUTO') return 'Fiscal Subst.'
+    return 'Fiscal'
+  }
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-gray-50/50 w-full font-sans">
         {/* App Sidebar com design oficial */}
-        <AppSidebar userNome={userData?.nome} userPerfil={userPerfil} />
+        <AppSidebar userNome={userData ? `${userData.posto_graduacao} ${userData.nome_guerra}` : undefined} userPerfil={userPerfil} />
 
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Header Superior Oficial */}
@@ -44,21 +71,24 @@ export default async function DashboardLayout({ children }: { children: React.Re
               <SidebarTrigger className="text-gray-500 hover:text-primary transition-colors" />
             </div>
             
-            {/* Título Centralizado (escondido no mobile) */}
-            <div className="hidden md:flex flex-1 justify-center">
-              <h2 className="text-gray-700 font-medium tracking-wide">
-                Sistema de Fiscalização de Contratos - 71º BI Mtz
+            {/* Título Centralizado com Localidade, Data e Hora (escondido no mobile) */}
+            <div className="hidden lg:flex flex-col items-center text-center">
+              <h2 className="text-gray-800 font-bold text-sm tracking-wide">
+                Sistema de Fiscalização de Contratos
               </h2>
+              <span className="text-[0.7rem] font-bold text-gray-500">
+                Garanhuns/PE, {formatFullDate()}
+              </span>
             </div>
 
             {/* Informações do Usuário e Botão Sair à Direita */}
             <div className="flex items-center gap-4">
               <div className="hidden sm:flex flex-col items-end text-right">
-                <span className="text-sm font-bold text-gray-800">
-                  {userData?.nome || 'Usuário'} - {userPerfil === 'ADMIN' ? 'Administrador' : 'Fiscal'}
+                <span className="text-sm font-bold text-[#133215]">
+                  {userData ? `${userData.posto_graduacao} ${userData.nome_guerra}` : 'Usuário'} ({formatPerfilAbreviado(userPerfil)})
                 </span>
-                <span className="text-xs font-medium text-gray-400">
-                  {formatCPF(userData?.cpf)} (71º BI Mtz)
+                <span className="text-[0.65rem] font-bold text-gray-400">
+                  {formatCPF(userData?.cpf)} | 71º BI Mtz
                 </span>
               </div>
               <form action={logout}>

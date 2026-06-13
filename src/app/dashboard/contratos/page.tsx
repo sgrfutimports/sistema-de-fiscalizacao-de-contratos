@@ -3,9 +3,10 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button, buttonVariants } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { FileText, PlusCircle, Search } from 'lucide-react'
+import { FileText, PlusCircle, Search, Shield, User } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { EditarContratoDialog } from '@/components/dashboard/editar-contrato-dialog'
 
 export default async function ContratosPage() {
   const supabase = await createClient()
@@ -19,20 +20,38 @@ export default async function ContratosPage() {
     redirect('/dashboard')
   }
 
-  // Busca contratos
+  // Busca lista de todos os usuários ativos para o modal de edição
+  const { data: fiscais } = await supabaseAdmin
+    .from('users')
+    .select('id, nome, perfil, posto_graduacao, nome_guerra')
+    .eq('ativo', true)
+
+  // Busca contratos com dados dos fiscais associados
   const { data: contratos } = await supabaseAdmin
     .from('contratos')
     .select(`
-      *
+      *,
+      titular:users!fiscal_titular_id (
+        id,
+        nome,
+        posto_graduacao,
+        nome_guerra
+      ),
+      substituto:users!fiscal_substituto_id (
+        id,
+        nome,
+        posto_graduacao,
+        nome_guerra
+      )
     `)
     .order('created_at', { ascending: false })
 
   function getStatusColor(status: string) {
     switch (status) {
-      case 'ATIVO': return 'border-green-600 text-green-700 bg-green-50'
-      case 'SUSPENSO': return 'border-yellow-600 text-yellow-700 bg-yellow-50'
-      case 'ENCERRADO': return 'border-gray-600 text-gray-700 bg-gray-50'
-      default: return 'border-gray-400 text-gray-600'
+      case 'ATIVO': return 'border-green-500 text-green-400 bg-green-500/10'
+      case 'SUSPENSO': return 'border-yellow-500 text-yellow-400 bg-yellow-500/10'
+      case 'ENCERRADO': return 'border-red-500 text-red-400 bg-red-500/10'
+      default: return 'border-gray-500 text-gray-400 bg-gray-500/10'
     }
   }
 
@@ -88,48 +107,73 @@ export default async function ContratosPage() {
           </div>
         ) : (
           contratos.map((cont) => (
-            <Card key={cont.id} className="shadow-sm border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-all">
-              <CardContent className="p-6">
-                
+            <div key={cont.id} className="bg-[#1b2331] rounded-xl border border-[#2a3441] overflow-hidden shadow-lg hover:shadow-xl transition-all p-6 flex flex-col justify-between">
+              <div>
                 {/* Header do Card */}
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <span className="text-[0.65rem] font-bold text-yellow-600 tracking-wider">CONTRATO ADM.</span>
-                    <h3 className="text-xl font-bold text-gray-800">Nº {cont.numero_contrato}</h3>
+                    <span className="text-[0.7rem] font-bold text-yellow-500 tracking-wider">CONTRATO ADM.</span>
+                    <h3 className="text-xl font-bold text-white mt-0.5">Nº {cont.numero_contrato}</h3>
                   </div>
-                  <Badge variant="outline" className={`font-bold px-3 py-0.5 uppercase tracking-wide text-[0.65rem] ${getStatusColor(cont.status)}`}>
-                    {cont.status}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline" className={`font-bold px-3 py-1 uppercase tracking-wide text-[0.65rem] border ${getStatusColor(cont.status)}`}>
+                      {cont.status}
+                    </Badge>
+                    <EditarContratoDialog contrato={cont} fiscais={fiscais || []} />
+                  </div>
                 </div>
 
                 {/* Corpo do Card */}
                 <div className="space-y-5">
                   <div>
-                    <span className="text-[0.65rem] font-bold text-gray-500 tracking-wider uppercase">Empresa Contratada</span>
-                    <p className="font-bold text-gray-800 text-sm">{cont.empresa}</p>
-                    <p className="text-[0.65rem] text-gray-500 font-medium">CNPJ: {cont.cnpj || 'Não informado'}</p>
+                    <span className="text-[0.7rem] font-bold text-gray-400 tracking-wider uppercase">Empresa Contratada</span>
+                    <p className="font-extrabold text-white text-base mt-0.5">{cont.empresa}</p>
+                    <p className="text-[0.75rem] text-yellow-500/90 font-mono mt-0.5">CNPJ: {cont.cnpj || 'Não informado'}</p>
                   </div>
                   
                   <div>
-                    <span className="text-[0.65rem] font-bold text-gray-500 tracking-wider uppercase">Objeto do Contrato</span>
-                    <p className="text-xs text-gray-700 leading-snug line-clamp-2">{cont.objeto}</p>
+                    <span className="text-[0.7rem] font-bold text-gray-400 tracking-wider uppercase">Objeto do Contrato</span>
+                    <p className="text-sm text-gray-300 leading-relaxed mt-1 font-medium">{cont.objeto}</p>
                   </div>
 
-                  <div className="flex justify-between items-end pt-4 border-t border-gray-100">
-                    <div>
-                      <span className="text-[0.65rem] font-bold text-gray-500 tracking-wider uppercase">Valor Global</span>
-                      <p className="font-bold text-gray-800">{formatCurrency(cont.valor)}</p>
+                  {/* Fiscais do Contrato */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 rounded-lg bg-[#131924]/50 border border-[#2a3441]/50">
+                    <div className="flex items-start gap-2">
+                      <Shield className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="text-[0.65rem] font-bold text-gray-400 block uppercase">Fiscal Titular</span>
+                        <span className="text-xs font-bold text-white">
+                          {cont.titular ? `${cont.titular.posto_graduacao} ${cont.titular.nome_guerra}` : 'Não vinculado'}
+                        </span>
+                      </div>
                     </div>
-                    {/* Não temos PROCESSO no schema original, mas podemos deixar um fixo ou omitir. Adicionando como layout exige. */}
-                    <div className="text-right">
-                      <span className="text-[0.65rem] font-bold text-gray-500 tracking-wider uppercase">Processo</span>
-                      <p className="font-bold text-gray-600 text-xs">PA N/A</p>
+                    <div className="flex items-start gap-2">
+                      <User className="h-4 w-4 text-yellow-500 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="text-[0.65rem] font-bold text-gray-400 block uppercase">Fiscal Substituto</span>
+                        <span className="text-xs font-bold text-white">
+                          {cont.substituto ? `${cont.substituto.posto_graduacao} ${cont.substituto.nome_guerra}` : 'Não vinculado'}
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
+              </div>
 
-              </CardContent>
-            </Card>
+              <div className="flex justify-between items-end pt-4 border-t border-[#2a3441] mt-6">
+                <div>
+                  <span className="text-[0.7rem] font-bold text-gray-400 tracking-wider uppercase">Valor Global</span>
+                  <p className="font-extrabold text-yellow-500 text-lg mt-0.5">{formatCurrency(cont.valor)}</p>
+                </div>
+                {cont.processo_administrativo && (
+                  <div className="text-right">
+                    <span className="text-[0.7rem] font-bold text-gray-400 tracking-wider uppercase">Processo</span>
+                    <p className="font-bold text-white text-xs mt-0.5">{cont.processo_administrativo}</p>
+                  </div>
+                )}
+              </div>
+
+            </div>
           ))
         )}
       </div>

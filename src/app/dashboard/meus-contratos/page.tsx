@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
@@ -9,13 +10,13 @@ import { buttonVariants } from '@/components/ui/button'
 
 export default async function MeusContratosPage() {
   const supabase = await createClient()
+  const supabaseAdmin = createAdminClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Busca apenas contratos onde o usuário é titular ou substituto
-  // Usando .or() para a condição
-  const { data: contratos } = await supabase
+  // Busca apenas contratos onde o usuário é titular ou substituto usando o admin client para ignorar RLS
+  const { data: contratos } = await supabaseAdmin
     .from('contratos')
     .select('*')
     .or(`fiscal_titular_id.eq.${user.id},fiscal_substituto_id.eq.${user.id}`)
@@ -23,10 +24,10 @@ export default async function MeusContratosPage() {
 
   function getStatusColor(status: string) {
     switch (status) {
-      case 'ATIVO': return 'bg-green-600 hover:bg-green-700'
-      case 'SUSPENSO': return 'bg-yellow-600 hover:bg-yellow-700'
-      case 'ENCERRADO': return 'bg-gray-600 hover:bg-gray-700'
-      default: return ''
+      case 'ATIVO': return 'border-green-500 text-green-400 bg-green-500/10'
+      case 'SUSPENSO': return 'border-yellow-500 text-yellow-400 bg-yellow-500/10'
+      case 'ENCERRADO': return 'border-red-500 text-red-400 bg-red-500/10'
+      default: return 'border-gray-500 text-gray-400 bg-gray-500/10'
     }
   }
 
@@ -34,71 +35,81 @@ export default async function MeusContratosPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Meus Contratos</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-800">Meus Contratos</h1>
+          <p className="text-sm text-gray-500 mt-1 font-medium">
             Contratos em que você está vinculado como Titular ou Substituto.
           </p>
         </div>
       </div>
 
-      <Card className="shadow-sm">
-        <CardHeader className="pb-3 border-b">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <FileSignature className="h-5 w-5 text-primary" />
+      <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
+        <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
+          <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
+            <FileSignature className="h-5 w-5 text-yellow-500" />
             Contratos Vinculados
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead>Contrato</TableHead>
-                <TableHead>Empresa</TableHead>
-                <TableHead>Seu Papel</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Ação</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {!contratos || contratos.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center h-24 text-muted-foreground">
-                    Nenhum contrato vinculado a você no momento.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                contratos.map((cont) => {
-                  const papel = cont.fiscal_titular_id === user.id ? 'Titular' : 'Substituto'
-                  
-                  return (
-                    <TableRow key={cont.id}>
-                      <TableCell className="font-medium">{cont.numero_contrato}</TableCell>
-                      <TableCell>{cont.empresa}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className={papel === 'Titular' ? 'border-primary text-primary' : 'border-muted-foreground text-muted-foreground'}>
-                          {papel}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge className={getStatusColor(cont.status)}>
-                          {cont.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <Link 
-                          href={`/dashboard/relatorios/novo/${cont.id}`} 
-                          className={buttonVariants({ variant: "default", size: "sm" })}
-                        >
-                          <PlusCircle className="mr-2 h-4 w-4" />
-                          Emitir Relatório
-                        </Link>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })
-              )}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-gray-300">
+              <thead className="bg-[#131924] text-xs uppercase font-bold tracking-wider text-gray-400">
+                <tr>
+                  <th className="px-6 py-4">Contrato</th>
+                  <th className="px-6 py-4">Empresa</th>
+                  <th className="px-6 py-4 text-center">Seu Papel</th>
+                  <th className="px-6 py-4 text-center">Status</th>
+                  <th className="px-6 py-4 text-center">Ação</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#2a3441] bg-[#1b2331]">
+                {!contratos || contratos.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="text-center py-12 text-gray-400 font-medium">
+                      Nenhum contrato vinculado a você no momento.
+                    </td>
+                  </tr>
+                ) : (
+                  contratos.map((cont) => {
+                    const papel = cont.fiscal_titular_id === user.id ? 'Titular' : 'Substituto'
+                    
+                    return (
+                      <tr key={cont.id} className="hover:bg-[#202a3a] transition-colors">
+                        <td className="px-6 py-4 font-extrabold text-white text-sm whitespace-nowrap">
+                          {cont.numero_contrato}
+                        </td>
+                        <td className="px-6 py-4 font-bold text-white text-sm">
+                          {cont.empresa}
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className={`text-[0.65rem] font-bold px-2.5 py-1 rounded border uppercase tracking-wider ${
+                            papel === 'Titular' ? 'border-green-500 text-green-400 bg-green-500/10' : 'border-yellow-500 text-yellow-400 bg-yellow-500/10'
+                          }`}>
+                            {papel}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <span className={`text-[0.65rem] font-bold px-2.5 py-1 rounded border uppercase tracking-wider ${
+                            getStatusColor(cont.status)
+                          }`}>
+                            {cont.status}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <Link 
+                            href={`/dashboard/relatorios/novo/${cont.id}`} 
+                            className="inline-flex items-center gap-1.5 bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1.5 rounded-lg font-bold text-xs transition-colors shadow-md uppercase"
+                          >
+                            <PlusCircle className="h-3.5 w-3.5" />
+                            Emitir Relatório
+                          </Link>
+                        </td>
+                      </tr>
+                    )
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
         </CardContent>
       </Card>
     </div>

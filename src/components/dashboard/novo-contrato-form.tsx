@@ -35,11 +35,17 @@ export function NovoContratoForm({ fiscais }: { fiscais: Fiscal[] }) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [titularId, setTitularId] = useState<string>('')
+  const [substitutoId, setSubstitutoId] = useState<string>('')
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
     const formData = new FormData(event.currentTarget)
+    
+    // Adiciona os valores dos selects controlados no formData antes do envio
+    if (titularId) formData.set('fiscal_titular_id', titularId)
+    if (substitutoId) formData.set('fiscal_substituto_id', substitutoId)
     
     startTransition(async () => {
       const result = await createContrato(formData)
@@ -53,9 +59,31 @@ export function NovoContratoForm({ fiscais }: { fiscais: Fiscal[] }) {
     })
   }
 
+  // Filtrar e ordenar alfabeticamente os fiscais titulares (excluindo administradores e garantindo ordem alfabética)
+  const titulares = fiscais
+    .filter(f => f.perfil === 'FISCAL_TITULAR')
+    .sort((a, b) => {
+      const nomeA = `${a.posto_graduacao || ''} ${a.nome_guerra || ''}`.trim().toUpperCase()
+      const nomeB = `${b.posto_graduacao || ''} ${b.nome_guerra || ''}`.trim().toUpperCase()
+      return nomeA.localeCompare(nomeB, 'pt-BR')
+    })
+
+  // Filtrar e ordenar alfabeticamente os fiscais substitutos (excluindo administradores e garantindo ordem alfabética)
+  const substitutos = fiscais
+    .filter(f => f.perfil === 'FISCAL_SUBSTITUTO')
+    .sort((a, b) => {
+      const nomeA = `${a.posto_graduacao || ''} ${a.nome_guerra || ''}`.trim().toUpperCase()
+      const nomeB = `${b.posto_graduacao || ''} ${b.nome_guerra || ''}`.trim().toUpperCase()
+      return nomeA.localeCompare(nomeB, 'pt-BR')
+    })
+
   return (
     <Card className="border-border/50 shadow-sm">
       <form onSubmit={handleSubmit}>
+        {/* Inputs Ocultos para garantir o envio no FormData nativo */}
+        <input type="hidden" name="fiscal_titular_id" value={titularId} />
+        <input type="hidden" name="fiscal_substituto_id" value={substitutoId} />
+
         <CardContent className="space-y-6 pt-6">
           {error && (
             <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive border border-destructive/20 text-center">
@@ -63,14 +91,10 @@ export function NovoContratoForm({ fiscais }: { fiscais: Fiscal[] }) {
             </div>
           )}
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 gap-6">
             <div className="space-y-2">
               <Label htmlFor="numero_contrato">Número do Contrato</Label>
               <Input id="numero_contrato" name="numero_contrato" required placeholder="Ex: 005/2026" />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="processo_administrativo">Processo Administrativo</Label>
-              <Input id="processo_administrativo" name="processo_administrativo" placeholder="NUP: 64XXX..." />
             </div>
           </div>
 
@@ -93,7 +117,15 @@ export function NovoContratoForm({ fiscais }: { fiscais: Fiscal[] }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="space-y-2">
               <Label htmlFor="valor">Valor Total (R$)</Label>
-              <Input id="valor" name="valor" type="number" step="0.01" required placeholder="10000.00" />
+              <Input 
+                id="valor" 
+                name="valor" 
+                type="text" 
+                inputMode="decimal"
+                pattern="[0-9]*[.,]?[0-9]{0,2}"
+                required 
+                placeholder="10000.00" 
+              />
             </div>
             <div className="space-y-2">
               <Label htmlFor="data_inicio">Data de Início</Label>
@@ -108,33 +140,37 @@ export function NovoContratoForm({ fiscais }: { fiscais: Fiscal[] }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 rounded-lg bg-muted/50 border border-border">
             <div className="space-y-2">
               <Label htmlFor="fiscal_titular_id" className="text-primary">Fiscal Titular</Label>
-              <Select name="fiscal_titular_id" required>
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Selecione o Titular" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fiscais.map(f => (
-                    <SelectItem key={f.id} value={f.id}>
-                      {f.posto_graduacao} {f.nome_guerra} ({formatPerfil(f.perfil)})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <select
+                id="fiscal_titular_id"
+                value={titularId}
+                onChange={(e) => setTitularId(e.target.value)}
+                required
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30"
+              >
+                <option value="" disabled>Selecione o Titular</option>
+                {titulares.map(f => (
+                  <option key={f.id} value={f.id} className="text-foreground">
+                    {f.posto_graduacao} {f.nome_guerra}
+                  </option>
+                ))}
+              </select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="fiscal_substituto_id" className="text-primary">Fiscal Substituto</Label>
-              <Select name="fiscal_substituto_id" required>
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Selecione o Substituto" />
-                </SelectTrigger>
-                <SelectContent>
-                  {fiscais.map(f => (
-                    <SelectItem key={f.id} value={f.id}>
-                      {f.posto_graduacao} {f.nome_guerra} ({formatPerfil(f.perfil)})
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <select
+                id="fiscal_substituto_id"
+                value={substitutoId}
+                onChange={(e) => setSubstitutoId(e.target.value)}
+                required
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-input/30"
+              >
+                <option value="" disabled>Selecione o Substituto</option>
+                {substitutos.map(f => (
+                  <option key={f.id} value={f.id} className="text-foreground">
+                    {f.posto_graduacao} {f.nome_guerra}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
 

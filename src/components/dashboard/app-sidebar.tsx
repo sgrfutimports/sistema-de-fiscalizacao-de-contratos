@@ -23,6 +23,7 @@ export function AppSidebar({ userNome, userPerfil }: { userNome?: string; userPe
   const adminMenu = [
     { title: 'INÍCIO (RESUMOS)', url: '/dashboard', icon: BookOpen },
     { title: 'CONTRATOS DO BATALHÃO', url: '/dashboard/contratos', icon: FileSignature },
+    { title: 'COMUNICADOS DO COMANDO', url: '/dashboard/comunicados', icon: ClipboardList },
     { title: 'ACERVO DE HISTÓRICOS', url: '/dashboard/relatorios', icon: Calendar },
   ]
 

@@ -93,11 +93,11 @@ export default async function UsuariosPage() {
           <table className="w-full text-left text-sm text-gray-300">
             <thead className="bg-[#131924] text-xs uppercase font-bold tracking-wider text-gray-400">
               <tr>
-                <th className="px-6 py-4">Militar</th>
-                <th className="px-6 py-4">CPF</th>
-                <th className="px-6 py-4">Contatos de Serviço</th>
-                <th className="px-6 py-4">Função e Status</th>
-                <th className="px-6 py-4 text-right">Controles Adm</th>
+                <th className="px-6 py-4 text-left">Militar</th>
+                <th className="px-6 py-4 text-center">CPF</th>
+                <th className="px-6 py-4 text-center">Contatos de Serviço</th>
+                <th className="px-6 py-4 text-center">Função e Status</th>
+                <th className="px-6 py-4 text-center">Controles Adm</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#2a3441]">
@@ -117,21 +117,23 @@ export default async function UsuariosPage() {
                       <div className="text-xs text-gray-400 mb-1">{usr.nome}</div>
                       <div className="text-[0.65rem] text-gray-500 tracking-wider">Reg: USR-{usr.id.substring(0, 4).toUpperCase()}</div>
                     </td>
-                    <td className="px-6 py-4 font-mono text-xs">
+                    <td className="px-6 py-4 font-mono text-xs text-center whitespace-nowrap">
                       {formatCPF(usr.cpf)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2 mb-1 text-xs text-yellow-500">
-                        <Mail className="h-3 w-3" />
-                        <span className="text-gray-300">{usr.email || 'N/A'}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-yellow-500">
-                        <Phone className="h-3 w-3" />
-                        <span className="text-gray-300">{usr.telefone || 'N/A'}</span>
+                      <div className="flex flex-col items-center justify-center">
+                        <div className="flex items-center gap-2 mb-1 text-xs text-yellow-500">
+                          <Mail className="h-3 w-3" />
+                          <span className="text-gray-300">{usr.email || 'N/A'}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-yellow-500">
+                          <Phone className="h-3 w-3" />
+                          <span className="text-gray-300">{usr.telefone || 'N/A'}</span>
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center justify-center gap-2">
                         <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
                           getPerfilColor(usr.perfil)
                         }`}>
@@ -145,7 +147,7 @@ export default async function UsuariosPage() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center justify-end gap-2">
+                      <div className="flex items-center justify-center gap-2">
                         {usr.perfil !== 'ADMIN' && (
                           <ResetarSenhaButton userId={usr.id} userName={`${usr.posto_graduacao} ${usr.nome_guerra}`} />
                         )}

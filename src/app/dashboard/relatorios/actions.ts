@@ -21,8 +21,10 @@ export async function submitRelatorio(formData: FormData) {
   const pendencias = formData.get('pendencias') as string
   const observacoes = formData.get('observacoes') as string
 
+  const supabaseAdmin = createAdminClient()
+
   // Verifica se já existe relatório para este contrato nesta competência
-  const { data: existente } = await supabase
+  const { data: existente } = await supabaseAdmin
     .from('relatorios')
     .select('id')
     .eq('contrato_id', contrato_id)
@@ -34,7 +36,7 @@ export async function submitRelatorio(formData: FormData) {
     return { error: 'Já existe um relatório submetido para este contrato neste mês/ano.' }
   }
 
-  const { error: insertError } = await supabase.from('relatorios').insert({
+  const { error: insertError } = await supabaseAdmin.from('relatorios').insert({
     contrato_id,
     competencia_mes,
     competencia_ano,
@@ -54,8 +56,7 @@ export async function submitRelatorio(formData: FormData) {
     return { error: 'Erro ao enviar relatório. Tente novamente.' }
   }
 
-  // Registra no Log via RPC ou Admin Client (como Fiscal pode não ter permissão direta em logs avançados)
-  const supabaseAdmin = createAdminClient()
+  // Registra no Log via Admin Client
   await supabaseAdmin.from('logs').insert({
     usuario: user.id,
     cpf: 'SISTEMA', // Podemos refinar depois

@@ -33,13 +33,16 @@ export async function changeInitialPassword(formData: FormData) {
     return { error: 'Erro ao atualizar a senha. Tente novamente.' }
   }
 
-  // Atualiza o status de 'primeiro_acesso' na tabela users
-  const { error: dbError } = await supabase
+  // Atualiza o status de 'primeiro_acesso' na tabela users usando o client admin para ignorar restrição RLS de alteração
+  const { createAdminClient } = await import('@/lib/supabase/admin')
+  const supabaseAdmin = createAdminClient()
+  const { error: dbError } = await supabaseAdmin
     .from('users')
     .update({ primeiro_acesso: false })
     .eq('id', user.id)
 
   if (dbError) {
+    console.error(dbError)
     return { error: 'Erro ao registrar acesso no banco de dados.' }
   }
 
