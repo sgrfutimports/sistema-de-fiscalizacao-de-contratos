@@ -12,7 +12,7 @@ export async function createUsuario(formData: FormData) {
   const { data: { user: currentUser } } = await supabase.auth.getUser()
   if (!currentUser) return { error: 'Não autorizado.' }
 
-  const { data: currentUserData } = await supabase.from('users').select('perfil').eq('id', currentUser.id).single()
+  const { data: currentUserData } = await adminAuthClient.from('users').select('perfil').eq('id', currentUser.id).single()
   if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem criar usuários.' }
 
   const nome = formData.get('nome') as string
@@ -84,7 +84,7 @@ export async function resetUsuarioPassword(userId: string) {
   const { data: { user: currentUser } } = await supabase.auth.getUser()
   if (!currentUser) return { error: 'Não autorizado.' }
 
-  const { data: currentUserData } = await supabase.from('users').select('perfil').eq('id', currentUser.id).single()
+  const { data: currentUserData } = await adminAuthClient.from('users').select('perfil').eq('id', currentUser.id).single()
   if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem resetar senhas.' }
 
   // Obter o CPF do usuário
@@ -143,7 +143,10 @@ export async function updateUsuario(userId: string, formData: FormData) {
   const { data: { user: currentUser } } = await supabase.auth.getUser()
   if (!currentUser) return { error: 'Não autorizado.' }
 
-  const { data: currentUserData } = await supabase.from('users').select('perfil, cpf').eq('id', currentUser.id).single()
+  const { data: currentUserData, error: adminCheckError } = await adminAuthClient.from('users').select('perfil, cpf').eq('id', currentUser.id).single()
+  console.log("DEBUG: currentUser.id =", currentUser.id)
+  console.log("DEBUG: currentUserData =", currentUserData)
+  console.log("DEBUG: adminCheckError =", adminCheckError)
   if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem editar usuários.' }
 
   const nome = formData.get('nome') as string
@@ -155,7 +158,7 @@ export async function updateUsuario(userId: string, formData: FormData) {
   const ativo = formData.get('ativo') === 'true'
 
   // Fetch existing user data to check if email changed
-  const { data: targetUserData, error: targetError } = await supabase
+  const { data: targetUserData, error: targetError } = await adminAuthClient
     .from('users')
     .select('email')
     .eq('id', userId)
