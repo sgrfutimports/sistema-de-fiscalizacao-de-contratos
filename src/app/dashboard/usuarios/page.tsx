@@ -6,6 +6,8 @@ import { Shield, Search, Mail, Phone, Edit, KeyRound } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import { NovoUsuarioDialog } from '@/components/dashboard/novo-usuario-dialog'
 import { ResetarSenhaButton } from '@/components/dashboard/resetar-senha-button'
+import { EditarUsuarioDialog } from '@/components/dashboard/editar-usuario-dialog'
+
 
 export default async function UsuariosPage() {
   const supabase = await createClient()
@@ -147,10 +149,7 @@ export default async function UsuariosPage() {
                         {usr.perfil !== 'ADMIN' && (
                           <ResetarSenhaButton userId={usr.id} userName={`${usr.posto_graduacao} ${usr.nome_guerra}`} />
                         )}
-                        <button className="flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold text-white border border-gray-600 rounded hover:bg-gray-700 transition-colors uppercase tracking-wider">
-                          <Edit className="h-3 w-3" />
-                          Editar
-                        </button>
+                        <EditarUsuarioDialog usuario={usr} />
                       </div>
                     </td>
                   </tr>

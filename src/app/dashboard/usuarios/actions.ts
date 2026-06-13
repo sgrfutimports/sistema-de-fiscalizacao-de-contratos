@@ -135,3 +135,64 @@ export async function resetUsuarioPassword(userId: string) {
   return { success: true }
 }
 
+export async function updateUsuario(userId: string, formData: FormData) {
+  const adminAuthClient = createAdminClient()
+  const supabase = await createClient()
+
+  // Verify if current user is ADMIN
+  const { data: { user: currentUser } } = await supabase.auth.getUser()
+  if (!currentUser) return { error: 'Não autorizado.' }
+
+  const { data: currentUserData } = await supabase.from('users').select('perfil, cpf').eq('id', currentUser.id).single()
+  if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem editar usuários.' }
+
+  const nome = formData.get('nome') as string
+  const posto_graduacao = formData.get('posto_graduacao') as string
+  const nome_guerra = formData.get('nome_guerra') as string
+  const email = formData.get('email') as string
+  const telefone = formData.get('telefone') as string
+  const perfil = formData.get('perfil') as 'ADMIN' | 'FISCAL_TITULAR' | 'FISCAL_SUBSTITUTO'
+  const ativo = formData.get('ativo') === 'true'
+
+  // Update in Supabase Auth (email)
+  const { error: authError } = await adminAuthClient.auth.admin.updateUserById(userId, {
+    email: email
+  })
+
+  if (authError) {
+    console.error("Auth Update Error:", authError)
+    if (authError.message.includes('already exists')) {
+      return { error: 'Usuário com este e-mail já existe no sistema.' }
+    }
+    return { error: 'Erro ao atualizar e-mail do usuário.' }
+  }
+
+  // Update in public.users table
+  const { error: dbError } = await supabase.from('users').update({
+    nome,
+    posto_graduacao,
+    nome_guerra,
+    email,
+    telefone,
+    perfil,
+    ativo
+  }).eq('id', userId)
+
+  if (dbError) {
+    console.error("DB Update Error:", dbError)
+    return { error: 'Erro ao atualizar dados do usuário no banco.' }
+  }
+
+  // Registrar no Log de auditoria
+  await adminAuthClient.from('logs').insert({
+    usuario: currentUser.id,
+    cpf: currentUserData.cpf || '',
+    perfil: 'ADMIN',
+    operacao: 'ATUALIZAR_USUARIO',
+    descricao: `Atualizado cadastro do militar ${posto_graduacao} ${nome_guerra} (${nome}). Status: ${ativo ? 'Ativo' : 'Inativo'}.`
+  })
+
+  revalidatePath('/dashboard/usuarios')
+  return { success: true }
+}
+
