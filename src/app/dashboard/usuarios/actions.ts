@@ -52,7 +52,7 @@ export async function createUsuario(formData: FormData) {
   }
 
   // 2. Inserir dados na tabela pública de usuários
-  const { error: dbError } = await supabase.from('users').insert({
+  const { error: dbError } = await adminAuthClient.from('users').insert({
     id: authUser.user.id,
     nome,
     posto_graduacao,
@@ -112,7 +112,7 @@ export async function resetUsuarioPassword(userId: string) {
   }
 
   // 2. Atualizar tabela pública para marcar primeiro_acesso = true
-  const { error: dbError } = await supabase
+  const { error: dbError } = await adminAuthClient
     .from('users')
     .update({ primeiro_acesso: true })
     .eq('id', userId)
@@ -154,21 +154,34 @@ export async function updateUsuario(userId: string, formData: FormData) {
   const perfil = formData.get('perfil') as 'ADMIN' | 'FISCAL_TITULAR' | 'FISCAL_SUBSTITUTO'
   const ativo = formData.get('ativo') === 'true'
 
-  // Update in Supabase Auth (email)
-  const { error: authError } = await adminAuthClient.auth.admin.updateUserById(userId, {
-    email: email
-  })
+  // Fetch existing user data to check if email changed
+  const { data: targetUserData, error: targetError } = await supabase
+    .from('users')
+    .select('email')
+    .eq('id', userId)
+    .single()
 
-  if (authError) {
-    console.error("Auth Update Error:", authError)
-    if (authError.message.includes('already exists')) {
-      return { error: 'Usuário com este e-mail já existe no sistema.' }
-    }
-    return { error: 'Erro ao atualizar e-mail do usuário.' }
+  if (targetError || !targetUserData) {
+    return { error: 'Usuário não encontrado.' }
   }
 
-  // Update in public.users table
-  const { error: dbError } = await supabase.from('users').update({
+  if (targetUserData.email !== email) {
+    // Update in Supabase Auth (email) only if it changed
+    const { error: authError } = await adminAuthClient.auth.admin.updateUserById(userId, {
+      email: email
+    })
+
+    if (authError) {
+      console.error("Auth Update Error:", authError)
+      if (authError.message.includes('already exists')) {
+        return { error: 'Usuário com este e-mail já existe no sistema.' }
+      }
+      return { error: 'Erro ao atualizar e-mail do usuário na autenticação.' }
+    }
+  }
+
+  // Update in public.users table using admin client to bypass RLS recursion
+  const { error: dbError } = await adminAuthClient.from('users').update({
     nome,
     posto_graduacao,
     nome_guerra,

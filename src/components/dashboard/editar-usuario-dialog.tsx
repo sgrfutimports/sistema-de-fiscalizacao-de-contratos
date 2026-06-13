@@ -72,11 +72,9 @@ export function EditarUsuarioDialog({ usuario }: EditarUsuarioDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button className="flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold text-white border border-gray-600 rounded hover:bg-gray-700 transition-colors uppercase tracking-wider cursor-pointer">
-          <Edit className="h-3 w-3" />
-          Editar
-        </button>
+      <DialogTrigger className="flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold text-white border border-gray-600 rounded hover:bg-gray-700 transition-colors uppercase tracking-wider cursor-pointer">
+        <Edit className="h-3 w-3" />
+        Editar
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
