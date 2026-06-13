@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import { NovoRelatorioForm } from '@/components/dashboard/novo-relatorio-form'
 import { buttonVariants } from '@/components/ui/button'
@@ -7,12 +8,13 @@ import Link from 'next/link'
 
 export default async function NovoRelatorioPage({ params }: { params: { contrato_id: string } }) {
   const supabase = await createClient()
+  const supabaseAdmin = createAdminClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
   // Verifica se o contrato existe e se o usuário tem permissão
-  const { data: contrato } = await supabase
+  const { data: contrato } = await supabaseAdmin
     .from('contratos')
     .select('*, titular:users!fiscal_titular_id(nome), substituto:users!fiscal_substituto_id(nome)')
     .eq('id', params.contrato_id)
