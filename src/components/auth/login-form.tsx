@@ -115,7 +115,7 @@ export function LoginForm() {
                 }
               }}>
                 <DialogTrigger 
-                  className="text-[0.65rem] font-bold text-yellow-500/80 hover:text-yellow-400 transition-colors uppercase tracking-wider cursor-pointer bg-transparent border-none p-0"
+                  className="text-[0.65rem] font-bold text-yellow-500/80 hover:text-yellow-400 transition-colors uppercase tracking-wider cursor-pointer bg-transparent border-none p-0 relative z-10"
                 >
                   Esqueci minha senha
                 </DialogTrigger>
@@ -153,7 +153,7 @@ export function LoginForm() {
                       <Button 
                         type="submit" 
                         disabled={isResetPending}
-                        className="w-full h-11 bg-yellow-600 hover:bg-yellow-700 text-white font-black uppercase tracking-wider rounded-xl transition-all"
+                        className="w-full h-11 bg-yellow-600 hover:bg-yellow-700 text-white font-black uppercase tracking-wider rounded-xl transition-all relative z-10 cursor-pointer"
                       >
                         {isResetPending ? 'Enviando...' : 'Enviar link de recuperação'}
                       </Button>
@@ -168,12 +168,12 @@ export function LoginForm() {
                 name="password" 
                 type={showPassword ? 'text' : 'password'}
                 required 
-                className="h-12 bg-[#050c05]/60 border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl pr-12"
+                className="h-12 bg-[#050c05]/60 border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl pr-12 relative z-0"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-1"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-1.5 z-20 cursor-pointer"
                 tabIndex={-1}
                 aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
               >
@@ -185,9 +185,9 @@ export function LoginForm() {
               </button>
             </div>
           </div>
-
+ 
           <Button 
-            className="w-full h-12 text-[0.7rem] font-black uppercase tracking-widest transition-all bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-[#070f08] rounded-xl shadow-lg shadow-yellow-500/10 active:scale-[0.98] mt-6 border-none cursor-pointer" 
+            className="w-full h-12 text-[0.7rem] font-black uppercase tracking-widest transition-all bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-[#070f08] rounded-xl shadow-lg shadow-yellow-500/10 active:scale-[0.98] mt-6 border-none cursor-pointer relative z-10" 
             type="submit" 
             disabled={isPending}
           >
