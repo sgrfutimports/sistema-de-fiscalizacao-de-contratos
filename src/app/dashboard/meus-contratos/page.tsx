@@ -40,6 +40,15 @@ export default async function MeusContratosPage() {
             Contratos em que você está vinculado como Titular ou Substituto.
           </p>
         </div>
+        {contratos && contratos.length > 0 && (
+          <Link
+            href="/dashboard/relatorios/novo-unificado"
+            className="inline-flex items-center gap-1.5 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-md uppercase tracking-wider"
+          >
+            <PlusCircle className="h-4 w-4" />
+            Emitir Relatório Unificado
+          </Link>
+        )}
       </div>
 
       <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">

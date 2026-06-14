@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { FileText, Eye } from 'lucide-react'
+import { FileText, Eye, Printer } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 
@@ -27,6 +27,34 @@ export default async function MeusRelatoriosPage() {
     return `${meses[mes - 1]}/${ano}`
   }
 
+  function formatCompetenciaCompleta(mes: number, ano: number) {
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+    return `${meses[mes - 1]} de ${ano}`
+  }
+
+  // Agrupa períodos únicos para disponibilizar a impressão unificada
+  const periodosUnicosMap = new Map<string, { mes: number; ano: number; status: string; count: number }>()
+  if (relatorios) {
+    relatorios.forEach((rel) => {
+      const key = `${rel.competencia_mes}/${rel.competencia_ano}`
+      const existing = periodosUnicosMap.get(key)
+      if (existing) {
+        existing.count += 1
+        if (rel.status !== 'APROVADO') {
+          existing.status = 'PENDENTE'
+        }
+      } else {
+        periodosUnicosMap.set(key, {
+          mes: rel.competencia_mes,
+          ano: rel.competencia_ano,
+          status: rel.status === 'APROVADO' ? 'APROVADO' : 'PENDENTE',
+          count: 1
+        })
+      }
+    })
+  }
+  const periodosUnicos = Array.from(periodosUnicosMap.values())
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -37,6 +65,46 @@ export default async function MeusRelatoriosPage() {
           </p>
         </div>
       </div>
+
+      {periodosUnicos.length > 0 && (
+        <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
+          <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
+            <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
+              <Printer className="h-5 w-5 text-yellow-500" />
+              Certidões Unificadas do Período
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-4 grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+            {periodosUnicos.map((p) => (
+              <div key={`${p.mes}/${p.ano}`} className="bg-[#131924] border border-[#2a3441] rounded-xl p-4 flex flex-col justify-between items-start gap-3">
+                <div>
+                  <div className="text-xs font-bold text-gray-400 uppercase tracking-wider">Período</div>
+                  <div className="text-sm font-black text-white mt-1">{formatCompetenciaCompleta(p.mes, p.ano)}</div>
+                  <div className="text-[0.65rem] text-gray-400 mt-1 font-medium">{p.count} contrato(s) avaliado(s)</div>
+                </div>
+                <div className="flex w-full justify-between items-center mt-2 pt-2 border-t border-[#2a3441]/50">
+                  <span className={`text-[0.6rem] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
+                    p.status === 'APROVADO' ? 'border-green-500 text-green-400 bg-green-500/10' : 'border-yellow-500 text-yellow-400 bg-yellow-500/10'
+                  }`}>
+                    {p.status === 'APROVADO' ? 'APROVADO' : 'EM ANÁLISE / DEV.'}
+                  </span>
+                  {p.status === 'APROVADO' ? (
+                    <Link
+                      href={`/dashboard/relatorios/unificado/${p.mes}/${p.ano}/imprimir`}
+                      className="inline-flex items-center gap-1 bg-yellow-600 hover:bg-yellow-700 text-white px-2.5 py-1 rounded-lg font-bold text-[0.65rem] uppercase tracking-wider transition-colors"
+                    >
+                      <Printer className="h-3 w-3" />
+                      Imprimir
+                    </Link>
+                  ) : (
+                    <span className="text-[0.65rem] text-gray-500 font-bold uppercase">Aguardando Aprov.</span>
+                  )}
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
         <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
