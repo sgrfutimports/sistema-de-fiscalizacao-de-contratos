@@ -3,7 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
-import { ArrowLeft, CheckCircle2, FileText, AlertTriangle, Printer } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, FileText, AlertTriangle, Printer, CheckSquare, CreditCard, Banknote, Settings, Paperclip } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
@@ -64,6 +64,146 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
   }
 
   const isDevolvidoEdicao = isOwner && relatorio.status === 'DEVOLVIDO'
+  const hasDetailedVerifications = relatorio.verificacoes && typeof relatorio.verificacoes === 'object' && Object.keys(relatorio.verificacoes).length > 0;
+
+  function renderVerificacoesDetalhes(v: any, docs: any) {
+    const renderRow = (label: string, value: boolean | undefined) => {
+      let statusBadge = (
+        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded border border-gray-500/30 text-gray-400 bg-gray-500/5">
+          N/A
+        </span>
+      )
+      if (value === true) {
+        statusBadge = (
+          <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded border border-green-500/30 text-green-400 bg-green-500/10">
+            Sim
+          </span>
+        )
+      } else if (value === false) {
+        statusBadge = (
+          <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded border border-red-500/30 text-red-400 bg-red-500/10">
+            Não
+          </span>
+        )
+      }
+      return (
+        <div className="flex items-center justify-between py-2 border-b border-[#2a3441]/30 last:border-0 text-xs">
+          <span className="text-gray-300 font-medium">{label}</span>
+          {statusBadge}
+        </div>
+      )
+    }
+
+    const renderDocRow = (label: string, val: string | undefined) => {
+      const statusBadge = val ? (
+        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded border border-green-500/30 text-green-400 bg-green-500/10 truncate max-w-[150px]" title={val}>
+          Apresentado ({val})
+        </span>
+      ) : (
+        <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded border border-gray-600/30 text-gray-500 bg-gray-600/5">
+          Não Apresentado
+        </span>
+      )
+      return (
+        <div className="flex items-center justify-between py-2 border-b border-[#2a3441]/30 last:border-0 text-xs">
+          <span className="text-gray-300 font-medium">{label}</span>
+          {statusBadge}
+        </div>
+      )
+    }
+
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Bloco 1 */}
+        <div className="bg-[#131924]/60 border border-green-500/20 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-green-500/20 text-green-400">
+            <CheckSquare className="h-4 w-4" />
+            <h4 className="font-black text-xs uppercase tracking-wider">Bloco 1 — Execução Contratual</h4>
+          </div>
+          <div className="space-y-1">
+            {renderRow("1.1. Fiscalização realizada?", v.execucao?.realizada)}
+            {renderRow("1.2. Objeto executado conforme contratado?", v.execucao?.conforme)}
+            {renderRow("1.3. Ocorrências registradas?", v.execucao?.ocorrencias)}
+            {renderRow("1.4. Necessidade de notificação?", v.execucao?.notificacao)}
+          </div>
+        </div>
+
+        {/* Bloco 2 */}
+        <div className="bg-[#131924]/60 border border-blue-500/20 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-blue-500/20 text-blue-400">
+            <FileText className="h-4 w-4" />
+            <h4 className="font-black text-xs uppercase tracking-wider">Bloco 2 — Regularidade Fiscal</h4>
+          </div>
+          <div className="space-y-1">
+            {renderRow("2.1. SICAF regular?", v.fiscal?.sicaf)}
+            {renderRow("2.2. Certidões Federais válidas?", v.fiscal?.certidoes)}
+            {renderRow("2.3. FGTS regular?", v.fiscal?.fgts)}
+            {renderRow("2.4. CNDT válida?", v.fiscal?.cndt)}
+            {renderRow("2.5. CEIS/CNEP sem restrições?", v.fiscal?.ceis)}
+          </div>
+        </div>
+
+        {/* Bloco 3 */}
+        <div className="bg-[#131924]/60 border border-yellow-500/20 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-yellow-500/20 text-yellow-400">
+            <CreditCard className="h-4 w-4" />
+            <h4 className="font-black text-xs uppercase tracking-wider">Bloco 3 — Pagamento (Despesa)</h4>
+          </div>
+          <div className="space-y-1">
+            {renderRow("3.1. Nota Fiscal apresentada?", v.pagamento?.nf_apresentada)}
+            {renderRow("3.2. Nota Fiscal atestada?", v.pagamento?.nf_atestada)}
+            {renderRow("3.3. Ordem Bancária emitida?", v.pagamento?.ob_emitida)}
+            {renderRow("3.4. Pagamento realizado?", v.pagamento?.realizado)}
+          </div>
+        </div>
+
+        {/* Bloco 4 */}
+        <div className="bg-[#131924]/60 border border-purple-500/20 rounded-xl p-4">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-purple-500/20 text-purple-400">
+            <Banknote className="h-4 w-4" />
+            <h4 className="font-black text-xs uppercase tracking-wider">Bloco 4 — Receita (Permissionários)</h4>
+          </div>
+          <div className="space-y-1">
+            {renderRow("4.1. GRU emitida?", v.receita?.gru_emitida)}
+            {renderRow("4.2. GRU paga?", v.receita?.gru_paga)}
+            {renderRow("4.3. Valor recolhido corretamente?", v.receita?.valor_correto)}
+            {renderRow("4.4. Comprovante anexado?", v.receita?.comprovante)}
+          </div>
+        </div>
+
+        {/* Bloco 5 */}
+        <div className="bg-[#131924]/60 border border-orange-500/20 rounded-xl p-4 md:col-span-2">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-orange-500/20 text-orange-400">
+            <Settings className="h-4 w-4" />
+            <h4 className="font-black text-xs uppercase tracking-wider">Bloco 5 — Gestão Contratual</h4>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1">
+            {renderRow("5.1. Garantia vigente?", v.gestao?.garantia)}
+            {renderRow("5.2. Vigência regular?", v.gestao?.vigencia)}
+            {renderRow("5.3. Necessidade de aditivo?", v.gestao?.aditivo)}
+            {renderRow("5.4. Necessidade de reajuste?", v.gestao?.reajuste)}
+            {renderRow("5.5. Necessidade de repactuação?", v.gestao?.repactuacao)}
+          </div>
+        </div>
+
+        {/* Bloco 6 */}
+        <div className="bg-[#131924]/60 border border-cyan-500/20 rounded-xl p-4 md:col-span-2">
+          <div className="flex items-center gap-2 mb-3 pb-2 border-b border-cyan-500/20 text-cyan-400">
+            <Paperclip className="h-4 w-4" />
+            <h4 className="font-black text-xs uppercase tracking-wider">Bloco 6 — Documentos e Anexos</h4>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-1">
+            {renderDocRow("6.1. Nota Fiscal", docs.nota_fiscal)}
+            {renderDocRow("6.2. GRU", docs.gru)}
+            {renderDocRow("6.3. Ordem Bancária", docs.ordem_bancaria)}
+            {renderDocRow("6.4. Certidões", docs.certidoes)}
+            {renderDocRow("6.5. Relatório Fotográfico", docs.fotografico)}
+            {renderDocRow("6.6. Notificações", docs.notificacoes)}
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -181,29 +321,33 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
               </CardTitle>
             </CardHeader>
             <CardContent className="p-6 space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className={`p-4 rounded-lg border ${relatorio.fiscalizacao_realizada ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                  <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Vistoria Realizada?</Label>
-                  <div className="flex items-center gap-2 font-bold text-white">
-                    {relatorio.fiscalizacao_realizada ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
-                    {relatorio.fiscalizacao_realizada ? 'Sim' : 'Não'}
+              {hasDetailedVerifications ? (
+                renderVerificacoesDetalhes(relatorio.verificacoes, relatorio.documentos || {})
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className={`p-4 rounded-lg border ${relatorio.fiscalizacao_realizada ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                    <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Vistoria Realizada?</Label>
+                    <div className="flex items-center gap-2 font-bold text-white">
+                      {relatorio.fiscalizacao_realizada ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
+                      {relatorio.fiscalizacao_realizada ? 'Sim' : 'Não'}
+                    </div>
+                  </div>
+                  <div className={`p-4 rounded-lg border ${relatorio.servico_conforme ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                    <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Serviço Conforme?</Label>
+                    <div className="flex items-center gap-2 font-bold text-white">
+                      {relatorio.servico_conforme ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
+                      {relatorio.servico_conforme ? 'Sim' : 'Não'}
+                    </div>
+                  </div>
+                  <div className={`p-4 rounded-lg border ${relatorio.documentacao_apresentada ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                    <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Documentação Regular?</Label>
+                    <div className="flex items-center gap-2 font-bold text-white">
+                      {relatorio.documentacao_apresentada ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
+                      {relatorio.documentacao_apresentada ? 'Sim' : 'Não'}
+                    </div>
                   </div>
                 </div>
-                <div className={`p-4 rounded-lg border ${relatorio.servico_conforme ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                  <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Serviço Conforme?</Label>
-                  <div className="flex items-center gap-2 font-bold text-white">
-                    {relatorio.servico_conforme ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
-                    {relatorio.servico_conforme ? 'Sim' : 'Não'}
-                  </div>
-                </div>
-                <div className={`p-4 rounded-lg border ${relatorio.documentacao_apresentada ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-                  <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Documentação Regular?</Label>
-                  <div className="flex items-center gap-2 font-bold text-white">
-                    {relatorio.documentacao_apresentada ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
-                    {relatorio.documentacao_apresentada ? 'Sim' : 'Não'}
-                  </div>
-                </div>
-              </div>
+              )}
 
               <div className="space-y-4 pt-4 border-t border-[#2a3441]">
                 <div>

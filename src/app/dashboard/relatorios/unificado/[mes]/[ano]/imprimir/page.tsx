@@ -65,6 +65,175 @@ export default async function ImprimirRelatorioUnificadoPage({
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '***.$2.$3-**')
   }
 
+  function renderVerificacoesTable(v: any, docs: any) {
+    const formatValue = (val: boolean | undefined) => {
+      if (val === true) return <span className="text-green-700 font-bold">SIM</span>
+      if (val === false) return <span className="text-red-700 font-bold">NÃO</span>
+      return <span className="text-gray-400 font-bold">N/A</span>
+    }
+
+    const formatDoc = (val: string | undefined) => {
+      if (val) return <span className="text-green-700 font-bold">APRESENTADO</span>
+      return <span className="text-gray-500">NÃO APRESENTADO</span>
+    }
+
+    return (
+      <div className="my-4 border border-black rounded overflow-hidden">
+        <table className="w-full text-[0.7rem] text-left border-collapse">
+          <thead>
+            <tr className="bg-gray-100 border-b border-black font-bold">
+              <th className="px-4 py-1.5 border-r border-black w-3/4">Indicador / Item de Controle</th>
+              <th className="px-4 py-1.5 text-center">Resultado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {/* Bloco 1 */}
+            <tr className="bg-gray-50 border-b border-black font-bold">
+              <td colSpan={2} className="px-4 py-0.5 text-[0.6rem] uppercase tracking-wider text-gray-600">Bloco 1 – Execução Contratual</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">1.1. Fiscalização realizada?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.execucao?.realizada)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">1.2. Objeto executado conforme contratado?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.execucao?.conforme)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">1.3. Ocorrências registradas?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.execucao?.ocorrencias)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">1.4. Necessidade de notificação?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.execucao?.notificacao)}</td>
+            </tr>
+
+            {/* Bloco 2 */}
+            <tr className="bg-gray-50 border-b border-black font-bold">
+              <td colSpan={2} className="px-4 py-0.5 text-[0.6rem] uppercase tracking-wider text-gray-600">Bloco 2 – Regularidade Fiscal</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">2.1. SICAF regular?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.fiscal?.sicaf)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">2.2. Certidões Federais válidas?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.fiscal?.certidoes)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">2.3. FGTS regular?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.fiscal?.fgts)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">2.4. CNDT válida?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.fiscal?.cndt)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">2.5. CEIS/CNEP sem restrições?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.fiscal?.ceis)}</td>
+            </tr>
+
+            {/* Bloco 3 */}
+            <tr className="bg-gray-50 border-b border-black font-bold">
+              <td colSpan={2} className="px-4 py-0.5 text-[0.6rem] uppercase tracking-wider text-gray-600">Bloco 3 – Pagamento (Despesa)</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">3.1. Nota Fiscal apresentada?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.pagamento?.nf_apresentada)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">3.2. Nota Fiscal atestada?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.pagamento?.nf_atestada)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">3.3. Ordem Bancária emitida?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.pagamento?.ob_emitida)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">3.4. Pagamento realizado?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.pagamento?.realizado)}</td>
+            </tr>
+
+            {/* Bloco 4 */}
+            <tr className="bg-gray-50 border-b border-black font-bold">
+              <td colSpan={2} className="px-4 py-0.5 text-[0.6rem] uppercase tracking-wider text-gray-600">Bloco 4 – Receita (Permissionários)</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">4.1. GRU emitida?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.receita?.gru_emitida)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">4.2. GRU paga?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.receita?.gru_paga)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">4.3. Valor recolhido corretamente?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.receita?.valor_correto)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">4.4. Comprovante anexado?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.receita?.comprovante)}</td>
+            </tr>
+
+            {/* Bloco 5 */}
+            <tr className="bg-gray-50 border-b border-black font-bold">
+              <td colSpan={2} className="px-4 py-0.5 text-[0.6rem] uppercase tracking-wider text-gray-600">Bloco 5 – Gestão Contratual</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">5.1. Garantia vigente?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.gestao?.garantia)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">5.2. Vigência regular?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.gestao?.vigencia)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">5.3. Necessidade de aditivo?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.gestao?.aditivo)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">5.4. Necessidade de reajuste?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.gestao?.reajuste)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">5.5. Necessidade de repactuação?</td>
+              <td className="px-4 py-0.5 text-center">{formatValue(v.gestao?.repactuacao)}</td>
+            </tr>
+
+            {/* Bloco 6 */}
+            <tr className="bg-gray-50 border-b border-black font-bold">
+              <td colSpan={2} className="px-4 py-0.5 text-[0.6rem] uppercase tracking-wider text-gray-600">Bloco 6 – Documentos Anexados</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">6.1. Nota Fiscal</td>
+              <td className="px-4 py-0.5 text-center">{formatDoc(docs.nota_fiscal)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">6.2. GRU</td>
+              <td className="px-4 py-0.5 text-center">{formatDoc(docs.gru)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">6.3. Ordem Bancária</td>
+              <td className="px-4 py-0.5 text-center">{formatDoc(docs.ordem_bancaria)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">6.4. Certidões</td>
+              <td className="px-4 py-0.5 text-center">{formatDoc(docs.certidoes)}</td>
+            </tr>
+            <tr className="border-b border-black">
+              <td className="px-6 py-0.5 border-r border-black">6.5. Relatório Fotográfico</td>
+              <td className="px-4 py-0.5 text-center">{formatDoc(docs.fotografico)}</td>
+            </tr>
+            <tr>
+              <td className="px-6 py-0.5 border-r border-black">6.6. Notificações</td>
+              <td className="px-4 py-0.5 text-center">{formatDoc(docs.notificacoes)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-white text-black p-8 font-serif leading-relaxed max-w-4xl mx-auto shadow-inner relative">
       {/* Botões do Topo (Escondidos na impressão) */}
@@ -147,27 +316,66 @@ export default async function ImprimirRelatorioUnificadoPage({
           <div className="space-y-6 pt-4">
             <h3 className="font-bold text-xs uppercase tracking-wider border-b pb-1">Detalhamento por Contrato</h3>
             
-            {relatorios.map((rel) => (
-              <div key={rel.id} className="space-y-3 p-4 bg-gray-50/50 border border-gray-200 rounded-lg">
-                <div className="font-bold text-xs text-gray-800">
-                  Contrato: {rel.contrato.numero_contrato} ({rel.contrato.empresa})
+            {relatorios.map((rel) => {
+              const hasDetailedVerifications = rel.verificacoes && typeof rel.verificacoes === 'object' && Object.keys(rel.verificacoes).length > 0;
+              return (
+                <div key={rel.id} className="space-y-3 p-4 bg-gray-50/50 border border-gray-200 rounded-lg break-inside-avoid">
+                  <div className="font-bold text-xs text-gray-800 border-b pb-1">
+                    Contrato: {rel.contrato.numero_contrato} ({rel.contrato.empresa})
+                  </div>
+
+                  {hasDetailedVerifications ? (
+                    renderVerificacoesTable(rel.verificacoes, rel.documentos || {})
+                  ) : (
+                    <div className="my-2 border border-black rounded overflow-hidden">
+                      <table className="w-full text-[0.7rem] text-left border-collapse">
+                        <thead>
+                          <tr className="bg-gray-100 border-b border-black font-bold">
+                            <th className="px-4 py-1.5 border-r border-black w-3/4">Item Avaliado</th>
+                            <th className="px-4 py-1.5 text-center">Resultado</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b border-black">
+                            <td className="px-4 py-1 border-r border-black font-bold">1. Acompanhamento/Vistoria de Campo Realizada?</td>
+                            <td className={`px-4 py-1 text-center font-bold ${rel.fiscalizacao_realizada ? 'text-green-700' : 'text-red-700'}`}>
+                              {rel.fiscalizacao_realizada ? 'SIM' : 'NÃO'}
+                            </td>
+                          </tr>
+                          <tr className="border-b border-black">
+                            <td className="px-4 py-1 border-r border-black font-bold">2. Serviços prestados/Materiais entregues estão em conformidade?</td>
+                            <td className={`px-4 py-1 text-center font-bold ${rel.servico_conforme ? 'text-green-700' : 'text-red-700'}`}>
+                              {rel.servico_conforme ? 'SIM' : 'NÃO'}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="px-4 py-1 border-r border-black font-bold">3. Regularidade fiscal e trabalhista da contratada apresentada?</td>
+                            <td className={`px-4 py-1 text-center font-bold ${rel.documentacao_apresentada ? 'text-green-700' : 'text-red-700'}`}>
+                              {rel.documentacao_apresentada ? 'SIM' : 'NÃO'}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs pt-1">
+                    <div>
+                      <span className="font-bold text-[0.65rem] uppercase text-gray-500 block">Anotações / Ocorrências:</span>
+                      <p className="mt-1 italic text-gray-700">{rel.ocorrencias || 'Sem ocorrências.'}</p>
+                    </div>
+                    <div>
+                      <span className="font-bold text-[0.65rem] uppercase text-gray-500 block">Pendências da Empresa:</span>
+                      <p className="mt-1 italic text-gray-700">{rel.pendencias || 'Nenhuma pendência.'}</p>
+                    </div>
+                    <div>
+                      <span className="font-bold text-[0.65rem] uppercase text-gray-500 block">Recomendações / Observações:</span>
+                      <p className="mt-1 italic text-gray-700">{rel.observacoes || 'Sem observações.'}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                  <div>
-                    <span className="font-bold text-[0.65rem] uppercase text-gray-500 block">Anotações / Ocorrências:</span>
-                    <p className="mt-1 italic text-gray-700">{rel.ocorrencias || 'Sem ocorrências.'}</p>
-                  </div>
-                  <div>
-                    <span className="font-bold text-[0.65rem] uppercase text-gray-500 block">Pendências da Empresa:</span>
-                    <p className="mt-1 italic text-gray-700">{rel.pendencias || 'Nenhuma pendência.'}</p>
-                  </div>
-                  <div>
-                    <span className="font-bold text-[0.65rem] uppercase text-gray-500 block">Recomendações / Observações:</span>
-                    <p className="mt-1 italic text-gray-700">{rel.observacoes || 'Sem observações.'}</p>
-                  </div>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
 
