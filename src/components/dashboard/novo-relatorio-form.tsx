@@ -17,6 +17,10 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
+  const [fiscalizacaoRealizada, setFiscalizacaoRealizada] = useState(true)
+  const [servicoConforme, setServicoConforme] = useState(true)
+  const [documentacaoApresentada, setDocumentacaoApresentada] = useState(true)
+
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
@@ -26,14 +30,10 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
     formData.append('contrato_id', contratoId)
     formData.append('tipo_fiscal', papel)
     
-    // Checkbox switches (React hook form would be better but doing native FormData here)
-    const checkboxes = ['fiscalizacao_realizada', 'servico_conforme', 'documentacao_apresentada']
-    checkboxes.forEach(c => {
-      const el = document.getElementById(c) as HTMLButtonElement
-      if (el && el.getAttribute('data-state') === 'checked') {
-        formData.append(c, 'on')
-      }
-    })
+    // Appending checkboxes using state-driven values
+    formData.append('fiscalizacao_realizada', fiscalizacaoRealizada ? 'on' : 'off')
+    formData.append('servico_conforme', servicoConforme ? 'on' : 'off')
+    formData.append('documentacao_apresentada', documentacaoApresentada ? 'on' : 'off')
 
     startTransition(async () => {
       const result = await submitRelatorio(formData)
@@ -111,7 +111,12 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
                 <Label htmlFor="fiscalizacao_realizada" className="text-sm font-bold text-white">Fiscalização Realizada?</Label>
                 <p className="text-xs text-gray-400">Ocorreu vistoria in loco ou acompanhamento remoto na competência atual.</p>
               </div>
-              <Switch id="fiscalizacao_realizada" defaultChecked className="data-[state=checked]:bg-yellow-600" />
+              <Switch 
+                id="fiscalizacao_realizada" 
+                checked={fiscalizacaoRealizada} 
+                onCheckedChange={setFiscalizacaoRealizada} 
+                className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-[#2a3441] border border-[#3f526b]" 
+              />
             </div>
 
             <div className="flex items-center justify-between gap-4 py-3 border-b border-[#2a3441]">
@@ -119,7 +124,12 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
                 <Label htmlFor="servico_conforme" className="text-sm font-bold text-white">Serviços e/ou Materiais Conformes?</Label>
                 <p className="text-xs text-gray-400">A empresa cumpriu as obrigações estipuladas no contrato sem falhas graves.</p>
               </div>
-              <Switch id="servico_conforme" defaultChecked className="data-[state=checked]:bg-yellow-600" />
+              <Switch 
+                id="servico_conforme" 
+                checked={servicoConforme} 
+                onCheckedChange={setServicoConforme} 
+                className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-[#2a3441] border border-[#3f526b]" 
+              />
             </div>
 
             <div className="flex items-center justify-between gap-4 py-3">
@@ -127,7 +137,12 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
                 <Label htmlFor="documentacao_apresentada" className="text-sm font-bold text-white">Documentação Trabalhista/Fiscal Apresentada?</Label>
                 <p className="text-xs text-gray-400">Todas as guias e certidões negativas foram verificadas e estão regulares.</p>
               </div>
-              <Switch id="documentacao_apresentada" defaultChecked className="data-[state=checked]:bg-yellow-600" />
+              <Switch 
+                id="documentacao_apresentada" 
+                checked={documentacaoApresentada} 
+                onCheckedChange={setDocumentacaoApresentada} 
+                className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-[#2a3441] border border-[#3f526b]" 
+              />
             </div>
           </div>
 
@@ -166,7 +181,7 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
         </CardContent>
         <CardFooter className="bg-[#131924] border-t border-[#2a3441] py-4 flex justify-end gap-4">
           <Button type="button" variant="outline" onClick={() => router.back()} className="border-[#2a3441] text-gray-300 hover:bg-[#1b2331] hover:text-white">Cancelar</Button>
-          <Button type="submit" disabled={isPending} className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold">
+          <Button type="submit" disabled={isPending} className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold animate-pulse hover:animate-none">
             {isPending ? 'Enviando...' : 'Assinar e Enviar Relatório'}
           </Button>
         </CardFooter>
