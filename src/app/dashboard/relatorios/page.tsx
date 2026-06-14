@@ -102,10 +102,10 @@ export default async function RelatoriosPage() {
             </div>
             
             <div className="flex flex-col gap-1.5">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider">Busca Livre <span className="lowercase text-gray-500">(Empresa/Militar/Objeto)</span></label>
+              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider">Busca Livre</label>
               <input 
                 type="text" 
-                placeholder="Digite palavra-chave..." 
+                placeholder="Empresa, militar, objeto..." 
                 className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full placeholder-gray-500"
               />
             </div>
