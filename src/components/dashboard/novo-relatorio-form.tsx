@@ -115,7 +115,6 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
                 id="fiscalizacao_realizada" 
                 checked={fiscalizacaoRealizada} 
                 onCheckedChange={setFiscalizacaoRealizada} 
-                className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-[#2a3441] border border-[#3f526b]" 
               />
             </div>
 
@@ -128,7 +127,6 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
                 id="servico_conforme" 
                 checked={servicoConforme} 
                 onCheckedChange={setServicoConforme} 
-                className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-[#2a3441] border border-[#3f526b]" 
               />
             </div>
 
@@ -141,7 +139,6 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
                 id="documentacao_apresentada" 
                 checked={documentacaoApresentada} 
                 onCheckedChange={setDocumentacaoApresentada} 
-                className="data-[state=checked]:bg-green-600 data-[state=unchecked]:bg-[#2a3441] border border-[#3f526b]" 
               />
             </div>
           </div>
