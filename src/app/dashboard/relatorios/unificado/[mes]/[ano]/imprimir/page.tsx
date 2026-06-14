@@ -437,8 +437,13 @@ export default async function ImprimirRelatorioUnificadoPage({
             padding: 0 !important;
             margin: 0 !important;
           }
-          .no-print {
+          header, aside, [data-sidebar], .no-print {
             display: none !important;
+          }
+          main {
+            padding: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
           }
           .print-area {
             width: 100% !important;
