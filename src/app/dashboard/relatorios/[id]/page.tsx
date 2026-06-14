@@ -3,7 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
-import { ArrowLeft, CheckCircle2, FileText, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, CheckCircle2, FileText, AlertTriangle, Printer } from 'lucide-react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
@@ -71,9 +71,20 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
               Competência: <strong>{relatorio.competencia_mes.toString().padStart(2, '0')}/{relatorio.competencia_ano}</strong>
             </p>
           </div>
-          <span className={`text-xs font-bold px-3 py-1.5 rounded border uppercase tracking-wider ${getStatusColor(relatorio.status)}`}>
-            {relatorio.status.replace('_', ' ')}
-          </span>
+          <div className="flex items-center gap-3">
+            <span className={`text-xs font-bold px-3 py-1.5 rounded border uppercase tracking-wider ${getStatusColor(relatorio.status)}`}>
+              {relatorio.status.replace('_', ' ')}
+            </span>
+            {relatorio.status === 'APROVADO' && (
+              <Link 
+                href={`/dashboard/relatorios/${relatorio.id}/imprimir`}
+                className="inline-flex items-center gap-1.5 bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1.5 rounded-lg font-bold text-xs transition-colors shadow-md uppercase"
+              >
+                <Printer className="h-3.5 w-3.5" />
+                Certidão / PDF
+              </Link>
+            )}
+          </div>
         </div>
       </div>
 
