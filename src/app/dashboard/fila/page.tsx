@@ -51,16 +51,16 @@ export default async function FilaHomologacaoPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 shrink-0">
             {totalFila > 0 && (
-              <span className="bg-yellow-500 text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider">
+              <span className="bg-amber-500/10 text-amber-600 border border-amber-500/30 text-xs font-black px-3.5 py-1.5 rounded-full uppercase tracking-wider whitespace-nowrap flex items-center justify-center">
                 {totalFila} pendente{totalFila !== 1 ? 's' : ''}
               </span>
             )}
             <form action="/dashboard/fila">
               <button type="submit"
-                className="flex items-center gap-2 bg-[#131924] hover:bg-[#1b2331] text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors shadow-md uppercase tracking-wider">
-                <RefreshCw className="h-4 w-4" />
+                className="flex items-center gap-2 bg-[#131924] hover:bg-[#1b2331] text-white px-4 py-2 rounded-lg font-bold text-xs transition-colors shadow-md uppercase tracking-wider whitespace-nowrap cursor-pointer">
+                <RefreshCw className="h-3.5 w-3.5" />
                 Sincronizar Fila
               </button>
             </form>
