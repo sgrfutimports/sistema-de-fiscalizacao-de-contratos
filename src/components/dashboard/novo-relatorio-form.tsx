@@ -365,8 +365,8 @@ export function NovoRelatorioForm({
 
       {/* Footer */}
       <div className="flex justify-end gap-4 bg-[#131924] p-4 rounded-xl border border-[#2a3441] sticky bottom-4 shadow-2xl">
-        <Button type="button" variant="ghost" onClick={() => router.back()}
-          className="border border-[#2a3441] text-gray-300 hover:bg-[#1b2331] hover:text-white">
+        <Button type="button" variant="destructive" onClick={() => router.back()}
+          className="bg-red-600 hover:bg-red-700 text-white font-bold border-none shadow-sm transition-all">
           Cancelar
         </Button>
         <Button type="submit" disabled={isPending}

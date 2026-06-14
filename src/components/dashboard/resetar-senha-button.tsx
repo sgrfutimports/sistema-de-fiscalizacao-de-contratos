@@ -55,7 +55,7 @@ export function ResetarSenhaButton({ userId, userName }: ResetarSenhaButtonProps
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="mt-4 flex justify-end gap-2">
-          <Button variant="ghost" size="sm" type="button" onClick={() => setOpen(false)} disabled={isPending} className="border border-[#2a3441] text-gray-300 hover:bg-[#1b2331] hover:text-white">
+          <Button variant="destructive" size="sm" type="button" onClick={() => setOpen(false)} disabled={isPending} className="bg-red-600 hover:bg-red-700 text-white font-bold border-none shadow-sm transition-all">
             Cancelar
           </Button>
           <Button 

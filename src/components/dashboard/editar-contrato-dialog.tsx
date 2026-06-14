@@ -257,7 +257,7 @@ export function EditarContratoDialog({ contrato, fiscais }: { contrato: Contrato
           </div>
 
           <DialogFooter className="pt-4 border-t border-[#2a3441] gap-2">
-            <Button type="button" variant="ghost" onClick={() => setOpen(false)} className="border border-[#2a3441] text-gray-300 hover:bg-[#1b2331] hover:text-white">
+            <Button type="button" variant="destructive" onClick={() => setOpen(false)} className="bg-red-600 hover:bg-red-700 text-white font-bold border-none shadow-sm transition-all">
               Cancelar
             </Button>
             <Button type="submit" disabled={isPending} className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold">

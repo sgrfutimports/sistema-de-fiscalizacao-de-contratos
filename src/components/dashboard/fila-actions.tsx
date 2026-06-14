@@ -140,7 +140,7 @@ export function FilaActions({ item }: FilaActionsProps) {
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="ghost" type="button" onClick={() => setDialog(null)} disabled={isPending} className="border border-[#2a3441] text-gray-300 hover:bg-[#131924] hover:text-white">
+            <Button variant="destructive" type="button" onClick={() => setDialog(null)} disabled={isPending} className="bg-red-600 hover:bg-red-700 text-white font-bold border-none shadow-sm transition-all">
               Cancelar
             </Button>
             <Button onClick={handleSubmit} disabled={isPending}
