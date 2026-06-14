@@ -339,7 +339,7 @@ export default async function ImprimirRelatorioPage({ params }: { params: Promis
         </div>
 
         {/* Bloco de Assinaturas Digitais / Eletrônicas */}
-        <div className="mt-12 pt-8 border-t border-black grid grid-cols-1 md:grid-cols-2 gap-8 text-[0.65rem] leading-normal font-mono">
+        <div className="mt-12 pt-8 border-t border-black grid grid-cols-2 gap-8 text-[0.65rem] leading-normal font-mono break-inside-avoid">
           
           {/* Assinatura do Fiscal */}
           <div className="p-3 border border-dashed border-gray-400 bg-gray-50/50 rounded flex flex-col justify-between">
@@ -389,6 +389,10 @@ export default async function ImprimirRelatorioPage({ params }: { params: Promis
 
       {/* Estilos específicos para impressão */}
       <style dangerouslySetInnerHTML={{ __html: `
+        @page {
+          size: A4;
+          margin: 20mm 15mm 20mm 30mm;
+        }
         @media print {
           body {
             background: white !important;
@@ -405,6 +409,10 @@ export default async function ImprimirRelatorioPage({ params }: { params: Promis
             padding: 0 !important;
             border: none !important;
             box-shadow: none !important;
+          }
+          .break-inside-avoid {
+            break-inside: avoid;
+            page-break-inside: avoid;
           }
         }
       `}} />
