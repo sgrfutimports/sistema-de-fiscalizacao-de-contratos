@@ -1,10 +1,28 @@
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { Calendar, Filter, Printer, Eye, RotateCcw } from 'lucide-react'
+import { Calendar, Printer, Eye } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { FiltrosAuditoria } from '@/components/dashboard/filtros-auditoria'
 
-export default async function RelatoriosPage() {
+export default async function RelatoriosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    status?: string
+    contratoId?: string
+    mes?: string
+    ano?: string
+    q?: string
+  }>
+}) {
+  const resolvedParams = await searchParams
+  const activeStatus = resolvedParams.status
+  const activeContratoId = resolvedParams.contratoId
+  const activeMes = resolvedParams.mes
+  const activeAno = resolvedParams.ano
+  const searchQuery = resolvedParams.q
+
   const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
@@ -16,15 +34,60 @@ export default async function RelatoriosPage() {
     redirect('/dashboard')
   }
 
-  // Busca relatórios com detalhes do contrato e fiscal (agora pedindo CPF também)
-  const { data: relatorios } = await supabaseAdmin
+  // Busca todos os contratos para popular o dropdown de filtros
+  const { data: contratos } = await supabaseAdmin
+    .from('contratos')
+    .select('id, numero_contrato, empresa')
+    .order('numero_contrato')
+
+  // Busca relatórios com detalhes do contrato e fiscal
+  const { data: rawRelatorios } = await supabaseAdmin
     .from('relatorios')
     .select(`
       *,
-      contrato:contratos!contrato_id(numero_contrato, empresa),
+      contrato:contratos!contrato_id(numero_contrato, empresa, objeto),
       fiscal:users!fiscal_id(nome, cpf)
     `)
     .order('created_at', { ascending: false })
+
+  // Extrai anos distintos de competência dos relatórios para o filtro de Exercício Ano
+  const distinctYears = Array.from(
+    new Set((rawRelatorios || []).map((r) => r.competencia_ano))
+  ).sort((a, b) => b - a)
+
+  // Filtra os relatórios em memória de forma robusta e dinâmica
+  const relatorios = (rawRelatorios || []).filter((rel) => {
+    if (activeStatus && activeStatus !== '-- Todos --' && rel.status !== activeStatus) {
+      return false
+    }
+    if (activeContratoId && activeContratoId !== '-- Todos --' && rel.contrato_id !== activeContratoId) {
+      return false
+    }
+    if (activeMes && activeMes !== '-- Todos --' && String(rel.competencia_mes) !== activeMes) {
+      return false
+    }
+    if (activeAno && activeAno !== '-- Todos --' && String(rel.competencia_ano) !== activeAno) {
+      return false
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase()
+      const numContrato = rel.contrato?.numero_contrato?.toLowerCase() || ''
+      const empresa = rel.contrato?.empresa?.toLowerCase() || ''
+      const objeto = rel.contrato?.objeto?.toLowerCase() || ''
+      const fiscalNome = rel.fiscal?.nome?.toLowerCase() || ''
+      const fiscalCpf = rel.fiscal?.cpf || ''
+
+      const matches =
+        numContrato.includes(q) ||
+        empresa.includes(q) ||
+        objeto.includes(q) ||
+        fiscalNome.includes(q) ||
+        fiscalCpf.includes(q)
+
+      if (!matches) return false
+    }
+    return true
+  })
 
   function getStatusStyle(status: string) {
     switch (status) {
@@ -42,10 +105,17 @@ export default async function RelatoriosPage() {
     return `${meses[mes - 1]}/${ano}`
   }
 
-  // Formatar CPF
   const formatCPF = (cpf: string) => {
     if (!cpf) return ''
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
+  }
+
+  const initialFilters = {
+    status: activeStatus,
+    contratoId: activeContratoId,
+    mes: activeMes,
+    ano: activeAno,
+    search: searchQuery,
   }
 
   return (
@@ -63,61 +133,12 @@ export default async function RelatoriosPage() {
         </div>
       </div>
 
-      {/* Caixa de Filtros de Auditoria (Azul Escuro) */}
-      <div className="bg-[#1b2331] rounded-xl p-5 shadow-md border border-[#2a3441]">
-        <div className="flex items-center gap-2 mb-4">
-          <Filter className="h-4 w-4 text-yellow-500" />
-          <h3 className="text-sm font-bold text-yellow-500 uppercase tracking-wider">Filtros de Auditoria</h3>
-        </div>
-        
-        <div className="flex flex-col lg:flex-row gap-4 items-end">
-          <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            
-            <div className="flex flex-col gap-1.5 text-center">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Situação do Relato</label>
-              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none text-center">
-                <option>-- Todos --</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1.5 text-center">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Contrato Específico</label>
-              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none text-center">
-                <option>-- Todos --</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1.5 text-center">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Competência Mês</label>
-              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none text-center">
-                <option>-- Todos --</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1.5 text-center">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Exercício Ano</label>
-              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none text-center">
-                <option>-- Todos --</option>
-              </select>
-            </div>
-            
-            <div className="flex flex-col gap-1.5 text-center">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Busca Livre</label>
-              <input 
-                type="text" 
-                placeholder="Empresa, militar, objeto..." 
-                className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full placeholder-gray-500 text-center"
-              />
-            </div>
-
-          </div>
-          
-          <button className="flex items-center gap-2 px-4 py-2 text-[0.65rem] font-bold text-yellow-500 border border-yellow-500/50 rounded-lg hover:bg-yellow-500/10 transition-colors uppercase tracking-wider whitespace-nowrap mt-4 lg:mt-0">
-            <RotateCcw className="h-3 w-3" />
-            Limpar Filtros
-          </button>
-        </div>
-      </div>
+      {/* Caixa de Filtros de Auditoria */}
+      <FiltrosAuditoria 
+        contratos={contratos || []} 
+        anos={distinctYears} 
+        initialFilters={initialFilters} 
+      />
 
       {/* Tabela Dark */}
       <div className="bg-[#1b2331] rounded-xl overflow-hidden shadow-md">
