@@ -63,3 +63,28 @@ export async function deleteComunicado(id: string) {
   revalidatePath('/dashboard/comunicados')
   return { success: true }
 }
+
+export async function confirmarLeituraComunicados(comunicadoIds: string[]) {
+  const supabase = await createClient()
+  const supabaseAdmin = createAdminClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const inserts = comunicadoIds.map(id => ({
+    comunicado_id: id,
+    user_id: user.id
+  }))
+
+  const { error } = await supabaseAdmin
+    .from('comunicados_lidos')
+    .insert(inserts)
+
+  if (error) {
+    console.error('Erro ao marcar comunicados como lidos:', error)
+    return { error: 'Erro ao confirmar leitura.' }
+  }
+
+  revalidatePath('/dashboard')
+  return { success: true }
+}

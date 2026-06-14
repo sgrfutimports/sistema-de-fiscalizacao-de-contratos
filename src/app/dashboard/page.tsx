@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { FileSignature, FileText, AlertCircle, CheckCircle2, ShieldAlert } from 'lucide-react'
+import { ComunicadosModal } from '@/components/dashboard/comunicados-modal'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -78,14 +79,36 @@ export default async function DashboardPage() {
   // 5. Buscar comunicados oficiais do comando cadastrados na tabela 'comunicados'
   const { data: dbComunicados } = await supabaseAdmin
     .from('comunicados')
-    .select('titulo, conteudo, autor, created_at')
+    .select('id, titulo, conteudo, autor, created_at')
     .order('created_at', { ascending: false })
     .limit(5)
 
   const avisos = dbComunicados || []
 
+  // 6. Buscar comunicados não lidos pelo fiscal atual
+  let unreadComunicados: any[] = []
+  if (!isAdmin && user) {
+    const { data: allActive } = await supabaseAdmin
+      .from('comunicados')
+      .select('id, titulo, conteudo, autor, created_at')
+      .order('created_at', { ascending: false })
+
+    if (allActive && allActive.length > 0) {
+      const { data: readLogs } = await supabaseAdmin
+        .from('comunicados_lidos')
+        .select('comunicado_id')
+        .eq('user_id', user.id)
+
+      const readIds = new Set(readLogs?.map(r => r.comunicado_id) || [])
+      unreadComunicados = allActive.filter(c => !readIds.has(c.id))
+    }
+  }
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
+      {/* Modal de leitura obrigatória para Fiscais */}
+      <ComunicadosModal comunicados={unreadComunicados} />
+
       <div className="bg-gradient-to-r from-[#133215]/80 via-[#1B3B22]/60 to-[#133215]/40 p-6 sm:p-8 rounded-2xl border border-[#2a3441] shadow-lg relative overflow-hidden">
         <div className="absolute top-[-50%] right-[-10%] h-[300px] w-[300px] rounded-full bg-[#133215]/40 blur-[80px] pointer-events-none" />
         <div className="relative z-10">
