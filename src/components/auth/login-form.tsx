@@ -1,11 +1,8 @@
 'use client'
 
-import { useTransition, useState } from 'react'
+import { useTransition, useState, useEffect } from 'react'
 import { login, sendResetPasswordEmail } from '@/app/login/actions'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Eye, EyeOff } from 'lucide-react'
 import {
   Dialog,
@@ -22,16 +19,51 @@ export function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
 
+  // Controlled states for credentials
+  const [cpf, setCpf] = useState('')
+  const [password, setPassword] = useState('')
+
   // Estados do Reset de Senha
   const [resetOpen, setResetOpen] = useState(false)
   const [resetError, setResetError] = useState<string | null>(null)
   const [resetSuccess, setResetSuccess] = useState<string | null>(null)
   const [isResetPending, startResetTransition] = useTransition()
 
+  // Pre-populate fields from URL if present (e.g. autofill or fallback redirects)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search)
+      const cpfParam = params.get('cpf')
+      const passwordParam = params.get('password')
+      if (cpfParam) {
+        let cleanCpf = cpfParam.replace(/\D/g, '')
+        if (cleanCpf.length > 11) cleanCpf = cleanCpf.slice(0, 11)
+        if (cleanCpf.length === 11) {
+          cleanCpf = cleanCpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4')
+        } else {
+          // format partial
+          if (cleanCpf.length > 9) {
+            cleanCpf = cleanCpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2})$/, '$1.$2.$3-$4')
+          } else if (cleanCpf.length > 6) {
+            cleanCpf = cleanCpf.replace(/^(\d{3})(\d{3})(\d{1,3})$/, '$1.$2.$3')
+          } else if (cleanCpf.length > 3) {
+            cleanCpf = cleanCpf.replace(/^(\d{3})(\d{1,3})$/, '$1.$2')
+          }
+        }
+        setCpf(cleanCpf)
+      }
+      if (passwordParam) {
+        setPassword(passwordParam)
+      }
+    }
+  }, [])
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
-    const formData = new FormData(event.currentTarget)
+    const formData = new FormData()
+    formData.append('cpf', cpf)
+    formData.append('password', password)
     
     startTransition(async () => {
       const result = await login(formData)
@@ -46,11 +78,11 @@ export function LoginForm() {
     setResetError(null)
     setResetSuccess(null)
     const formData = new FormData(event.currentTarget)
-    const cpf = formData.get('resetCpf') as string
+    const resetCpfValue = formData.get('resetCpf') as string
     
     startResetTransition(async () => {
       const origin = window.location.origin
-      const result = await sendResetPasswordEmail(cpf, origin)
+      const result = await sendResetPasswordEmail(resetCpfValue, origin)
       if (result?.error) {
         setResetError(result.error)
       } else if (result?.success) {
@@ -59,14 +91,20 @@ export function LoginForm() {
     })
   }
 
-  // Máscara simples de CPF
+  // Máscara simples de CPF para o input controlado
   function handleCpfChange(e: React.ChangeEvent<HTMLInputElement>) {
     let value = e.target.value.replace(/\D/g, '')
     if (value.length > 11) value = value.slice(0, 11)
-    value = value.replace(/(\d{3})(\d)/, '$1.$2')
-    value = value.replace(/(\d{3})(\d)/, '$1.$2')
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2')
-    e.target.value = value
+    
+    if (value.length > 9) {
+      value = value.replace(/^(\d{3})(\d{3})(\d{3})(\d{1,2})$/, '$1.$2.$3-$4')
+    } else if (value.length > 6) {
+      value = value.replace(/^(\d{3})(\d{3})(\d{1,3})$/, '$1.$2.$3')
+    } else if (value.length > 3) {
+      value = value.replace(/^(\d{3})(\d{1,3})$/, '$1.$2')
+    }
+    
+    setCpf(value)
   }
 
   return (
@@ -93,14 +131,15 @@ export function LoginForm() {
 
           <div className="space-y-2">
             <Label htmlFor="cpf" className="text-[0.65rem] font-black text-gray-300 uppercase tracking-widest">CPF</Label>
-            <Input 
+            <input 
               id="cpf" 
               name="cpf" 
               type="text" 
+              value={cpf}
               placeholder="000.000.000-00" 
               onChange={handleCpfChange}
               required 
-              className="h-12 bg-[#050c05]/60 border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl"
+              className="w-full h-12 px-3.5 bg-[#050c05]/60 border border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:outline-none focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl transition-all"
             />
           </div>
 
@@ -139,36 +178,38 @@ export function LoginForm() {
                     )}
                     <div className="space-y-2">
                       <Label htmlFor="resetCpf" className="text-[0.65rem] font-black text-gray-300 uppercase tracking-widest">CPF</Label>
-                      <Input 
+                      <input 
                         id="resetCpf" 
                         name="resetCpf" 
                         type="text" 
                         placeholder="000.000.000-00" 
                         onChange={handleCpfChange}
                         required 
-                        className="h-11 bg-[#050c05]/60 border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 rounded-xl"
+                        className="w-full h-11 px-3 bg-[#050c05]/60 border border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:outline-none rounded-xl transition-all"
                       />
                     </div>
                     <DialogFooter className="mt-2">
-                      <Button 
+                      <button 
                         type="submit" 
                         disabled={isResetPending}
-                        className="w-full h-11 bg-yellow-600 hover:bg-yellow-700 text-white font-black uppercase tracking-wider rounded-xl transition-all relative z-10 cursor-pointer"
+                        className="w-full h-11 bg-yellow-600 hover:bg-yellow-700 text-white font-black uppercase tracking-wider rounded-xl transition-all relative z-10 cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
                       >
                         {isResetPending ? 'Enviando...' : 'Enviar link de recuperação'}
-                      </Button>
+                      </button>
                     </DialogFooter>
                   </form>
                 </DialogContent>
               </Dialog>
             </div>
             <div className="relative">
-              <Input 
+              <input 
                 id="password" 
                 name="password" 
                 type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required 
-                className="h-12 bg-[#050c05]/60 border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl pr-12 relative z-0"
+                className="w-full h-12 pl-3.5 pr-12 bg-[#050c05]/60 border border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:outline-none focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl relative z-0"
               />
               <button
                 type="button"
@@ -186,16 +227,15 @@ export function LoginForm() {
             </div>
           </div>
  
-          <Button 
-            className="w-full h-12 text-[0.7rem] font-black uppercase tracking-widest transition-all bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-[#070f08] rounded-xl shadow-lg shadow-yellow-500/10 active:scale-[0.98] mt-6 border-none cursor-pointer relative z-10" 
+          <button 
+            className="w-full h-12 text-[0.7rem] font-black uppercase tracking-widest transition-all bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-[#070f08] rounded-xl shadow-lg shadow-yellow-500/10 active:scale-[0.98] mt-6 border-none cursor-pointer relative z-10 disabled:opacity-50 disabled:pointer-events-none" 
             type="submit" 
             disabled={isPending}
           >
             {isPending ? 'Autenticando...' : 'Entrar no Portal'}
-          </Button>
+          </button>
         </form>
       </div>
     </div>
   )
 }
-
