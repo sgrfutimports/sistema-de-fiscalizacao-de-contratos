@@ -40,14 +40,26 @@ function StyledSwitch({
   )
 }
 
-export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, papel: string }) {
+interface NovoRelatorioFormProps {
+  contratoId: string
+  papel: string
+  relatorioInicial?: any
+}
+
+export function NovoRelatorioForm({ contratoId, papel, relatorioInicial }: NovoRelatorioFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  const [fiscalizacaoRealizada, setFiscalizacaoRealizada] = useState(true)
-  const [servicoConforme, setServicoConforme] = useState(true)
-  const [documentacaoApresentada, setDocumentacaoApresentada] = useState(true)
+  const [fiscalizacaoRealizada, setFiscalizacaoRealizada] = useState(
+    relatorioInicial ? !!relatorioInicial.fiscalizacao_realizada : true
+  )
+  const [servicoConforme, setServicoConforme] = useState(
+    relatorioInicial ? !!relatorioInicial.servico_conforme : true
+  )
+  const [documentacaoApresentada, setDocumentacaoApresentada] = useState(
+    relatorioInicial ? !!relatorioInicial.documentacao_apresentada : true
+  )
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -57,6 +69,10 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
     // Add hidden fields
     formData.append('contrato_id', contratoId)
     formData.append('tipo_fiscal', papel)
+    
+    if (relatorioInicial) {
+      formData.append('relatorio_id', relatorioInicial.id)
+    }
     
     // Appending checkboxes using state-driven values
     formData.append('fiscalizacao_realizada', fiscalizacaoRealizada ? 'on' : 'off')
@@ -68,15 +84,15 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
       if (result?.error) {
         setError(result.error)
       } else {
-        toast.success('Relatório enviado com sucesso para análise!')
-        router.push('/dashboard/meus-contratos')
+        toast.success(relatorioInicial ? 'Relatório corrigido com sucesso!' : 'Relatório enviado com sucesso para análise!')
+        router.push('/dashboard/meus-relatorios')
       }
     })
   }
 
   const currentDate = new Date()
-  const defaultMes = (currentDate.getMonth() + 1).toString()
-  const defaultAno = currentDate.getFullYear().toString()
+  const defaultMes = relatorioInicial ? relatorioInicial.competencia_mes.toString() : (currentDate.getMonth() + 1).toString()
+  const defaultAno = relatorioInicial ? relatorioInicial.competencia_ano.toString() : currentDate.getFullYear().toString()
 
   const meses = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -89,7 +105,7 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
         <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
           <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
             <FileText className="h-5 w-5 text-yellow-500" />
-            Preencher Relatório Mensal ({papel})
+            {relatorioInicial ? 'Corrigir Relatório Devolvido' : 'Preencher Relatório Mensal'} ({papel})
           </CardTitle>
         </CardHeader>
         
@@ -177,6 +193,7 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
               <Textarea 
                 id="ocorrencias" 
                 name="ocorrencias" 
+                defaultValue={relatorioInicial?.ocorrencias || ''}
                 placeholder="Descreva detalhadamente quaisquer ocorrências negativas, faltas de serviço ou material. Deixe em branco se não houver."
                 className="min-h-[100px] bg-[#131924] border-[#2a3441] text-white focus:ring-yellow-500"
               />
@@ -187,6 +204,7 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
               <Textarea 
                 id="pendencias" 
                 name="pendencias" 
+                defaultValue={relatorioInicial?.pendencias || ''}
                 placeholder="Ex: Faltou entregar o termo de garantia."
                 className="min-h-[80px] bg-[#131924] border-[#2a3441] text-white focus:ring-yellow-500"
               />
@@ -197,6 +215,7 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
               <Textarea 
                 id="observacoes" 
                 name="observacoes" 
+                defaultValue={relatorioInicial?.observacoes || ''}
                 placeholder="Ex: Recomendo o pagamento integral da fatura referida."
                 className="min-h-[80px] bg-[#131924] border-[#2a3441] text-white focus:ring-yellow-500"
               />
@@ -207,7 +226,7 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
         <CardFooter className="bg-[#131924] border-t border-[#2a3441] py-4 flex justify-end gap-4">
           <Button type="button" variant="outline" onClick={() => router.back()} className="border-[#2a3441] text-gray-300 hover:bg-[#1b2331] hover:text-white">Cancelar</Button>
           <Button type="submit" disabled={isPending} className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold animate-pulse hover:animate-none">
-            {isPending ? 'Enviando...' : 'Assinar e Enviar Relatório'}
+            {isPending ? 'Enviando...' : 'Salvar e Resubmeter Relatório'}
           </Button>
         </CardFooter>
       </form>

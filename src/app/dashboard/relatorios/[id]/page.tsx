@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { AnaliseRelatorioForm } from '@/components/dashboard/analise-relatorio-form'
+import { NovoRelatorioForm } from '@/components/dashboard/novo-relatorio-form'
 
 export default async function DetalhesRelatorioPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -52,6 +53,8 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
     }
   }
 
+  const isDevolvidoEdicao = isOwner && relatorio.status === 'DEVOLVIDO'
+
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex flex-col gap-4">
@@ -61,7 +64,9 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
         </Link>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-800">Visualizar Relatório</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-800">
+              {isDevolvidoEdicao ? 'Corrigir Relatório Devolvido' : 'Visualizar Relatório'}
+            </h1>
             <p className="text-sm text-gray-500 mt-1 font-medium">
               Competência: <strong>{relatorio.competencia_mes.toString().padStart(2, '0')}/{relatorio.competencia_ano}</strong>
             </p>
@@ -72,129 +77,154 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
-          <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
-            <CardTitle className="text-base font-bold text-white">Dados do Contrato</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-4">
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Número</Label>
-              <p className="font-extrabold text-white text-lg mt-1">{(relatorio.contrato as any)?.numero_contrato}</p>
-            </div>
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Empresa</Label>
-              <p className="font-bold text-white mt-1">{(relatorio.contrato as any)?.empresa}</p>
-            </div>
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Objeto</Label>
-              <p className="text-sm text-gray-300 mt-1">{(relatorio.contrato as any)?.objeto}</p>
-            </div>
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Valor Mensal / Total</Label>
-              <p className="font-bold text-white mt-1">
-                {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format((relatorio.contrato as any)?.valor || 0)}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
-          <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
-            <CardTitle className="text-base font-bold text-white">Responsável pela Emissão</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 space-y-4">
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Fiscal Responsável</Label>
-              <p className="font-bold text-white text-lg mt-1">{(relatorio.fiscal as any)?.nome}</p>
-            </div>
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Papel</Label>
-              <p className="font-bold text-white mt-1">{relatorio.tipo_fiscal}</p>
-            </div>
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Contato</Label>
-              <p className="text-sm text-gray-300 mt-1">{(relatorio.fiscal as any)?.telefone} • {(relatorio.fiscal as any)?.email}</p>
-            </div>
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Data de Submissão</Label>
-              <p className="font-bold text-white mt-1">{new Date(relatorio.data_envio).toLocaleString('pt-BR')}</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
-        <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
-          <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
-            <FileText className="h-5 w-5 text-yellow-500" />
-            Itens Avaliados pelo Fiscal
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="p-6 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className={`p-4 rounded-lg border ${relatorio.fiscalizacao_realizada ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-              <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Vistoria Realizada?</Label>
-              <div className="flex items-center gap-2 font-bold text-white">
-                {relatorio.fiscalizacao_realizada ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
-                {relatorio.fiscalizacao_realizada ? 'Sim' : 'Não'}
-              </div>
-            </div>
-            <div className={`p-4 rounded-lg border ${relatorio.servico_conforme ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-              <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Serviço Conforme?</Label>
-              <div className="flex items-center gap-2 font-bold text-white">
-                {relatorio.servico_conforme ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
-                {relatorio.servico_conforme ? 'Sim' : 'Não'}
-              </div>
-            </div>
-            <div className={`p-4 rounded-lg border ${relatorio.documentacao_apresentada ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
-              <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Documentação Regular?</Label>
-              <div className="flex items-center gap-2 font-bold text-white">
-                {relatorio.documentacao_apresentada ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
-                {relatorio.documentacao_apresentada ? 'Sim' : 'Não'}
-              </div>
-            </div>
+      {/* Alerta de motivo da devolução se o relatório foi devolvido */}
+      {relatorio.status === 'DEVOLVIDO' && relatorio.parecer_administrador && (
+        <div className="bg-red-500/10 border border-red-500/30 text-red-400 p-5 rounded-xl flex flex-col gap-3 shadow-md">
+          <div className="flex items-center gap-2 font-bold text-sm uppercase tracking-wider text-red-400">
+            <AlertTriangle className="h-5 w-5 text-red-500" />
+            Motivo da Devolução pelo Gestor de Contratos
           </div>
-
-          <div className="space-y-4 pt-4 border-t border-[#2a3441]">
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Ocorrências / Faltas Anotadas</Label>
-              <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md mt-1 min-h-[80px] whitespace-pre-wrap text-white text-sm">
-                {relatorio.ocorrencias || <span className="text-gray-500 italic">Nenhuma ocorrência relatada.</span>}
-              </div>
-            </div>
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Pendências da Empresa</Label>
-              <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md mt-1 min-h-[80px] whitespace-pre-wrap text-white text-sm">
-                {relatorio.pendencias || <span className="text-gray-500 italic">Nenhuma pendência relatada.</span>}
-              </div>
-            </div>
-            <div>
-              <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Observações Adicionais</Label>
-              <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md mt-1 min-h-[80px] whitespace-pre-wrap text-white text-sm">
-                {relatorio.observacoes || <span className="text-gray-500 italic">Nenhuma observação.</span>}
-              </div>
-            </div>
+          <div className="text-sm bg-[#131924]/60 p-4 rounded border border-red-500/20 whitespace-pre-wrap text-gray-300 font-medium">
+            {relatorio.parecer_administrador}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      )}
 
-      {/* Formulário de Parecer do Admin */}
-      {isAdmin ? (
-        <AnaliseRelatorioForm relatorioId={relatorio.id} statusAtual={relatorio.status} parecerAtual={relatorio.parecer_administrador} />
+      {isDevolvidoEdicao ? (
+        /* Se o relatório estiver devolvido e for o dono, renderiza o formulário de edição pré-preenchido */
+        <NovoRelatorioForm 
+          contratoId={relatorio.contrato_id} 
+          papel={relatorio.tipo_fiscal} 
+          relatorioInicial={relatorio} 
+        />
       ) : (
-        relatorio.parecer_administrador && (
+        /* Caso contrário, renderiza a visualização estática tradicional (Leitura apenas) */
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
+              <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
+                <CardTitle className="text-base font-bold text-white">Dados do Contrato</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Número</Label>
+                  <p className="font-extrabold text-white text-lg mt-1">{(relatorio.contrato as any)?.numero_contrato}</p>
+                </div>
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Empresa</Label>
+                  <p className="font-bold text-white mt-1">{(relatorio.contrato as any)?.empresa}</p>
+                </div>
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Objeto</Label>
+                  <p className="text-sm text-gray-300 mt-1">{(relatorio.contrato as any)?.objeto}</p>
+                </div>
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Valor Mensal / Total</Label>
+                  <p className="font-bold text-white mt-1">
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format((relatorio.contrato as any)?.valor || 0)}
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
+              <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
+                <CardTitle className="text-base font-bold text-white">Responsável pela Emissão</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Fiscal Responsável</Label>
+                  <p className="font-bold text-white text-lg mt-1">{(relatorio.fiscal as any)?.nome}</p>
+                </div>
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Papel</Label>
+                  <p className="font-bold text-white mt-1">{relatorio.tipo_fiscal}</p>
+                </div>
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Contato</Label>
+                  <p className="text-sm text-gray-300 mt-1">{(relatorio.fiscal as any)?.telefone} • {(relatorio.fiscal as any)?.email}</p>
+                </div>
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Data de Submissão</Label>
+                  <p className="font-bold text-white mt-1">{new Date(relatorio.data_envio).toLocaleString('pt-BR')}</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
           <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
             <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
-              <CardTitle className="text-base font-bold text-white">Parecer do Ordenador / Gestor</CardTitle>
+              <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
+                <FileText className="h-5 w-5 text-yellow-500" />
+                Itens Avaliados pelo Fiscal
+              </CardTitle>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md whitespace-pre-wrap text-white text-sm">
-                {relatorio.parecer_administrador}
+            <CardContent className="p-6 space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className={`p-4 rounded-lg border ${relatorio.fiscalizacao_realizada ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                  <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Vistoria Realizada?</Label>
+                  <div className="flex items-center gap-2 font-bold text-white">
+                    {relatorio.fiscalizacao_realizada ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
+                    {relatorio.fiscalizacao_realizada ? 'Sim' : 'Não'}
+                  </div>
+                </div>
+                <div className={`p-4 rounded-lg border ${relatorio.servico_conforme ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                  <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Serviço Conforme?</Label>
+                  <div className="flex items-center gap-2 font-bold text-white">
+                    {relatorio.servico_conforme ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
+                    {relatorio.servico_conforme ? 'Sim' : 'Não'}
+                  </div>
+                </div>
+                <div className={`p-4 rounded-lg border ${relatorio.documentacao_apresentada ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
+                  <Label className="text-gray-400 block mb-2 font-bold text-xs uppercase tracking-wider">Documentação Regular?</Label>
+                  <div className="flex items-center gap-2 font-bold text-white">
+                    {relatorio.documentacao_apresentada ? <CheckCircle2 className="text-green-500 h-5 w-5" /> : <AlertTriangle className="text-red-500 h-5 w-5" />}
+                    {relatorio.documentacao_apresentada ? 'Sim' : 'Não'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-[#2a3441]">
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Ocorrências / Faltas Anotadas</Label>
+                  <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md mt-1 min-h-[80px] whitespace-pre-wrap text-white text-sm">
+                    {relatorio.ocorrencias || <span className="text-gray-500 italic">Nenhuma ocorrência relatada.</span>}
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Pendências da Empresa</Label>
+                  <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md mt-1 min-h-[80px] whitespace-pre-wrap text-white text-sm">
+                    {relatorio.pendencias || <span className="text-gray-500 italic">Nenhuma pendência relatada.</span>}
+                  </div>
+                </div>
+                <div>
+                  <Label className="text-gray-400 font-bold text-xs uppercase tracking-wider">Observações Adicionais</Label>
+                  <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md mt-1 min-h-[80px] whitespace-pre-wrap text-white text-sm">
+                    {relatorio.observacoes || <span className="text-gray-500 italic">Nenhuma observação.</span>}
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
-        )
+
+          {/* Formulário de Parecer do Admin */}
+          {isAdmin ? (
+            <AnaliseRelatorioForm relatorioId={relatorio.id} statusAtual={relatorio.status} parecerAtual={relatorio.parecer_administrador} />
+          ) : (
+            relatorio.parecer_administrador && (
+              <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
+                <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
+                  <CardTitle className="text-base font-bold text-white">Parecer do Ordenador / Gestor</CardTitle>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md whitespace-pre-wrap text-white text-sm">
+                    {relatorio.parecer_administrador}
+                  </div>
+                </CardContent>
+              </Card>
+            )
+          )}
+        </>
       )}
     </div>
   )

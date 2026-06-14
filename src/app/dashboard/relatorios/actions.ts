@@ -21,39 +21,69 @@ export async function submitRelatorio(formData: FormData) {
   const pendencias = formData.get('pendencias') as string
   const observacoes = formData.get('observacoes') as string
 
+  const relatorio_id = formData.get('relatorio_id') as string
+
   const supabaseAdmin = createAdminClient()
 
   // Verifica se já existe relatório para este contrato nesta competência
-  const { data: existente } = await supabaseAdmin
+  const query = supabaseAdmin
     .from('relatorios')
     .select('id')
     .eq('contrato_id', contrato_id)
     .eq('competencia_mes', competencia_mes)
     .eq('competencia_ano', competencia_ano)
-    .single()
+
+  if (relatorio_id) {
+    query.neq('id', relatorio_id)
+  }
+
+  const { data: existente } = await query.maybeSingle()
 
   if (existente) {
     return { error: 'Já existe um relatório submetido para este contrato neste mês/ano.' }
   }
 
-  const { error: insertError } = await supabaseAdmin.from('relatorios').insert({
-    contrato_id,
-    competencia_mes,
-    competencia_ano,
-    fiscal_id: user.id,
-    tipo_fiscal,
-    fiscalizacao_realizada,
-    servico_conforme,
-    documentacao_apresentada,
-    ocorrencias,
-    pendencias,
-    observacoes,
-    status: 'ENVIADO'
-  })
+  if (relatorio_id) {
+    const { error: updateError } = await supabaseAdmin
+      .from('relatorios')
+      .update({
+        competencia_mes,
+        competencia_ano,
+        fiscalizacao_realizada,
+        servico_conforme,
+        documentacao_apresentada,
+        ocorrencias,
+        pendencias,
+        observacoes,
+        status: 'ENVIADO',
+        data_envio: new Date().toISOString()
+      })
+      .eq('id', relatorio_id)
 
-  if (insertError) {
-    console.error('Erro ao inserir relatório:', insertError)
-    return { error: 'Erro ao enviar relatório. Tente novamente.' }
+    if (updateError) {
+      console.error('Erro ao atualizar relatório:', updateError)
+      return { error: 'Erro ao atualizar relatório. Tente novamente.' }
+    }
+  } else {
+    const { error: insertError } = await supabaseAdmin.from('relatorios').insert({
+      contrato_id,
+      competencia_mes,
+      competencia_ano,
+      fiscal_id: user.id,
+      tipo_fiscal,
+      fiscalizacao_realizada,
+      servico_conforme,
+      documentacao_apresentada,
+      ocorrencias,
+      pendencias,
+      observacoes,
+      status: 'ENVIADO'
+    })
+
+    if (insertError) {
+      console.error('Erro ao inserir relatório:', insertError)
+      return { error: 'Erro ao enviar relatório. Tente novamente.' }
+    }
   }
 
   // Registra no Log via Admin Client
@@ -61,13 +91,18 @@ export async function submitRelatorio(formData: FormData) {
     usuario: user.id,
     cpf: 'SISTEMA', // Podemos refinar depois
     perfil: 'FISCAL',
-    operacao: 'ENVIO_RELATORIO',
-    descricao: `Relatório da competência ${competencia_mes}/${competencia_ano} submetido para o contrato.`
+    operacao: relatorio_id ? 'ATUALIZACAO_RELATORIO' : 'ENVIO_RELATORIO',
+    descricao: relatorio_id 
+      ? `Relatório da competência ${competencia_mes}/${competencia_ano} atualizado e resubmetido.`
+      : `Relatório da competência ${competencia_mes}/${competencia_ano} submetido para o contrato.`
   })
 
   revalidatePath('/dashboard/meus-contratos')
   revalidatePath('/dashboard/relatorios')
   revalidatePath('/dashboard/meus-relatorios')
+  if (relatorio_id) {
+    revalidatePath(`/dashboard/relatorios/${relatorio_id}`)
+  }
 
   return { success: true }
 }
