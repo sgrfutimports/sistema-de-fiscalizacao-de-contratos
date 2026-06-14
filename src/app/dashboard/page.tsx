@@ -104,6 +104,28 @@ export default async function DashboardPage() {
     }
   }
 
+  // 7. Buscar administrador para suporte/whatsapp do fiscal
+  let adminSuporte: any = null
+  if (!isAdmin) {
+    const { data: admins } = await supabaseAdmin
+      .from('users')
+      .select('nome, posto_graduacao, nome_guerra, telefone')
+      .eq('perfil', 'ADMIN')
+      .eq('ativo', true)
+      .limit(1)
+    adminSuporte = admins && admins.length > 0 ? admins[0] : null
+  }
+
+  const getWhatsappLink = (telefone: string | null) => {
+    let limpo = (telefone || '').replace(/\D/g, '')
+    if (!limpo || limpo === '00000000000' || limpo.length < 10) {
+      limpo = '87999334728' // Fallback
+    }
+    const fone = limpo.startsWith('55') ? limpo : `55${limpo}`
+    const texto = encodeURIComponent(`Olá, sou Fiscal de Contrato do 71º BI Mtz e estou com uma dúvida no Sistema de Fiscalização.`)
+    return `https://wa.me/${fone}?text=${texto}`
+  }
+
   return (
     <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
       {/* Modal de leitura obrigatória para Fiscais */}
@@ -237,6 +259,33 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Banner de Suporte WhatsApp para Fiscais */}
+      {!isAdmin && adminSuporte && (
+        <div className="bg-[#1b2331] rounded-2xl p-6 border border-[#2a3441] shadow-lg flex flex-col md:flex-row justify-between items-center gap-6 mt-8">
+          <div className="flex items-center gap-4 text-left">
+            <div className="h-12 w-12 rounded-xl bg-green-500/10 flex items-center justify-center border border-green-500/20 text-green-400 shrink-0">
+              <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.97-1.861-1.868-4.339-2.897-6.97-2.899-5.437 0-9.862 4.37-9.866 9.801-.001 1.762.463 3.484 1.344 5.013l-.974 3.559 3.656-.947zm12.308-3.693c-.27-.133-1.597-.778-1.844-.867-.248-.09-.429-.133-.61.133-.18.267-.698.867-.856 1.047-.158.18-.316.2-.586.067-.27-.133-1.14-.413-2.17-1.32-.803-.707-1.346-1.58-1.504-1.846-.158-.267-.017-.411.118-.544.121-.12.27-.312.405-.468.135-.156.18-.267.27-.444.09-.178.045-.334-.023-.468-.067-.133-.61-1.449-.836-1.984-.22-.524-.482-.452-.61-.452-.124-.003-.266-.003-.408-.003-.143 0-.376.053-.572.264-.196.211-.749.723-.749 1.762 0 1.04.766 2.042.872 2.18.106.138 1.506 2.274 3.649 3.186.51.217.907.348 1.217.444.512.161.977.138 1.345.084.41-.06 1.597-.644 1.821-1.265.224-.62.224-1.15.158-1.265-.067-.116-.248-.198-.518-.332z" />
+              </svg>
+            </div>
+            <div className="flex flex-col">
+              <h4 className="text-sm font-bold text-white uppercase tracking-wider">Suporte e Ajuda Contratual</h4>
+              <p className="text-xs text-gray-400 mt-0.5 leading-relaxed">
+                Dúvidas sobre o preenchimento ou prazos de fiscalização? Entre em contato com o Gestor de Contratos / Fiscal Administrativo: <strong className="text-yellow-500 font-extrabold">{adminSuporte.posto_graduacao} {adminSuporte.nome_guerra}</strong>.
+              </p>
+            </div>
+          </div>
+          <a 
+            href={getWhatsappLink(adminSuporte.telefone)} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white px-5 py-3 rounded-xl font-extrabold text-xs transition-colors shadow-lg shadow-[#25D366]/10 uppercase tracking-wider whitespace-nowrap"
+          >
+            Falar no WhatsApp
+          </a>
+        </div>
+      )}
     </div>
   )
 }
