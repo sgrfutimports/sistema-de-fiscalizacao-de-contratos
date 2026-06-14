@@ -6,7 +6,8 @@ import { buttonVariants } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
-export default async function NovoRelatorioPage({ params }: { params: { contrato_id: string } }) {
+export default async function NovoRelatorioPage({ params }: { params: Promise<{ contrato_id: string }> }) {
+  const { contrato_id } = await params
   const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
@@ -17,7 +18,7 @@ export default async function NovoRelatorioPage({ params }: { params: { contrato
   const { data: contrato } = await supabaseAdmin
     .from('contratos')
     .select('*, titular:users!fiscal_titular_id(nome), substituto:users!fiscal_substituto_id(nome)')
-    .eq('id', params.contrato_id)
+    .eq('id', contrato_id)
     .single()
 
   if (!contrato) {
