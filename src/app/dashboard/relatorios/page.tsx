@@ -106,6 +106,17 @@ export default async function RelatoriosPage({
     return `${meses[mes - 1]}/${ano}`
   }
 
+  function formatStatusLabel(status: string) {
+    switch (status) {
+      case 'ENVIADO': return 'Aguardando'
+      case 'EM_ANALISE': return 'Em Análise'
+      case 'APROVADO': return 'Aprovado'
+      case 'DEVOLVIDO': return 'Devolvido'
+      case 'ARQUIVADO': return 'Arquivado'
+      default: return status
+    }
+  }
+
   const formatCPF = (cpf: string) => {
     if (!cpf) return ''
     return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4')
@@ -183,7 +194,7 @@ export default async function RelatoriosPage({
                         {rel.status === 'DEVOLVIDO' && <div className="h-2 w-2 rounded-full bg-red-500"></div>}
                         
                         <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${getStatusStyle(rel.status)}`}>
-                          {rel.status.replace('_', ' ')}
+                          {formatStatusLabel(rel.status)}
                         </span>
                       </div>
                     </td>
