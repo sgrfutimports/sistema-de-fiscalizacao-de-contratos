@@ -52,6 +52,17 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
     }
   }
 
+  function formatStatusLabel(status: string) {
+    switch (status) {
+      case 'ENVIADO': return 'Aguardando'
+      case 'EM_ANALISE': return 'Em Análise'
+      case 'APROVADO': return 'Aprovado'
+      case 'DEVOLVIDO': return 'Devolvido'
+      case 'ARQUIVADO': return 'Arquivado'
+      default: return status
+    }
+  }
+
   const isDevolvidoEdicao = isOwner && relatorio.status === 'DEVOLVIDO'
 
   return (
@@ -72,7 +83,7 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
           </div>
           <div className="flex items-center gap-3">
             <span className={`text-xs font-bold px-3 py-1.5 rounded border uppercase tracking-wider ${getStatusColor(relatorio.status)}`}>
-              {relatorio.status.replace('_', ' ')}
+              {formatStatusLabel(relatorio.status)}
             </span>
             {relatorio.status === 'APROVADO' && (
               <Link 
