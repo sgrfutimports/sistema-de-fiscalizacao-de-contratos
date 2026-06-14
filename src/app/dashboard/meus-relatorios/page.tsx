@@ -1,20 +1,19 @@
 import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Badge } from '@/components/ui/badge'
 import { FileText, Eye } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { buttonVariants } from '@/components/ui/button'
 
 export default async function MeusRelatoriosPage() {
   const supabase = await createClient()
+  const supabaseAdmin = createAdminClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
 
-  // Busca relatórios emitidos por este fiscal
-  const { data: relatorios } = await supabase
+  // Busca relatórios emitidos por este fiscal usando admin client para contornar RLS
+  const { data: relatorios } = await supabaseAdmin
     .from('relatorios')
     .select(`
       *,
@@ -22,17 +21,6 @@ export default async function MeusRelatoriosPage() {
     `)
     .eq('fiscal_id', user.id)
     .order('created_at', { ascending: false })
-
-  function getStatusColor(status: string) {
-    switch (status) {
-      case 'APROVADO': return 'bg-green-600'
-      case 'EM_ANALISE': return 'bg-blue-600'
-      case 'ENVIADO': return 'bg-yellow-600 text-yellow-950'
-      case 'DEVOLVIDO': return 'bg-red-600'
-      case 'ARQUIVADO': return 'bg-gray-600'
-      default: return ''
-    }
-  }
 
   function formatCompetencia(mes: number, ano: number) {
     const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
@@ -43,69 +31,79 @@ export default async function MeusRelatoriosPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Meus Relatórios</h1>
-          <p className="text-muted-foreground mt-1">
+          <h1 className="text-3xl font-bold tracking-tight text-gray-800">Meus Relatórios</h1>
+          <p className="text-sm text-gray-500 mt-1 font-medium">
             Acompanhe o status de aprovação dos seus relatórios mensais.
           </p>
         </div>
       </div>
 
-      <Card className="shadow-sm">
-        <CardHeader className="pb-3 border-b">
-          <CardTitle className="text-lg flex items-center gap-2">
-            <FileText className="h-5 w-5 text-primary" />
+      <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
+        <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
+          <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
+            <FileText className="h-5 w-5 text-yellow-500" />
             Meus Envios Recentes
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-muted/50 hover:bg-muted/50">
-                <TableHead>Contrato</TableHead>
-                <TableHead>Competência</TableHead>
-                <TableHead>Data de Envio</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-right">Visualizar</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {!relatorios || relatorios.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center h-24 text-muted-foreground">
-                    Você ainda não enviou nenhum relatório.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                relatorios.map((rel) => (
-                  <TableRow key={rel.id}>
-                    <TableCell>
-                      <div className="font-medium">{(rel.contrato as any)?.numero_contrato}</div>
-                      <div className="text-xs text-muted-foreground truncate max-w-[200px]">
-                        {(rel.contrato as any)?.empresa}
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {formatCompetencia(rel.competencia_mes, rel.competencia_ano)}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(rel.data_envio).toLocaleDateString('pt-BR')}
-                    </TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(rel.status)}>
-                        {rel.status.replace('_', ' ')}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-right">
-                      {/* Por enquanto, o link usa a mesma tela de detalhes ou uma exclusiva, vamos usar a mesma, mas se RLS bloquear, o AdminClient ajudou */}
-                      <Link href={`/dashboard/relatorios/${rel.id}`} className={buttonVariants({ variant: "ghost", size: "icon" })} title="Ver Parecer">
-                        <Eye className="h-4 w-4" />
-                      </Link>
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-sm text-gray-300">
+              <thead className="bg-[#131924] text-xs uppercase font-bold tracking-wider text-gray-400">
+                <tr>
+                  <th className="px-6 py-4">Contrato</th>
+                  <th className="px-6 py-4">Competência</th>
+                  <th className="px-6 py-4">Data de Envio</th>
+                  <th className="px-6 py-4 text-center">Status</th>
+                  <th className="px-6 py-4 text-center">Visualizar</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#2a3441] bg-[#1b2331]">
+                {!relatorios || relatorios.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="text-center py-12 text-gray-400 font-medium">
+                      Você ainda não enviou nenhum relatório.
+                    </td>
+                  </tr>
+                ) : (
+                  relatorios.map((rel) => (
+                    <tr key={rel.id} className="hover:bg-[#202a3a] transition-colors">
+                      <td className="px-6 py-4 font-bold text-white text-sm">
+                        <div className="font-extrabold">{String((rel.contrato as any)?.numero_contrato || '')}</div>
+                        <div className="text-xs text-gray-400 mt-0.5 truncate max-w-[200px]">
+                          {String((rel.contrato as any)?.empresa || '')}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 font-bold text-white text-sm">
+                        {formatCompetencia(rel.competencia_mes, rel.competencia_ano)}
+                      </td>
+                      <td className="px-6 py-4 text-gray-300 text-sm">
+                        {rel.data_envio ? new Date(rel.data_envio).toLocaleDateString('pt-BR') : ''}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <span className={`text-[0.65rem] font-bold px-2.5 py-1 rounded border uppercase tracking-wider ${
+                          rel.status === 'APROVADO' ? 'border-green-500 text-green-400 bg-green-500/10' :
+                          rel.status === 'DEVOLVIDO' ? 'border-red-500 text-red-400 bg-red-500/10' :
+                          rel.status === 'ENVIADO' ? 'border-yellow-500 text-yellow-400 bg-yellow-500/10' :
+                          'border-blue-500 text-blue-400 bg-blue-500/10'
+                        }`}>
+                          {rel.status.replace('_', ' ')}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <Link 
+                          href={`/dashboard/relatorios/${rel.id}`} 
+                          className="inline-flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700/50 p-1.5 rounded-lg transition-colors"
+                          title="Ver Detalhes"
+                        >
+                          <Eye className="h-4.5 w-4.5" />
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </CardContent>
       </Card>
     </div>
