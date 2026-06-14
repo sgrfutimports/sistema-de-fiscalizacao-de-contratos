@@ -175,8 +175,8 @@ export function NovoContratoForm({ fiscais }: { fiscais: Fiscal[] }) {
           </div>
 
         </CardContent>
-        <CardFooter className="flex justify-between bg-muted/20 pt-6">
-          <Button type="button" variant="outline" onClick={() => router.back()}>
+        <CardFooter className="flex justify-between bg-muted/20 pt-6 gap-2">
+          <Button type="button" variant="ghost" onClick={() => router.back()} className="border border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-gray-900">
             Voltar
           </Button>
           <Button type="submit" disabled={isPending}>

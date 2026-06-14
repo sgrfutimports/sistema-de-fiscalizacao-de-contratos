@@ -167,8 +167,8 @@ export function EditarUsuarioDialog({ usuario }: EditarUsuarioDialogProps) {
             </div>
           </div>
 
-          <DialogFooter className="pt-4">
-            <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancelar</Button>
+          <DialogFooter className="pt-4 gap-2">
+            <Button type="button" variant="ghost" onClick={() => setOpen(false)} className="border border-[#2a3441] text-gray-300 hover:bg-[#1b2331] hover:text-white">Cancelar</Button>
             <Button type="submit" disabled={isPending}>
               {isPending ? 'Salvando...' : 'Salvar Alterações'}
             </Button>
