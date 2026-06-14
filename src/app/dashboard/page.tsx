@@ -130,7 +130,7 @@ export default async function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-in-out">
+    <div className="space-y-8">
       {/* Modal de leitura obrigatória para Fiscais */}
       <ComunicadosModal comunicados={unreadComunicados} />
 

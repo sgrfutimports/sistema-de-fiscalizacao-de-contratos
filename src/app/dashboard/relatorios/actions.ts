@@ -4,24 +4,32 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 
-export async function submitRelatorio(formData: FormData) {
+export async function submitRelatorio(payload: {
+  contrato_id: string
+  competencia_mes: number
+  competencia_ano: number
+  tipo_fiscal: string
+  fiscalizacao_realizada: boolean
+  servico_conforme: boolean
+  documentacao_apresentada: boolean
+  ocorrencias: string
+  pendencias: string
+  observacoes: string
+  verificacoes?: Record<string, any>
+  documentos?: Record<string, any>
+  relatorio_id?: string
+}) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Não autorizado.' }
 
-  const contrato_id = formData.get('contrato_id') as string
-  const competencia_mes = parseInt(formData.get('competencia_mes') as string)
-  const competencia_ano = parseInt(formData.get('competencia_ano') as string)
-  const tipo_fiscal = formData.get('tipo_fiscal') as string
-  const fiscalizacao_realizada = formData.get('fiscalizacao_realizada') === 'on'
-  const servico_conforme = formData.get('servico_conforme') === 'on'
-  const documentacao_apresentada = formData.get('documentacao_apresentada') === 'on'
-  const ocorrencias = formData.get('ocorrencias') as string
-  const pendencias = formData.get('pendencias') as string
-  const observacoes = formData.get('observacoes') as string
-
-  const relatorio_id = formData.get('relatorio_id') as string
+  const {
+    contrato_id, competencia_mes, competencia_ano, tipo_fiscal,
+    fiscalizacao_realizada, servico_conforme, documentacao_apresentada,
+    ocorrencias, pendencias, observacoes, verificacoes, documentos,
+    relatorio_id,
+  } = payload
 
   const supabaseAdmin = createAdminClient()
 
@@ -43,6 +51,11 @@ export async function submitRelatorio(formData: FormData) {
     return { error: 'Já existe um relatório submetido para este contrato neste mês/ano.' }
   }
 
+  const jsonbFields = {
+    ...(verificacoes !== undefined ? { verificacoes } : {}),
+    ...(documentos !== undefined ? { documentos } : {}),
+  }
+
   if (relatorio_id) {
     const { error: updateError } = await supabaseAdmin
       .from('relatorios')
@@ -55,6 +68,7 @@ export async function submitRelatorio(formData: FormData) {
         ocorrencias,
         pendencias,
         observacoes,
+        ...jsonbFields,
         status: 'ENVIADO',
         data_envio: new Date().toISOString()
       })
@@ -77,6 +91,7 @@ export async function submitRelatorio(formData: FormData) {
       ocorrencias,
       pendencias,
       observacoes,
+      ...jsonbFields,
       status: 'ENVIADO'
     })
 
@@ -89,10 +104,10 @@ export async function submitRelatorio(formData: FormData) {
   // Registra no Log via Admin Client
   await supabaseAdmin.from('logs').insert({
     usuario: user.id,
-    cpf: 'SISTEMA', // Podemos refinar depois
+    cpf: 'SISTEMA',
     perfil: 'FISCAL',
     operacao: relatorio_id ? 'ATUALIZACAO_RELATORIO' : 'ENVIO_RELATORIO',
-    descricao: relatorio_id 
+    descricao: relatorio_id
       ? `Relatório da competência ${competencia_mes}/${competencia_ano} atualizado e resubmetido.`
       : `Relatório da competência ${competencia_mes}/${competencia_ano} submetido para o contrato.`
   })
@@ -106,6 +121,7 @@ export async function submitRelatorio(formData: FormData) {
 
   return { success: true }
 }
+
 
 export async function analisarRelatorio(id: string, acao: 'APROVAR' | 'DEVOLVER', parecer: string) {
   const supabase = await createClient()
@@ -137,7 +153,100 @@ export async function analisarRelatorio(id: string, acao: 'APROVAR' | 'DEVOLVER'
   }
 
   revalidatePath('/dashboard/relatorios')
+  revalidatePath('/dashboard/fila')
   revalidatePath(`/dashboard/relatorios/${id}`)
+
+  return { success: true }
+}
+
+export async function submitRelatoriosUnificados(
+  competencia_mes: number,
+  competencia_ano: number,
+  relatorios: Array<{
+    contrato_id: string
+    tipo_fiscal: string
+    fiscalizacao_realizada: boolean
+    servico_conforme: boolean
+    documentacao_apresentada: boolean
+    ocorrencias: string
+    pendencias: string
+    observacoes: string
+    verificacoes?: Record<string, any>
+    documentos?: Record<string, any>
+  }>
+) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const supabaseAdmin = createAdminClient()
+
+  for (const rel of relatorios) {
+    const { data: existente } = await supabaseAdmin
+      .from('relatorios')
+      .select('id')
+      .eq('contrato_id', rel.contrato_id)
+      .eq('competencia_mes', competencia_mes)
+      .eq('competencia_ano', competencia_ano)
+      .maybeSingle()
+
+    if (existente) {
+      const { error: updateError } = await supabaseAdmin
+        .from('relatorios')
+        .update({
+          fiscalizacao_realizada: rel.fiscalizacao_realizada,
+          servico_conforme: rel.servico_conforme,
+          documentacao_apresentada: rel.documentacao_apresentada,
+          ocorrencias: rel.ocorrencias,
+          pendencias: rel.pendencias,
+          observacoes: rel.observacoes,
+          ...(rel.verificacoes !== undefined ? { verificacoes: rel.verificacoes } : {}),
+          ...(rel.documentos !== undefined ? { documentos: rel.documentos } : {}),
+          status: 'ENVIADO',
+          data_envio: new Date().toISOString()
+        })
+        .eq('id', existente.id)
+
+      if (updateError) {
+        console.error('Erro ao atualizar relatório unificado:', updateError)
+        return { error: `Erro ao atualizar o relatório do contrato.` }
+      }
+    } else {
+      const { error: insertError } = await supabaseAdmin.from('relatorios').insert({
+        contrato_id: rel.contrato_id,
+        competencia_mes,
+        competencia_ano,
+        fiscal_id: user.id,
+        tipo_fiscal: rel.tipo_fiscal,
+        fiscalizacao_realizada: rel.fiscalizacao_realizada,
+        servico_conforme: rel.servico_conforme,
+        documentacao_apresentada: rel.documentacao_apresentada,
+        ocorrencias: rel.ocorrencias,
+        pendencias: rel.pendencias,
+        observacoes: rel.observacoes,
+        ...(rel.verificacoes !== undefined ? { verificacoes: rel.verificacoes } : {}),
+        ...(rel.documentos !== undefined ? { documentos: rel.documentos } : {}),
+        status: 'ENVIADO'
+      })
+
+      if (insertError) {
+        console.error('Erro ao inserir relatório unificado:', insertError)
+        return { error: `Erro ao enviar o relatório do contrato.` }
+      }
+    }
+  }
+
+  await supabaseAdmin.from('logs').insert({
+    usuario: user.id,
+    cpf: 'SISTEMA',
+    perfil: 'FISCAL',
+    operacao: 'ENVIO_RELATORIO_UNIFICADO',
+    descricao: `Relatório unificado enviado para o período ${competencia_mes}/${competencia_ano} contendo ${relatorios.length} contratos.`
+  })
+
+  revalidatePath('/dashboard/meus-contratos')
+  revalidatePath('/dashboard/relatorios')
+  revalidatePath('/dashboard/meus-relatorios')
 
   return { success: true }
 }

@@ -32,7 +32,7 @@ export default async function NovoRelatorioPage({ params }: { params: Promise<{ 
   else redirect('/dashboard/meus-contratos')
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6 max-w-5xl mx-auto">
       <div className="flex flex-col gap-4">
         <Link href="/dashboard/meus-contratos" className={buttonVariants({ variant: "ghost", className: "w-fit -ml-4" })}>
           <ArrowLeft className="mr-2 h-4 w-4" />
@@ -46,7 +46,14 @@ export default async function NovoRelatorioPage({ params }: { params: Promise<{ 
         </div>
       </div>
 
-      <NovoRelatorioForm contratoId={contrato.id} papel={papel} />
+      <NovoRelatorioForm
+        contratoId={contrato.id}
+        papel={papel}
+        numeroContrato={contrato.numero_contrato}
+        empresa={contrato.empresa}
+        objeto={contrato.objeto}
+      />
     </div>
   )
 }
+

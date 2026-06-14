@@ -6,236 +6,374 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
-import { FileText, CheckCircle2, AlertTriangle } from 'lucide-react'
+import {
+  Building, Briefcase, AlertTriangle, CheckSquare,
+  FileText, CreditCard, Banknote, Settings, Paperclip
+} from 'lucide-react'
 
-// Native, ultra-reliable styled switch component with clear visual status
-function StyledSwitch({ 
-  id, 
-  checked, 
-  onChange 
-}: { 
-  id: string; 
-  checked: boolean; 
-  onChange: (checked: boolean) => void 
-}) {
+// ─── Primitivos compartilhados ────────────────────────────────────────────────
+
+function StyledSwitch({
+  id, checked, onChange,
+}: { id: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <div className="flex items-center gap-3">
       <span className={`text-xs font-black uppercase tracking-wider transition-colors duration-200 ${checked ? 'text-green-400' : 'text-red-400'}`}>
         {checked ? 'Sim' : 'Não'}
       </span>
       <label className="relative inline-flex items-center cursor-pointer select-none">
-        <input 
-          type="checkbox" 
-          id={id} 
-          checked={checked} 
-          onChange={(e) => onChange(e.target.checked)} 
-          className="sr-only peer"
-        />
-        <div className="w-11 h-6 bg-gray-600/60 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 border border-[#3f526b]"></div>
+        <input type="checkbox" id={id} checked={checked}
+          onChange={(e) => onChange(e.target.checked)} className="sr-only peer" />
+        <div className="w-11 h-6 bg-gray-600/60 peer-focus:outline-none rounded-full peer
+          peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px]
+          after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all
+          peer-checked:bg-green-600 border border-[#3f526b]" />
       </label>
     </div>
   )
 }
 
+function BlocoHeader({ icon: Icon, title, cor }: { icon: any; title: string; cor: string }) {
+  return (
+    <div className={`flex items-center gap-2 mb-4 pb-2 border-b ${cor}`}>
+      <Icon className="h-4 w-4" />
+      <h4 className="font-black text-xs uppercase tracking-wider">{title}</h4>
+    </div>
+  )
+}
+
+function CheckRow({
+  label, desc, id, checked, onChange,
+}: { label: string; desc?: string; id: string; checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-2.5 border-b border-[#2a3441]/50 last:border-0">
+      <div className="flex-1 space-y-0.5">
+        <Label className="text-xs font-bold text-white cursor-pointer">{label}</Label>
+        {desc && <p className="text-[0.68rem] text-gray-400">{desc}</p>}
+      </div>
+      <div className="flex sm:justify-end">
+        <StyledSwitch id={id} checked={checked} onChange={onChange} />
+      </div>
+    </div>
+  )
+}
+
+// ─── Estado de verificações ───────────────────────────────────────────────────
+
+interface Verificacoes {
+  exec_realizada: boolean
+  exec_conforme: boolean
+  exec_ocorrencias: boolean
+  exec_notificacao: boolean
+  fiscal_sicaf: boolean
+  fiscal_certidoes: boolean
+  fiscal_fgts: boolean
+  fiscal_cndt: boolean
+  fiscal_ceis: boolean
+  pag_nf_apresentada: boolean
+  pag_nf_atestada: boolean
+  pag_ob_emitida: boolean
+  pag_realizado: boolean
+  rec_gru_emitida: boolean
+  rec_gru_paga: boolean
+  rec_valor_correto: boolean
+  rec_comprovante: boolean
+  gest_garantia: boolean
+  gest_vigencia: boolean
+  gest_aditivo: boolean
+  gest_reajuste: boolean
+  gest_repactuacao: boolean
+  ocorrencias: string
+  pendencias: string
+  observacoes: string
+  doc_nota_fiscal: string
+  doc_gru: string
+  doc_ordem_bancaria: string
+  doc_certidoes: string
+  doc_fotografico: string
+  doc_notificacoes: string
+}
+
+function defaultVerificacoes(rel?: any): Verificacoes {
+  const v = rel?.verificacoes ?? {}
+  return {
+    exec_realizada:     v.execucao?.realizada    ?? rel?.fiscalizacao_realizada    ?? true,
+    exec_conforme:      v.execucao?.conforme     ?? rel?.servico_conforme          ?? true,
+    exec_ocorrencias:   v.execucao?.ocorrencias  ?? false,
+    exec_notificacao:   v.execucao?.notificacao  ?? false,
+    fiscal_sicaf:       v.fiscal?.sicaf          ?? rel?.documentacao_apresentada  ?? true,
+    fiscal_certidoes:   v.fiscal?.certidoes      ?? true,
+    fiscal_fgts:        v.fiscal?.fgts           ?? true,
+    fiscal_cndt:        v.fiscal?.cndt           ?? true,
+    fiscal_ceis:        v.fiscal?.ceis           ?? true,
+    pag_nf_apresentada: v.pagamento?.nf_apresentada ?? true,
+    pag_nf_atestada:    v.pagamento?.nf_atestada    ?? true,
+    pag_ob_emitida:     v.pagamento?.ob_emitida     ?? true,
+    pag_realizado:      v.pagamento?.realizado       ?? true,
+    rec_gru_emitida:    v.receita?.gru_emitida    ?? false,
+    rec_gru_paga:       v.receita?.gru_paga       ?? false,
+    rec_valor_correto:  v.receita?.valor_correto  ?? false,
+    rec_comprovante:    v.receita?.comprovante    ?? false,
+    gest_garantia:      v.gestao?.garantia        ?? true,
+    gest_vigencia:      v.gestao?.vigencia        ?? true,
+    gest_aditivo:       v.gestao?.aditivo         ?? false,
+    gest_reajuste:      v.gestao?.reajuste        ?? false,
+    gest_repactuacao:   v.gestao?.repactuacao     ?? false,
+    ocorrencias:        rel?.ocorrencias  ?? '',
+    pendencias:         rel?.pendencias   ?? '',
+    observacoes:        rel?.observacoes  ?? '',
+    doc_nota_fiscal:    rel?.documentos?.nota_fiscal    ?? '',
+    doc_gru:            rel?.documentos?.gru            ?? '',
+    doc_ordem_bancaria: rel?.documentos?.ordem_bancaria ?? '',
+    doc_certidoes:      rel?.documentos?.certidoes      ?? '',
+    doc_fotografico:    rel?.documentos?.fotografico    ?? '',
+    doc_notificacoes:   rel?.documentos?.notificacoes   ?? '',
+  }
+}
+
+// ─── Props ────────────────────────────────────────────────────────────────────
+
 interface NovoRelatorioFormProps {
   contratoId: string
   papel: string
+  numeroContrato?: string
+  empresa?: string
+  objeto?: string
   relatorioInicial?: any
 }
 
-export function NovoRelatorioForm({ contratoId, papel, relatorioInicial }: NovoRelatorioFormProps) {
+// ─── Componente ───────────────────────────────────────────────────────────────
+
+export function NovoRelatorioForm({
+  contratoId, papel, numeroContrato, empresa, objeto, relatorioInicial,
+}: NovoRelatorioFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
 
-  const [fiscalizacaoRealizada, setFiscalizacaoRealizada] = useState(
-    relatorioInicial ? !!relatorioInicial.fiscalizacao_realizada : true
+  const currentDate = new Date()
+  const [mes, setMes] = useState(
+    relatorioInicial ? relatorioInicial.competencia_mes.toString() : (currentDate.getMonth() + 1).toString()
   )
-  const [servicoConforme, setServicoConforme] = useState(
-    relatorioInicial ? !!relatorioInicial.servico_conforme : true
+  const [ano, setAno] = useState(
+    relatorioInicial ? relatorioInicial.competencia_ano.toString() : currentDate.getFullYear().toString()
   )
-  const [documentacaoApresentada, setDocumentacaoApresentada] = useState(
-    relatorioInicial ? !!relatorioInicial.documentacao_apresentada : true
-  )
+
+  const [s, setS] = useState<Verificacoes>(() => defaultVerificacoes(relatorioInicial))
+
+  const set = (field: keyof Verificacoes, value: any) =>
+    setS(prev => ({ ...prev, [field]: value }))
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
-    const formData = new FormData(event.currentTarget)
-    
-    // Add hidden fields
-    formData.append('contrato_id', contratoId)
-    formData.append('tipo_fiscal', papel)
-    
-    if (relatorioInicial) {
-      formData.append('relatorio_id', relatorioInicial.id)
+
+    const verificacoes = {
+      execucao: { realizada: s.exec_realizada, conforme: s.exec_conforme, ocorrencias: s.exec_ocorrencias, notificacao: s.exec_notificacao },
+      fiscal: { sicaf: s.fiscal_sicaf, certidoes: s.fiscal_certidoes, fgts: s.fiscal_fgts, cndt: s.fiscal_cndt, ceis: s.fiscal_ceis },
+      pagamento: { nf_apresentada: s.pag_nf_apresentada, nf_atestada: s.pag_nf_atestada, ob_emitida: s.pag_ob_emitida, realizado: s.pag_realizado },
+      receita: { gru_emitida: s.rec_gru_emitida, gru_paga: s.rec_gru_paga, valor_correto: s.rec_valor_correto, comprovante: s.rec_comprovante },
+      gestao: { garantia: s.gest_garantia, vigencia: s.gest_vigencia, aditivo: s.gest_aditivo, reajuste: s.gest_reajuste, repactuacao: s.gest_repactuacao },
     }
-    
-    // Appending checkboxes using state-driven values
-    formData.append('fiscalizacao_realizada', fiscalizacaoRealizada ? 'on' : 'off')
-    formData.append('servico_conforme', servicoConforme ? 'on' : 'off')
-    formData.append('documentacao_apresentada', documentacaoApresentada ? 'on' : 'off')
+    const documentos = {
+      nota_fiscal: s.doc_nota_fiscal, gru: s.doc_gru, ordem_bancaria: s.doc_ordem_bancaria,
+      certidoes: s.doc_certidoes, fotografico: s.doc_fotografico, notificacoes: s.doc_notificacoes,
+    }
 
     startTransition(async () => {
-      const result = await submitRelatorio(formData)
-      if (result?.error) {
-        setError(result.error)
-      } else {
+      const result = await submitRelatorio({
+        contrato_id: contratoId,
+        competencia_mes: parseInt(mes),
+        competencia_ano: parseInt(ano),
+        tipo_fiscal: papel,
+        fiscalizacao_realizada: s.exec_realizada,
+        servico_conforme: s.exec_conforme,
+        documentacao_apresentada: s.fiscal_certidoes,
+        ocorrencias: s.ocorrencias,
+        pendencias: s.pendencias,
+        observacoes: s.observacoes,
+        verificacoes,
+        documentos,
+        relatorio_id: relatorioInicial?.id,
+      })
+
+      if (result?.error) { setError(result.error) }
+      else {
         toast.success(relatorioInicial ? 'Relatório corrigido com sucesso!' : 'Relatório enviado com sucesso para análise!')
         router.push('/dashboard/meus-relatorios')
       }
     })
   }
 
-  const currentDate = new Date()
-  const defaultMes = relatorioInicial ? relatorioInicial.competencia_mes.toString() : (currentDate.getMonth() + 1).toString()
-  const defaultAno = relatorioInicial ? relatorioInicial.competencia_ano.toString() : currentDate.getFullYear().toString()
-
-  const meses = [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-  ]
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
 
   return (
-    <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
-      <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="space-y-8">
+
+      {/* Cabeçalho */}
+      <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] text-white rounded-xl">
         <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
           <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
             <FileText className="h-5 w-5 text-yellow-500" />
-            {relatorioInicial ? 'Corrigir Relatório Devolvido' : 'Preencher Relatório Mensal'} ({papel})
+            {relatorioInicial ? 'Corrigir Relatório Devolvido' : 'Relatório Mensal de Fiscalização Contratual'} — {papel}
           </CardTitle>
-        </CardHeader>
-        
-        <CardContent className="space-y-6 p-6">
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 rounded-md flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0 text-red-500" />
-              {error}
+          {(numeroContrato || empresa) && (
+            <div className="flex items-center gap-2 mt-2">
+              <Building className="h-4 w-4 text-gray-400" />
+              <span className="text-sm text-gray-300 font-bold">{numeroContrato}</span>
+              {empresa && <span className="text-sm text-gray-400">— {empresa}</span>}
             </div>
           )}
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <Label className="text-sm font-bold text-gray-300">Competência (Mês/Ano)</Label>
-              <div className="flex gap-4">
-                <select 
-                  name="competencia_mes" 
-                  defaultValue={defaultMes}
-                  className="flex h-10 w-full rounded-md border border-[#2a3441] bg-[#131924] px-3 py-2 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500"
-                >
-                  {meses.map((mes, i) => (
-                    <option key={i+1} value={`${i+1}`} className="bg-[#131924]">
-                      {`${i+1}`.padStart(2, '0')} - {mes}
-                    </option>
-                  ))}
-                </select>
-                <Input 
-                  name="competencia_ano" 
-                  defaultValue={defaultAno} 
-                  type="number" 
-                  min="2020" 
-                  max="2050" 
-                  className="w-32 bg-[#131924] border-[#2a3441] text-white focus:ring-yellow-500 font-bold" 
-                />
-              </div>
+          {objeto && (
+            <p className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+              <Briefcase className="h-3 w-3" /> {objeto}
+            </p>
+          )}
+        </CardHeader>
+        <CardContent className="p-6">
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/30 text-red-400 text-sm p-3 rounded-md flex items-center gap-2 mb-4">
+              <AlertTriangle className="h-4 w-4 shrink-0" />{error}
+            </div>
+          )}
+          <div className="space-y-2 max-w-md">
+            <Label className="text-sm font-bold text-gray-300">Mês/Ano de Competência</Label>
+            <div className="flex gap-4">
+              <select value={mes} onChange={(e) => setMes(e.target.value)}
+                className="flex h-10 w-full rounded-md border border-[#2a3441] bg-[#131924] px-3 py-2 text-sm text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-yellow-500">
+                {meses.map((m, i) => (
+                  <option key={i+1} value={`${i+1}`} className="bg-[#131924]">{`${i+1}`.padStart(2,'0')} - {m}</option>
+                ))}
+              </select>
+              <Input value={ano} onChange={(e) => setAno(e.target.value)}
+                type="number" min="2020" max="2050"
+                className="w-32 bg-[#131924] border-[#2a3441] text-white focus:ring-yellow-500 font-bold" />
             </div>
           </div>
-
-          <div className="space-y-4 bg-[#131924] p-6 rounded-xl border border-[#2a3441]">
-            <h3 className="font-bold text-sm text-yellow-500 flex items-center gap-2 uppercase tracking-wider">
-              <CheckCircle2 className="h-4 w-4" />
-              Itens de Verificação
-            </h3>
-            
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3 border-b border-[#2a3441]">
-              <div className="space-y-0.5">
-                <Label htmlFor="fiscalizacao_realizada" className="text-sm font-bold text-white cursor-pointer">Fiscalização Realizada?</Label>
-                <p className="text-xs text-gray-400">Ocorreu vistoria in loco ou acompanhamento remoto na competência atual.</p>
-              </div>
-              <div className="flex sm:justify-end">
-                <StyledSwitch 
-                  id="fiscalizacao_realizada" 
-                  checked={fiscalizacaoRealizada} 
-                  onChange={setFiscalizacaoRealizada} 
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3 border-b border-[#2a3441]">
-              <div className="space-y-0.5">
-                <Label htmlFor="servico_conforme" className="text-sm font-bold text-white cursor-pointer">Serviços e/ou Materiais Conformes?</Label>
-                <p className="text-xs text-gray-400">A empresa cumpriu as obrigações estipuladas no contrato sem falhas graves.</p>
-              </div>
-              <div className="flex sm:justify-end">
-                <StyledSwitch 
-                  id="servico_conforme" 
-                  checked={servicoConforme} 
-                  onChange={setServicoConforme} 
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3">
-              <div className="space-y-0.5">
-                <Label htmlFor="documentacao_apresentada" className="text-sm font-bold text-white cursor-pointer">Documentação Trabalhista/Fiscal Apresentada?</Label>
-                <p className="text-xs text-gray-400">Todas as guias e certidões negativas foram verificadas e estão regulares.</p>
-              </div>
-              <div className="flex sm:justify-end">
-                <StyledSwitch 
-                  id="documentacao_apresentada" 
-                  checked={documentacaoApresentada} 
-                  onChange={setDocumentacaoApresentada} 
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="ocorrencias" className="text-sm font-bold text-gray-300">Ocorrências / Faltas Anotadas</Label>
-              <Textarea 
-                id="ocorrencias" 
-                name="ocorrencias" 
-                defaultValue={relatorioInicial?.ocorrencias || ''}
-                placeholder="Descreva detalhadamente quaisquer ocorrências negativas, faltas de serviço ou material. Deixe em branco se não houver."
-                className="min-h-[100px] bg-[#131924] border-[#2a3441] text-white focus:ring-yellow-500"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="pendencias" className="text-sm font-bold text-gray-300">Pendências da Empresa</Label>
-              <Textarea 
-                id="pendencias" 
-                name="pendencias" 
-                defaultValue={relatorioInicial?.pendencias || ''}
-                placeholder="Ex: Faltou entregar o termo de garantia."
-                className="min-h-[80px] bg-[#131924] border-[#2a3441] text-white focus:ring-yellow-500"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="observacoes" className="text-sm font-bold text-gray-300">Observações Adicionais (Recomendações ao Ordenador de Despesas)</Label>
-              <Textarea 
-                id="observacoes" 
-                name="observacoes" 
-                defaultValue={relatorioInicial?.observacoes || ''}
-                placeholder="Ex: Recomendo o pagamento integral da fatura referida."
-                className="min-h-[80px] bg-[#131924] border-[#2a3441] text-white focus:ring-yellow-500"
-              />
-            </div>
-          </div>
-
         </CardContent>
-        <CardFooter className="bg-[#131924] border-t border-[#2a3441] py-4 flex justify-end gap-4">
-          <Button type="button" variant="outline" onClick={() => router.back()} className="border-[#2a3441] text-gray-300 hover:bg-[#1b2331] hover:text-white">Cancelar</Button>
-          <Button type="submit" disabled={isPending} className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold animate-pulse hover:animate-none">
-            {isPending ? 'Enviando...' : 'Salvar e Resubmeter Relatório'}
-          </Button>
-        </CardFooter>
-      </form>
-    </Card>
+      </Card>
+
+      {/* Grid dos 4 blocos pequenos */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        {/* Bloco 1 – Execução Contratual */}
+        <div className="bg-[#1b2331] border border-[#1e3a2e] rounded-xl p-4 text-white">
+          <BlocoHeader icon={CheckSquare} title="Bloco 1 — Execução Contratual" cor="border-green-600/40 text-green-400" />
+          <CheckRow label="Fiscalização realizada?" id="exec_realizada" checked={s.exec_realizada} onChange={v => set('exec_realizada', v)} />
+          <CheckRow label="Objeto executado conforme contratado?" id="exec_conforme" checked={s.exec_conforme} onChange={v => set('exec_conforme', v)} />
+          <CheckRow label="Ocorrências registradas?" desc="Faltas, atrasos ou descumprimentos" id="exec_ocorrencias" checked={s.exec_ocorrencias} onChange={v => set('exec_ocorrencias', v)} />
+          <CheckRow label="Necessidade de notificação?" id="exec_notificacao" checked={s.exec_notificacao} onChange={v => set('exec_notificacao', v)} />
+        </div>
+
+        {/* Bloco 2 – Regularidade Fiscal */}
+        <div className="bg-[#1b2331] border border-[#1e2e3a] rounded-xl p-4 text-white">
+          <BlocoHeader icon={FileText} title="Bloco 2 — Regularidade Fiscal" cor="border-blue-600/40 text-blue-400" />
+          <CheckRow label="SICAF regular?" id="fiscal_sicaf" checked={s.fiscal_sicaf} onChange={v => set('fiscal_sicaf', v)} />
+          <CheckRow label="Certidões Federais válidas?" desc="CND Federal, Estadual, Municipal" id="fiscal_certidoes" checked={s.fiscal_certidoes} onChange={v => set('fiscal_certidoes', v)} />
+          <CheckRow label="FGTS regular?" id="fiscal_fgts" checked={s.fiscal_fgts} onChange={v => set('fiscal_fgts', v)} />
+          <CheckRow label="CNDT válida?" desc="Certidão Negativa de Débitos Trabalhistas" id="fiscal_cndt" checked={s.fiscal_cndt} onChange={v => set('fiscal_cndt', v)} />
+          <CheckRow label="CEIS/CNEP sem restrições?" id="fiscal_ceis" checked={s.fiscal_ceis} onChange={v => set('fiscal_ceis', v)} />
+        </div>
+
+        {/* Bloco 3 – Pagamento */}
+        <div className="bg-[#1b2331] border border-[#3a2e1e] rounded-xl p-4 text-white">
+          <BlocoHeader icon={CreditCard} title="Bloco 3 — Pagamento (Despesa)" cor="border-yellow-600/40 text-yellow-400" />
+          <CheckRow label="Nota Fiscal apresentada?" id="pag_nf_apresentada" checked={s.pag_nf_apresentada} onChange={v => set('pag_nf_apresentada', v)} />
+          <CheckRow label="Nota Fiscal atestada?" desc="Assinada pelo fiscal responsável" id="pag_nf_atestada" checked={s.pag_nf_atestada} onChange={v => set('pag_nf_atestada', v)} />
+          <CheckRow label="Ordem Bancária emitida?" id="pag_ob_emitida" checked={s.pag_ob_emitida} onChange={v => set('pag_ob_emitida', v)} />
+          <CheckRow label="Pagamento realizado?" id="pag_realizado" checked={s.pag_realizado} onChange={v => set('pag_realizado', v)} />
+        </div>
+
+        {/* Bloco 4 – Receita */}
+        <div className="bg-[#1b2331] border border-[#2e1e3a] rounded-xl p-4 text-white">
+          <BlocoHeader icon={Banknote} title="Bloco 4 — Receita (Permissionários)" cor="border-purple-600/40 text-purple-400" />
+          <CheckRow label="GRU emitida?" desc="Guia de Recolhimento da União" id="rec_gru_emitida" checked={s.rec_gru_emitida} onChange={v => set('rec_gru_emitida', v)} />
+          <CheckRow label="GRU paga?" id="rec_gru_paga" checked={s.rec_gru_paga} onChange={v => set('rec_gru_paga', v)} />
+          <CheckRow label="Valor recolhido corretamente?" id="rec_valor_correto" checked={s.rec_valor_correto} onChange={v => set('rec_valor_correto', v)} />
+          <CheckRow label="Comprovante anexado?" id="rec_comprovante" checked={s.rec_comprovante} onChange={v => set('rec_comprovante', v)} />
+        </div>
+
+      </div>
+
+      {/* Bloco 5 – Gestão Contratual */}
+      <div className="bg-[#1b2331] border border-[#2a3441] rounded-xl p-4 text-white">
+        <BlocoHeader icon={Settings} title="Bloco 5 — Gestão Contratual" cor="border-orange-600/40 text-orange-400" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-x-6">
+          <CheckRow label="Garantia vigente?" id="gest_garantia" checked={s.gest_garantia} onChange={v => set('gest_garantia', v)} />
+          <CheckRow label="Vigência regular?" desc="Contrato dentro do prazo" id="gest_vigencia" checked={s.gest_vigencia} onChange={v => set('gest_vigencia', v)} />
+          <CheckRow label="Necessidade de aditivo?" id="gest_aditivo" checked={s.gest_aditivo} onChange={v => set('gest_aditivo', v)} />
+          <CheckRow label="Necessidade de reajuste?" id="gest_reajuste" checked={s.gest_reajuste} onChange={v => set('gest_reajuste', v)} />
+          <CheckRow label="Necessidade de repactuação?" id="gest_repactuacao" checked={s.gest_repactuacao} onChange={v => set('gest_repactuacao', v)} />
+        </div>
+      </div>
+
+      {/* Campos de texto */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="space-y-1">
+          <Label className="text-xs font-bold text-gray-300">Ocorrências / Faltas Anotadas</Label>
+          <Textarea value={s.ocorrencias} onChange={e => set('ocorrencias', e.target.value)}
+            placeholder="Descreva detalhadamente..."
+            className="min-h-[80px] text-xs bg-[#1b2331] border-[#2a3441] text-white focus:ring-yellow-500" />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs font-bold text-gray-300">Pendências da Empresa</Label>
+          <Textarea value={s.pendencias} onChange={e => set('pendencias', e.target.value)}
+            placeholder="Ex: Faltou entregar certidão..."
+            className="min-h-[80px] text-xs bg-[#1b2331] border-[#2a3441] text-white focus:ring-yellow-500" />
+        </div>
+        <div className="space-y-1">
+          <Label className="text-xs font-bold text-gray-300">Observações / Recomendações</Label>
+          <Textarea value={s.observacoes} onChange={e => set('observacoes', e.target.value)}
+            placeholder="Ex: Recomendo o pagamento integral..."
+            className="min-h-[80px] text-xs bg-[#1b2331] border-[#2a3441] text-white focus:ring-yellow-500" />
+        </div>
+      </div>
+
+      {/* Bloco 6 – Documentos */}
+      <div className="bg-[#1b2331] border border-[#2a3441] rounded-xl p-4 text-white">
+        <BlocoHeader icon={Paperclip} title="Bloco 6 — Documentos e Anexos" cor="border-cyan-600/40 text-cyan-400" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {[
+            { field: 'doc_nota_fiscal' as const,    label: 'Nota Fiscal' },
+            { field: 'doc_gru' as const,            label: 'GRU' },
+            { field: 'doc_ordem_bancaria' as const, label: 'Ordem Bancária' },
+            { field: 'doc_certidoes' as const,      label: 'Certidões' },
+            { field: 'doc_fotografico' as const,    label: 'Relatório Fotográfico' },
+            { field: 'doc_notificacoes' as const,   label: 'Notificações' },
+          ].map(({ field, label }) => (
+            <div key={field} className="space-y-1">
+              <Label className="text-[0.68rem] font-bold text-gray-300 uppercase tracking-wider">{label}</Label>
+              <input
+                type="file"
+                accept=".pdf,.jpg,.jpeg,.png"
+                onChange={(e) => {
+                  const file = e.target.files?.[0]
+                  set(field, file ? file.name : '')
+                }}
+                className="block w-full text-[0.68rem] text-gray-400 file:mr-2 file:py-1 file:px-2 file:rounded-lg file:border-0 file:text-[0.68rem] file:font-bold file:bg-yellow-600/20 file:text-yellow-400 hover:file:bg-yellow-600/30 cursor-pointer bg-[#131924] border border-[#2a3441] rounded-lg p-1"
+              />
+              {s[field] && (
+                <p className="text-[0.65rem] text-green-400 font-bold truncate">✓ {s[field]}</p>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="flex justify-end gap-4 bg-[#131924] p-4 rounded-xl border border-[#2a3441] sticky bottom-4 shadow-2xl">
+        <Button type="button" variant="outline" onClick={() => router.back()}
+          className="border-[#2a3441] text-gray-300 hover:bg-[#1b2331] hover:text-white">
+          Cancelar
+        </Button>
+        <Button type="submit" disabled={isPending}
+          className="bg-yellow-600 hover:bg-yellow-700 text-white font-black">
+          {isPending ? 'Enviando...' : relatorioInicial ? 'Corrigir e Reenviar Relatório' : 'Salvar e Enviar Relatório'}
+        </Button>
+      </div>
+    </form>
   )
 }
