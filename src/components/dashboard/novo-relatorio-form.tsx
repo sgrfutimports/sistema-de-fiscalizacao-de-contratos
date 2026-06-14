@@ -6,11 +6,39 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 import { FileText, CheckCircle2, AlertTriangle } from 'lucide-react'
+
+// Native, ultra-reliable styled switch component with clear visual status
+function StyledSwitch({ 
+  id, 
+  checked, 
+  onChange 
+}: { 
+  id: string; 
+  checked: boolean; 
+  onChange: (checked: boolean) => void 
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className={`text-xs font-black uppercase tracking-wider transition-colors duration-200 ${checked ? 'text-green-400' : 'text-red-400'}`}>
+        {checked ? 'Sim' : 'Não'}
+      </span>
+      <label className="relative inline-flex items-center cursor-pointer select-none">
+        <input 
+          type="checkbox" 
+          id={id} 
+          checked={checked} 
+          onChange={(e) => onChange(e.target.checked)} 
+          className="sr-only peer"
+        />
+        <div className="w-11 h-6 bg-gray-600/60 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600 border border-[#3f526b]"></div>
+      </label>
+    </div>
+  )
+}
 
 export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, papel: string }) {
   const router = useRouter()
@@ -108,37 +136,37 @@ export function NovoRelatorioForm({ contratoId, papel }: { contratoId: string, p
             
             <div className="flex items-center justify-between gap-4 py-3 border-b border-[#2a3441]">
               <div className="space-y-0.5">
-                <Label htmlFor="fiscalizacao_realizada" className="text-sm font-bold text-white">Fiscalização Realizada?</Label>
+                <Label htmlFor="fiscalizacao_realizada" className="text-sm font-bold text-white cursor-pointer">Fiscalização Realizada?</Label>
                 <p className="text-xs text-gray-400">Ocorreu vistoria in loco ou acompanhamento remoto na competência atual.</p>
               </div>
-              <Switch 
+              <StyledSwitch 
                 id="fiscalizacao_realizada" 
                 checked={fiscalizacaoRealizada} 
-                onCheckedChange={setFiscalizacaoRealizada} 
+                onChange={setFiscalizacaoRealizada} 
               />
             </div>
 
             <div className="flex items-center justify-between gap-4 py-3 border-b border-[#2a3441]">
               <div className="space-y-0.5">
-                <Label htmlFor="servico_conforme" className="text-sm font-bold text-white">Serviços e/ou Materiais Conformes?</Label>
+                <Label htmlFor="servico_conforme" className="text-sm font-bold text-white cursor-pointer">Serviços e/ou Materiais Conformes?</Label>
                 <p className="text-xs text-gray-400">A empresa cumpriu as obrigações estipuladas no contrato sem falhas graves.</p>
               </div>
-              <Switch 
+              <StyledSwitch 
                 id="servico_conforme" 
                 checked={servicoConforme} 
-                onCheckedChange={setServicoConforme} 
+                onChange={setServicoConforme} 
               />
             </div>
 
             <div className="flex items-center justify-between gap-4 py-3">
               <div className="space-y-0.5">
-                <Label htmlFor="documentacao_apresentada" className="text-sm font-bold text-white">Documentação Trabalhista/Fiscal Apresentada?</Label>
+                <Label htmlFor="documentacao_apresentada" className="text-sm font-bold text-white cursor-pointer">Documentação Trabalhista/Fiscal Apresentada?</Label>
                 <p className="text-xs text-gray-400">Todas as guias e certidões negativas foram verificadas e estão regulares.</p>
               </div>
-              <Switch 
+              <StyledSwitch 
                 id="documentacao_apresentada" 
                 checked={documentacaoApresentada} 
-                onCheckedChange={setDocumentacaoApresentada} 
+                onChange={setDocumentacaoApresentada} 
               />
             </div>
           </div>
