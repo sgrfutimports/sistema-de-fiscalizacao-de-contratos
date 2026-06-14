@@ -73,40 +73,40 @@ export default async function RelatoriosPage() {
         <div className="flex flex-col lg:flex-row gap-4 items-end">
           <div className="flex-1 w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider">Situação do Relato</label>
-              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none">
+            <div className="flex flex-col gap-1.5 text-center">
+              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Situação do Relato</label>
+              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none text-center">
                 <option>-- Todos --</option>
               </select>
             </div>
             
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider">Contrato Específico</label>
-              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none">
+            <div className="flex flex-col gap-1.5 text-center">
+              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Contrato Específico</label>
+              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none text-center">
                 <option>-- Todos --</option>
               </select>
             </div>
             
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider">Competência Mês</label>
-              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none">
+            <div className="flex flex-col gap-1.5 text-center">
+              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Competência Mês</label>
+              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none text-center">
                 <option>-- Todos --</option>
               </select>
             </div>
             
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider">Exercício Ano</label>
-              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none">
+            <div className="flex flex-col gap-1.5 text-center">
+              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Exercício Ano</label>
+              <select className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full appearance-none text-center">
                 <option>-- Todos --</option>
               </select>
             </div>
             
-            <div className="flex flex-col gap-1.5">
-              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider">Busca Livre</label>
+            <div className="flex flex-col gap-1.5 text-center">
+              <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Busca Livre</label>
               <input 
                 type="text" 
                 placeholder="Empresa, militar, objeto..." 
-                className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full placeholder-gray-500"
+                className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full placeholder-gray-500 text-center"
               />
             </div>
 
