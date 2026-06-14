@@ -21,23 +21,23 @@ export function AppSidebar({ userNome, userPerfil }: { userNome?: string; userPe
   )
 
   const adminMenu = [
-    { title: 'INÍCIO (RESUMOS)', url: '/dashboard', icon: BookOpen },
-    { title: 'CONTRATOS DO BATALHÃO', url: '/dashboard/contratos', icon: FileSignature },
-    { title: 'COMUNICADOS DO COMANDO', url: '/dashboard/comunicados', icon: ClipboardList },
-    { title: 'ACERVO DE HISTÓRICOS', url: '/dashboard/relatorios', icon: Calendar },
+    { title: 'INÍCIO', url: '/dashboard', icon: BookOpen },
+    { title: 'CONTRATOS', url: '/dashboard/contratos', icon: FileSignature },
+    { title: 'COMUNICADOS', url: '/dashboard/comunicados', icon: ClipboardList },
+    { title: 'HISTÓRICO', url: '/dashboard/relatorios', icon: Calendar },
   ]
 
   const consolaMenu = [
     { title: 'FILA DE HOMOLOGAÇÃO', url: '/dashboard/fila', icon: ClipboardList },
-    { title: 'MILITARES FISCAIS', url: '/dashboard/usuarios', icon: Users },
+    { title: 'FISCAIS', url: '/dashboard/usuarios', icon: Users },
     { title: 'REABERTURA DE PRAZOS', url: '/dashboard/prazos', icon: CalendarClock },
     { title: 'LOGS E ALERTAS', url: '/dashboard/auditoria', icon: Terminal },
   ]
 
   const fiscalMenu = [
-    { title: 'INÍCIO (RESUMOS)', url: '/dashboard', icon: LayoutDashboard },
-    { title: 'CONTRATOS DO BATALHÃO', url: '/dashboard/meus-contratos', icon: FileSignature },
-    { title: 'ACERVO DE HISTÓRICOS', url: '/dashboard/meus-relatorios', icon: FolderArchive },
+    { title: 'INÍCIO', url: '/dashboard', icon: LayoutDashboard },
+    { title: 'CONTRATOS', url: '/dashboard/meus-contratos', icon: FileSignature },
+    { title: 'HISTÓRICO', url: '/dashboard/meus-relatorios', icon: FolderArchive },
   ]
 
   const items = userPerfil === 'ADMIN' ? adminMenu : fiscalMenu
@@ -81,8 +81,9 @@ export function AppSidebar({ userNome, userPerfil }: { userNome?: string; userPe
           
           {/* Perfil do Usuário na Sidebar */}
           <div className="mb-8 p-3 rounded-xl border border-yellow-500/50 bg-[#0f2811] flex items-center gap-3 shadow-md">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#2a4d2c] border border-yellow-500 text-yellow-500 font-bold text-sm">
-              {getInitials(userNome || 'Usuário')}
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#2a4d2c]/40 border border-yellow-500/30 overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/militar-avatar.png" alt="Fiscal Avatar" className="w-8 h-8 object-contain" />
             </div>
             <div className="flex flex-col overflow-hidden">
               <span className="text-sm font-bold truncate text-white" title={userNome}>{userNome || 'Usuário'}</span>
@@ -114,7 +115,7 @@ export function AppSidebar({ userNome, userPerfil }: { userNome?: string; userPe
           {userPerfil === 'ADMIN' && (
             <>
               <div className="mt-8 mb-4 px-3">
-                <span className="text-[0.65rem] font-bold text-[#647966] uppercase tracking-widest">Consola de Comando</span>
+                <span className="text-[0.65rem] font-bold text-[#647966] uppercase tracking-widest">Console de Comando</span>
               </div>
               <div className="flex flex-col gap-1">
                 {consolaMenu.map((item) => {

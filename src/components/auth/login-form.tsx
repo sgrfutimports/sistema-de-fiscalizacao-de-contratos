@@ -70,24 +70,29 @@ export function LoginForm() {
   }
 
   return (
-    <Card className="w-full max-w-md border-border/50 shadow-2xl bg-card">
-      <CardHeader className="space-y-2 text-center pb-6">
-        <CardTitle className="text-2xl font-bold tracking-tight text-foreground">
-          Acesso ao Sistema
-        </CardTitle>
-        <CardDescription className="text-muted-foreground text-sm">
-          Sistema de Fiscalização de Contratos - 71º BI Mtz
-        </CardDescription>
-      </CardHeader>
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+    <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#09170a]/75 backdrop-blur-xl p-8 shadow-2xl relative overflow-hidden">
+      {/* Linha brilhante no topo para efeito premium */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent" />
+      
+      <div className="space-y-6">
+        <div className="space-y-2 text-center pb-2">
+          <h2 className="text-2xl font-black tracking-wider text-white uppercase">
+            Acesso ao Sistema
+          </h2>
+          <p className="text-[0.65rem] text-yellow-500 font-extrabold uppercase tracking-[0.25em]">
+            Fiscalização de Contratos &bull; 71º BI Mtz
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           {error && (
-            <div className="rounded-md bg-destructive/15 p-3 text-sm text-destructive font-medium border border-destructive/20 text-center">
+            <div className="rounded-xl bg-red-500/10 p-3.5 text-xs text-red-400 font-bold border border-red-500/20 text-center animate-shake">
               {error}
             </div>
           )}
+
           <div className="space-y-2">
-            <Label htmlFor="cpf" className="text-foreground font-semibold">CPF</Label>
+            <Label htmlFor="cpf" className="text-[0.65rem] font-black text-gray-300 uppercase tracking-widest">CPF</Label>
             <Input 
               id="cpf" 
               name="cpf" 
@@ -95,12 +100,13 @@ export function LoginForm() {
               placeholder="000.000.000-00" 
               onChange={handleCpfChange}
               required 
-              className="h-11 border-input focus:border-primary/50"
+              className="h-12 bg-[#050c05]/60 border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl"
             />
           </div>
+
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-foreground font-semibold">Senha</Label>
+              <Label htmlFor="password" className="text-[0.65rem] font-black text-gray-300 uppercase tracking-widest">Senha</Label>
               <Dialog open={resetOpen} onOpenChange={(open) => {
                 setResetOpen(open)
                 if (!open) {
@@ -109,30 +115,30 @@ export function LoginForm() {
                 }
               }}>
                 <DialogTrigger 
-                  className="text-xs text-muted-foreground hover:text-primary transition-colors underline-offset-2 hover:underline animate-fade-in cursor-pointer bg-transparent border-none p-0"
+                  className="text-[0.65rem] font-bold text-yellow-500/80 hover:text-yellow-400 transition-colors uppercase tracking-wider cursor-pointer bg-transparent border-none p-0"
                 >
                   Esqueci minha senha
                 </DialogTrigger>
-                <DialogContent className="sm:max-w-[425px] border-border bg-card">
+                <DialogContent className="sm:max-w-[425px] border-white/10 bg-[#0d1f0f] text-white">
                   <DialogHeader>
-                    <DialogTitle className="text-lg font-bold text-foreground">Recuperar Senha</DialogTitle>
-                    <DialogDescription className="text-muted-foreground text-xs">
+                    <DialogTitle className="text-base font-black uppercase text-white tracking-wider">Recuperar Senha</DialogTitle>
+                    <DialogDescription className="text-gray-400 text-xs mt-1">
                       Insira o seu CPF cadastrado. Nós identificaremos o seu e-mail e enviaremos um link para redefinição de senha.
                     </DialogDescription>
                   </DialogHeader>
                   <form onSubmit={handleResetSubmit} className="space-y-4 py-2">
                     {resetError && (
-                      <div className="rounded-md bg-destructive/15 p-2.5 text-xs text-destructive border border-destructive/20 text-center font-medium">
+                      <div className="rounded-xl bg-red-500/10 p-2.5 text-xs text-red-400 border border-red-500/20 text-center font-bold">
                         {resetError}
                       </div>
                     )}
                     {resetSuccess && (
-                      <div className="rounded-md bg-green-500/10 p-2.5 text-xs text-green-600 dark:text-green-500 border border-green-500/20 text-center font-medium">
+                      <div className="rounded-xl bg-green-500/10 p-2.5 text-xs text-green-400 border border-green-500/20 text-center font-bold">
                         {resetSuccess}
                       </div>
                     )}
                     <div className="space-y-2">
-                      <Label htmlFor="resetCpf" className="text-foreground font-semibold">CPF</Label>
+                      <Label htmlFor="resetCpf" className="text-[0.65rem] font-black text-gray-300 uppercase tracking-widest">CPF</Label>
                       <Input 
                         id="resetCpf" 
                         name="resetCpf" 
@@ -140,14 +146,14 @@ export function LoginForm() {
                         placeholder="000.000.000-00" 
                         onChange={handleCpfChange}
                         required 
-                        className="h-10 border-input focus:border-primary/50"
+                        className="h-11 bg-[#050c05]/60 border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 rounded-xl"
                       />
                     </div>
                     <DialogFooter className="mt-2">
                       <Button 
                         type="submit" 
                         disabled={isResetPending}
-                        className="w-full h-10 font-semibold"
+                        className="w-full h-11 bg-yellow-600 hover:bg-yellow-700 text-white font-black uppercase tracking-wider rounded-xl transition-all"
                       >
                         {isResetPending ? 'Enviando...' : 'Enviar link de recuperação'}
                       </Button>
@@ -162,12 +168,12 @@ export function LoginForm() {
                 name="password" 
                 type={showPassword ? 'text' : 'password'}
                 required 
-                className="h-11 border-input focus:border-primary/50 pr-12"
+                className="h-12 bg-[#050c05]/60 border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl pr-12"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors p-1"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-1"
                 tabIndex={-1}
                 aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
               >
@@ -179,18 +185,17 @@ export function LoginForm() {
               </button>
             </div>
           </div>
-        </CardContent>
-        <CardFooter className="pt-2">
+
           <Button 
-            className="w-full h-11 text-base font-semibold transition-all hover:brightness-110 active:scale-95" 
+            className="w-full h-12 text-[0.7rem] font-black uppercase tracking-widest transition-all bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-[#070f08] rounded-xl shadow-lg shadow-yellow-500/10 active:scale-[0.98] mt-6 border-none cursor-pointer" 
             type="submit" 
             disabled={isPending}
           >
-            {isPending ? 'Autenticando...' : 'Entrar'}
+            {isPending ? 'Autenticando...' : 'Entrar no Portal'}
           </Button>
-        </CardFooter>
-      </form>
-    </Card>
+        </form>
+      </div>
+    </div>
   )
 }
 

@@ -46,7 +46,8 @@ export default async function MeusRelatoriosPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-sm text-gray-300">
               <thead className="bg-[#131924] text-xs uppercase font-bold tracking-wider text-gray-400">
                 <tr>
@@ -103,6 +104,53 @@ export default async function MeusRelatoriosPage() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card List View */}
+          <div className="block md:hidden divide-y divide-[#2a3441] bg-[#1b2331]">
+            {!relatorios || relatorios.length === 0 ? (
+              <div className="text-center py-12 text-gray-400 font-medium p-4">
+                Você ainda não enviou nenhum relatório.
+              </div>
+            ) : (
+              relatorios.map((rel) => (
+                <div key={rel.id} className="p-5 space-y-3 hover:bg-[#202a3a] transition-colors">
+                  <div className="flex justify-between items-start gap-2">
+                    <div>
+                      <div className="text-[0.65rem] font-extrabold text-yellow-500 uppercase tracking-widest">Contrato</div>
+                      <div className="text-sm font-black text-white mt-0.5">{(rel.contrato as any)?.numero_contrato}</div>
+                      <div className="text-xs text-gray-400 truncate max-w-[200px] mt-0.5">{(rel.contrato as any)?.empresa}</div>
+                    </div>
+                    <span className={`text-[0.6rem] font-extrabold px-2 py-0.5 rounded border uppercase tracking-wider ${
+                      rel.status === 'APROVADO' ? 'border-green-500 text-green-400 bg-green-500/10' :
+                      rel.status === 'DEVOLVIDO' ? 'border-red-500 text-red-400 bg-red-500/10' :
+                      rel.status === 'ENVIADO' ? 'border-yellow-500 text-yellow-400 bg-yellow-500/10' :
+                      'border-blue-500 text-blue-400 bg-blue-500/10'
+                    }`}>
+                      {rel.status.replace('_', ' ')}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-2 border-t border-[#2a3441]/50 text-xs">
+                    <div>
+                      <div className="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider">Competência</div>
+                      <div className="font-bold text-white mt-0.5">{formatCompetencia(rel.competencia_mes, rel.competencia_ano)}</div>
+                    </div>
+                    <div>
+                      <div className="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider">Data de Envio</div>
+                      <div className="text-gray-300 mt-0.5">{rel.data_envio ? new Date(rel.data_envio).toLocaleDateString('pt-BR') : ''}</div>
+                    </div>
+                    <Link 
+                      href={`/dashboard/relatorios/${rel.id}`} 
+                      className="inline-flex items-center justify-center bg-[#131924] hover:bg-[#1b2331] text-gray-300 hover:text-white p-2 rounded-xl border border-[#2a3441] transition-colors"
+                      title="Ver Detalhes"
+                    >
+                      <Eye className="h-4.5 w-4.5" />
+                    </Link>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>

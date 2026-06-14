@@ -37,7 +37,7 @@ export async function proxy(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname
   const isAuthRoute = pathname.startsWith('/login')
-  const isPublicRoute = isAuthRoute || pathname.startsWith('/auth/callback') || pathname.startsWith('/redefinir-senha')
+  const isPublicRoute = pathname === '/' || isAuthRoute || pathname.startsWith('/auth/callback') || pathname.startsWith('/redefinir-senha')
   
   if (!user && !isPublicRoute) {
     // no user, potentially respond by redirecting the user to the login page

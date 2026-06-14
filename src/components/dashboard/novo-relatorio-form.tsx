@@ -150,40 +150,46 @@ export function NovoRelatorioForm({ contratoId, papel, relatorioInicial }: NovoR
               Itens de Verificação
             </h3>
             
-            <div className="flex items-center justify-between gap-4 py-3 border-b border-[#2a3441]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3 border-b border-[#2a3441]">
               <div className="space-y-0.5">
                 <Label htmlFor="fiscalizacao_realizada" className="text-sm font-bold text-white cursor-pointer">Fiscalização Realizada?</Label>
                 <p className="text-xs text-gray-400">Ocorreu vistoria in loco ou acompanhamento remoto na competência atual.</p>
               </div>
-              <StyledSwitch 
-                id="fiscalizacao_realizada" 
-                checked={fiscalizacaoRealizada} 
-                onChange={setFiscalizacaoRealizada} 
-              />
+              <div className="flex sm:justify-end">
+                <StyledSwitch 
+                  id="fiscalizacao_realizada" 
+                  checked={fiscalizacaoRealizada} 
+                  onChange={setFiscalizacaoRealizada} 
+                />
+              </div>
             </div>
 
-            <div className="flex items-center justify-between gap-4 py-3 border-b border-[#2a3441]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3 border-b border-[#2a3441]">
               <div className="space-y-0.5">
                 <Label htmlFor="servico_conforme" className="text-sm font-bold text-white cursor-pointer">Serviços e/ou Materiais Conformes?</Label>
                 <p className="text-xs text-gray-400">A empresa cumpriu as obrigações estipuladas no contrato sem falhas graves.</p>
               </div>
-              <StyledSwitch 
-                id="servico_conforme" 
-                checked={servicoConforme} 
-                onChange={setServicoConforme} 
-              />
+              <div className="flex sm:justify-end">
+                <StyledSwitch 
+                  id="servico_conforme" 
+                  checked={servicoConforme} 
+                  onChange={setServicoConforme} 
+                />
+              </div>
             </div>
 
-            <div className="flex items-center justify-between gap-4 py-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 py-3">
               <div className="space-y-0.5">
                 <Label htmlFor="documentacao_apresentada" className="text-sm font-bold text-white cursor-pointer">Documentação Trabalhista/Fiscal Apresentada?</Label>
                 <p className="text-xs text-gray-400">Todas as guias e certidões negativas foram verificadas e estão regulares.</p>
               </div>
-              <StyledSwitch 
-                id="documentacao_apresentada" 
-                checked={documentacaoApresentada} 
-                onChange={setDocumentacaoApresentada} 
-              />
+              <div className="flex sm:justify-end">
+                <StyledSwitch 
+                  id="documentacao_apresentada" 
+                  checked={documentacaoApresentada} 
+                  onChange={setDocumentacaoApresentada} 
+                />
+              </div>
             </div>
           </div>
 

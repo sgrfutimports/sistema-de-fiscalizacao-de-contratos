@@ -50,7 +50,8 @@ export default async function MeusContratosPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="overflow-x-auto">
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-sm text-gray-300">
               <thead className="bg-[#131924] text-xs uppercase font-bold tracking-wider text-gray-400">
                 <tr>
@@ -109,6 +110,59 @@ export default async function MeusContratosPage() {
                 )}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Card List View */}
+          <div className="block md:hidden divide-y divide-[#2a3441] bg-[#1b2331]">
+            {!contratos || contratos.length === 0 ? (
+              <div className="text-center py-12 text-gray-400 font-medium p-4">
+                Nenhum contrato vinculado a você no momento.
+              </div>
+            ) : (
+              contratos.map((cont) => {
+                const papel = cont.fiscal_titular_id === user.id ? 'Titular' : 'Substituto'
+                
+                return (
+                  <div key={cont.id} className="p-5 space-y-4 hover:bg-[#202a3a] transition-colors">
+                    <div className="flex justify-between items-start gap-2">
+                      <div>
+                        <div className="text-[0.65rem] font-extrabold text-yellow-500 uppercase tracking-widest">Nº Contrato</div>
+                        <div className="text-sm font-black text-white mt-0.5">{cont.numero_contrato}</div>
+                      </div>
+                      <span className={`text-[0.6rem] font-extrabold px-2 py-0.5 rounded border uppercase tracking-wider ${
+                        getStatusColor(cont.status)
+                      }`}>
+                        {cont.status}
+                      </span>
+                    </div>
+
+                    <div>
+                      <div className="text-[0.65rem] font-extrabold text-gray-400 uppercase tracking-widest">Empresa</div>
+                      <div className="text-xs font-bold text-white mt-0.5">{cont.empresa}</div>
+                    </div>
+
+                    <div className="flex justify-between items-center pt-2 border-t border-[#2a3441]/50">
+                      <div>
+                        <div className="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider">Papel</div>
+                        <span className={`inline-block text-[0.6rem] font-bold px-2 py-0.5 rounded border uppercase tracking-wider mt-1 ${
+                          papel === 'Titular' ? 'border-green-500 text-green-400 bg-green-500/10' : 'border-yellow-500 text-yellow-400 bg-yellow-500/10'
+                        }`}>
+                          {papel}
+                        </span>
+                      </div>
+
+                      <Link 
+                        href={`/dashboard/relatorios/novo/${cont.id}`} 
+                        className="inline-flex items-center gap-1.5 bg-yellow-600 hover:bg-yellow-700 text-white px-3.5 py-2 rounded-xl font-bold text-[0.7rem] transition-colors shadow-md uppercase tracking-wider"
+                      >
+                        <PlusCircle className="h-3.5 w-3.5" />
+                        Emitir Relatório
+                      </Link>
+                    </div>
+                  </div>
+                )
+              })
+            )}
           </div>
         </CardContent>
       </Card>

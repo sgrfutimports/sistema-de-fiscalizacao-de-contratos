@@ -5,6 +5,9 @@ import { FileSignature, FileText, AlertCircle, CheckCircle2, ShieldAlert } from 
 import { ComunicadosModal } from '@/components/dashboard/comunicados-modal'
 
 export default async function DashboardPage() {
+  // Garantir que a animação pós-login dure pelo menos 3 segundos para uma transição premium
+  await new Promise(resolve => setTimeout(resolve, 3000))
+
   const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
@@ -135,7 +138,7 @@ export default async function DashboardPage() {
         <div className="absolute top-[-50%] right-[-10%] h-[300px] w-[300px] rounded-full bg-[#133215]/40 blur-[80px] pointer-events-none" />
         <div className="relative z-10">
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">Painel de Controle</h1>
-          <p className="text-gray-100 text-sm sm:text-base font-semibold whitespace-nowrap overflow-x-auto pb-1">
+          <p className="text-gray-100 text-sm sm:text-base font-semibold leading-relaxed">
             Bem-vindo ao Sistema de Fiscalização de Contratos do <strong className="text-yellow-400 font-extrabold">71º Batalhão de Infantaria Motorizado</strong>.
           </p>
         </div>
@@ -218,8 +221,8 @@ export default async function DashboardPage() {
         )}
       </div>
       
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-7 mt-8">
-        <Card className="col-span-4 shadow-md border-border/50 rounded-2xl overflow-hidden">
+      <div className="grid gap-6 grid-cols-1 lg:grid-cols-7 mt-8">
+        <Card className="col-span-1 lg:col-span-4 shadow-md border-border/50 rounded-2xl overflow-hidden">
           <CardHeader className="bg-muted/30 border-b border-border/50">
             <CardTitle>Visão Geral de Contratos</CardTitle>
           </CardHeader>
@@ -230,7 +233,7 @@ export default async function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="col-span-3 shadow-md border-border/50 rounded-2xl overflow-hidden">
+        <Card className="col-span-1 lg:col-span-3 shadow-md border-border/50 rounded-2xl overflow-hidden">
           <CardHeader className="bg-muted/30 border-b border-border/50">
             <CardTitle>Avisos Recentes</CardTitle>
           </CardHeader>
