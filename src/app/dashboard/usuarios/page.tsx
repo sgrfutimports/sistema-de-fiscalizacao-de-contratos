@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 import { NovoUsuarioDialog } from '@/components/dashboard/novo-usuario-dialog'
 import { ResetarSenhaButton } from '@/components/dashboard/resetar-senha-button'
 import { EditarUsuarioDialog } from '@/components/dashboard/editar-usuario-dialog'
+import { ExcluirUsuarioButton } from '@/components/dashboard/excluir-usuario-button'
 
 
 export default async function UsuariosPage() {
@@ -152,6 +153,9 @@ export default async function UsuariosPage() {
                           <ResetarSenhaButton userId={usr.id} userName={`${usr.posto_graduacao} ${usr.nome_guerra}`} />
                         )}
                         <EditarUsuarioDialog usuario={usr} />
+                        {usr.id !== user?.id && (
+                          <ExcluirUsuarioButton userId={usr.id} userName={`${usr.posto_graduacao} ${usr.nome_guerra}`} />
+                        )}
                       </div>
                     </td>
                   </tr>

@@ -212,3 +212,99 @@ export async function updateUsuario(userId: string, formData: FormData) {
   return { success: true }
 }
 
+export async function deleteUsuario(userId: string) {
+  const adminAuthClient = createAdminClient()
+  const supabase = await createClient()
+
+  // Verify if current user is ADMIN
+  const { data: { user: currentUser } } = await supabase.auth.getUser()
+  if (!currentUser) return { error: 'Não autorizado.' }
+
+  const { data: currentUserData } = await adminAuthClient.from('users').select('perfil, cpf').eq('id', currentUser.id).single()
+  if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem excluir usuários.' }
+
+  // Prevent deleting oneself
+  if (userId === currentUser.id) {
+    return { error: 'Você não pode excluir a sua própria conta.' }
+  }
+
+  // 1. Verificações de vínculos antes de excluir
+  // Contratos como titular ou substituto
+  const { data: contracts, error: contractsError } = await adminAuthClient
+    .from('contratos')
+    .select('id, numero_contrato')
+    .or(`fiscal_titular_id.eq.${userId},fiscal_substituto_id.eq.${userId}`)
+
+  if (contractsError) {
+    console.error("Error checking contracts for deletion:", contractsError)
+    return { error: 'Erro ao verificar vínculos com contratos.' }
+  }
+
+  if (contracts && contracts.length > 0) {
+    const contratosStr = contracts.map(c => c.numero_contrato).join(', ')
+    return { 
+      error: `Não é possível excluir o militar porque ele está vinculado como fiscal em contrato(s) ativo(s) (${contratosStr}). Remova-o desses contratos antes de excluir, ou desative sua conta.` 
+    }
+  }
+
+  // Relatórios enviados
+  const { data: reports, error: reportsError } = await adminAuthClient
+    .from('relatorios')
+    .select('id')
+    .eq('fiscal_id', userId)
+    .limit(1)
+
+  if (reportsError) {
+    console.error("Error checking reports for deletion:", reportsError)
+    return { error: 'Erro ao verificar relatórios enviados.' }
+  }
+
+  if (reports && reports.length > 0) {
+    return { 
+      error: 'Não é possível excluir o militar porque ele possui relatórios históricos registrados no sistema. Por favor, desative a conta dele em "Editar" para impedir novos acessos.' 
+    }
+  }
+
+  // Se passou em todas as verificações, podemos excluir!
+  // Primeiro obter informações sobre quem está sendo excluído para fins de logs
+  const { data: targetUser } = await adminAuthClient
+    .from('users')
+    .select('nome, posto_graduacao, nome_guerra')
+    .eq('id', userId)
+    .single()
+
+  const targetName = targetUser ? `${targetUser.posto_graduacao} ${targetUser.nome_guerra}` : 'Usuário'
+
+  // 2. Excluir da tabela pública
+  const { error: dbDeleteError } = await adminAuthClient
+    .from('users')
+    .delete()
+    .eq('id', userId)
+
+  if (dbDeleteError) {
+    console.error("DB Delete Error:", dbDeleteError)
+    return { error: 'Erro ao excluir dados do usuário no banco.' }
+  }
+
+  // 3. Excluir do Supabase Auth
+  const { error: authDeleteError } = await adminAuthClient.auth.admin.deleteUser(userId)
+  if (authDeleteError) {
+    console.error("Auth Delete Error:", authDeleteError)
+    // Nota: Mesmo se falhar na auth por algum motivo, o usuário já saiu da tabela do banco, mas é bom retornar um erro se der pau
+    return { error: 'Erro ao excluir credenciais de acesso do militar.' }
+  }
+
+  // 4. Registrar no Log de auditoria
+  await adminAuthClient.from('logs').insert({
+    usuario: currentUser.id,
+    cpf: currentUserData.cpf || '',
+    perfil: 'ADMIN',
+    operacao: 'EXCLUIR_USUARIO',
+    descricao: `Militar ${targetName} foi excluído permanentemente do sistema.`
+  })
+
+  revalidatePath('/dashboard/usuarios')
+  return { success: true }
+}
+
+
