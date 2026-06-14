@@ -42,11 +42,11 @@ export default async function MeusContratosPage() {
         </div>
         {contratos && contratos.length > 0 && (
           <Link
-            href="/dashboard/relatorios/novo-unificado"
+            href={contratos.length === 1 ? `/dashboard/relatorios/novo/${contratos[0].id}` : "/dashboard/relatorios/novo-unificado"}
             className="inline-flex items-center gap-1.5 bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-colors shadow-md uppercase tracking-wider"
           >
             <PlusCircle className="h-4 w-4" />
-            Emitir Relatório Unificado
+            Emitir Relatório
           </Link>
         )}
       </div>
@@ -68,13 +68,12 @@ export default async function MeusContratosPage() {
                   <th className="px-6 py-4">Empresa</th>
                   <th className="px-6 py-4 text-center">Seu Papel</th>
                   <th className="px-6 py-4 text-center">Status</th>
-                  <th className="px-6 py-4 text-center">Ação</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#2a3441] bg-[#1b2331]">
                 {!contratos || contratos.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="text-center py-12 text-gray-400 font-medium">
+                    <td colSpan={4} className="text-center py-12 text-gray-400 font-medium">
                       Nenhum contrato vinculado a você no momento.
                     </td>
                   </tr>
@@ -103,15 +102,6 @@ export default async function MeusContratosPage() {
                           }`}>
                             {cont.status}
                           </span>
-                        </td>
-                        <td className="px-6 py-4 text-center">
-                          <Link 
-                            href={`/dashboard/relatorios/novo/${cont.id}`} 
-                            className="inline-flex items-center gap-1.5 bg-yellow-600 hover:bg-yellow-700 text-white px-3 py-1.5 rounded-lg font-bold text-xs transition-colors shadow-md uppercase"
-                          >
-                            <PlusCircle className="h-3.5 w-3.5" />
-                            Emitir Relatório
-                          </Link>
                         </td>
                       </tr>
                     )
@@ -150,7 +140,7 @@ export default async function MeusContratosPage() {
                       <div className="text-xs font-bold text-white mt-0.5">{cont.empresa}</div>
                     </div>
 
-                    <div className="flex justify-between items-center pt-2 border-t border-[#2a3441]/50">
+                    <div className="pt-2 border-t border-[#2a3441]/50">
                       <div>
                         <div className="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider">Papel</div>
                         <span className={`inline-block text-[0.6rem] font-bold px-2 py-0.5 rounded border uppercase tracking-wider mt-1 ${
@@ -159,14 +149,6 @@ export default async function MeusContratosPage() {
                           {papel}
                         </span>
                       </div>
-
-                      <Link 
-                        href={`/dashboard/relatorios/novo/${cont.id}`} 
-                        className="inline-flex items-center gap-1.5 bg-yellow-600 hover:bg-yellow-700 text-white px-3.5 py-2 rounded-xl font-bold text-[0.7rem] transition-colors shadow-md uppercase tracking-wider"
-                      >
-                        <PlusCircle className="h-3.5 w-3.5" />
-                        Emitir Relatório
-                      </Link>
                     </div>
                   </div>
                 )
