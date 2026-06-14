@@ -159,9 +159,9 @@ export default async function RelatoriosPage({
             <thead className="bg-[#131924] text-xs uppercase font-bold tracking-wider text-gray-400">
               <tr>
                 <th className="px-6 py-4">Contrato / Empresa</th>
-                <th className="px-6 py-4">Competência</th>
+                <th className="px-6 py-4 text-center">Competência</th>
                 <th className="px-6 py-4">Fiscal Responsável</th>
-                <th className="px-6 py-4">Status</th>
+                <th className="px-6 py-4 text-center">Status</th>
                 <th className="px-6 py-4 text-right">Controles Adm</th>
               </tr>
             </thead>
@@ -179,15 +179,15 @@ export default async function RelatoriosPage({
                       <div className="font-bold text-white mb-1">Contrato Nº {(rel.contrato as any)?.numero_contrato}</div>
                       <div className="text-[0.65rem] text-gray-500 tracking-wider">{(rel.contrato as any)?.empresa}</div>
                     </td>
-                    <td className="px-6 py-4 font-mono text-xs text-gray-400">
+                    <td className="px-6 py-4 font-mono text-xs text-gray-400 text-center">
                       {formatCompetencia(rel.competencia_mes, rel.competencia_ano)}
                     </td>
                     <td className="px-6 py-4">
                       <div className="font-bold text-white mb-1">{(rel.fiscal as any)?.nome || 'Não definido'}</div>
                       <div className="text-[0.65rem] text-gray-500 tracking-wider">CPF: {formatCPF((rel.fiscal as any)?.cpf)}</div>
                     </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
                         {rel.status === 'APROVADO' && <div className="h-2 w-2 rounded-full bg-green-500"></div>}
                         {rel.status === 'EM_ANALISE' && <div className="h-2 w-2 rounded-full bg-blue-500"></div>}
                         {rel.status === 'ENVIADO' && <div className="h-2 w-2 rounded-full bg-yellow-500"></div>}
