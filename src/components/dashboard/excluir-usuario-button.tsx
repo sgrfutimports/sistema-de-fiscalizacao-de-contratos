@@ -39,9 +39,9 @@ export function ExcluirUsuarioButton({ userId, userName }: ExcluirUsuarioButtonP
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger 
-        className="flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold text-red-500 border border-red-500/50 rounded hover:bg-red-500/10 transition-colors uppercase tracking-wider cursor-pointer bg-transparent"
+        className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-wider text-red-400 border border-red-500/30 rounded-xl bg-red-500/10 hover:bg-red-500/20 hover:border-red-500/50 transition-all shadow-sm cursor-pointer whitespace-nowrap h-8"
       >
-        <Trash2 className="h-3 w-3" />
+        <Trash2 className="h-3.5 w-3.5" />
         Excluir
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px] border-red-500/20 bg-card">

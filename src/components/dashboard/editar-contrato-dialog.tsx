@@ -95,8 +95,8 @@ export function EditarContratoDialog({ contrato, fiscais }: { contrato: Contrato
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button size="sm" variant="ghost" className="flex items-center gap-1 text-xs border border-[#2a3441] text-gray-300 hover:bg-[#202a3a] hover:text-white transition-colors">
-            <Edit className="h-3.5 w-3.5 text-yellow-500" />
+          <Button size="sm" variant="ghost" className="flex items-center justify-center gap-1.5 px-3 py-1.5 text-[0.68rem] font-black uppercase tracking-wider text-blue-400 border border-blue-500/30 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 hover:border-blue-500/50 transition-all shadow-sm cursor-pointer whitespace-nowrap h-8">
+            <Edit className="h-3.5 w-3.5" />
             Editar
           </Button>
         }

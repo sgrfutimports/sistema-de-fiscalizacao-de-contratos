@@ -89,18 +89,18 @@ export function FilaActions({ item }: FilaActionsProps) {
         <td className="px-4 py-3">
           <div className="flex items-center gap-2 justify-end">
             <Link href={`/dashboard/relatorios/${item.id}`}
-              className="p-1.5 rounded-lg border border-[#2a3441] text-gray-400 hover:text-white hover:border-gray-400 transition-colors"
+              className="flex items-center justify-center p-1.5 h-8 w-8 rounded-xl border border-[#2a3441] bg-[#1b2331] text-gray-300 hover:text-white hover:border-gray-400 transition-all"
               title="Visualizar relatório">
               <Eye className="h-4 w-4" />
             </Link>
             <Button size="sm"
               onClick={() => { setParecer(''); setParecerError(''); setDialog('APROVAR') }}
-              className="bg-green-700 hover:bg-green-600 text-white font-bold text-xs h-7 px-3 gap-1.5">
+              className="bg-green-500/10 hover:bg-green-500/20 text-green-400 border border-green-500/30 font-black text-xs h-8 px-3 gap-1.5 rounded-xl uppercase tracking-wider transition-all">
               <CheckCircle2 className="h-3.5 w-3.5" /> Aprovar
             </Button>
             <Button size="sm" variant="destructive"
               onClick={() => { setParecer(''); setParecerError(''); setDialog('DEVOLVER') }}
-              className="font-bold text-xs h-7 px-3 gap-1.5">
+              className="bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/30 font-black text-xs h-8 px-3 gap-1.5 rounded-xl uppercase tracking-wider transition-all">
               <XCircle className="h-3.5 w-3.5" /> Devolver
             </Button>
           </div>
