@@ -7,7 +7,6 @@ import { ArrowLeft, CheckCircle2, FileText, AlertTriangle, Printer } from 'lucid
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
-import { AnaliseRelatorioForm } from '@/components/dashboard/analise-relatorio-form'
 import { NovoRelatorioForm } from '@/components/dashboard/novo-relatorio-form'
 
 export default async function DetalhesRelatorioPage({ params }: { params: Promise<{ id: string }> }) {
@@ -218,22 +217,18 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
             </CardContent>
           </Card>
 
-          {/* Formulário de Parecer do Admin */}
-          {isAdmin ? (
-            <AnaliseRelatorioForm relatorioId={relatorio.id} statusAtual={relatorio.status} parecerAtual={relatorio.parecer_administrador} />
-          ) : (
-            relatorio.parecer_administrador && (
-              <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
-                <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
-                  <CardTitle className="text-base font-bold text-white">Parecer do Ordenador / Gestor</CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md whitespace-pre-wrap text-white text-sm">
-                    {relatorio.parecer_administrador}
-                  </div>
-                </CardContent>
-              </Card>
-            )
+          {/* Parecer do Ordenador / Gestor (se houver) */}
+          {relatorio.parecer_administrador && (
+            <Card className="shadow-lg border-[#2a3441] bg-[#1b2331] overflow-hidden text-white rounded-xl">
+              <CardHeader className="pb-4 border-b border-[#2a3441] bg-[#131924]">
+                <CardTitle className="text-base font-bold text-white">Parecer do Ordenador / Gestor</CardTitle>
+              </CardHeader>
+              <CardContent className="p-6">
+                <div className="bg-[#131924] border border-[#2a3441] p-4 rounded-md whitespace-pre-wrap text-white text-sm">
+                  {relatorio.parecer_administrador}
+                </div>
+              </CardContent>
+            </Card>
           )}
         </>
       )}

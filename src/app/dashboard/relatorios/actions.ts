@@ -250,3 +250,49 @@ export async function submitRelatoriosUnificados(
 
   return { success: true }
 }
+
+export async function deleteRelatorio(id: string) {
+  const supabase = await createClient()
+  const supabaseAdmin = createAdminClient()
+
+  // Verificação de segurança: apenas admin
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const { data: currentUser } = await supabaseAdmin.from('users').select('perfil, cpf').eq('id', user.id).single()
+  if (currentUser?.perfil !== 'ADMIN') {
+    return { error: 'Apenas administradores podem excluir relatórios do histórico.' }
+  }
+
+  // Primeiro obter detalhes do relatório para log de auditoria
+  const { data: rel } = await supabaseAdmin
+    .from('relatorios')
+    .select('competencia_mes, competencia_ano, contrato:contratos(numero_contrato)')
+    .eq('id', id)
+    .single()
+
+  const { error } = await supabaseAdmin
+    .from('relatorios')
+    .delete()
+    .eq('id', id)
+
+  if (error) {
+    console.error('Erro ao deletar relatório:', error)
+    return { error: 'Erro ao excluir o relatório do banco de dados.' }
+  }
+
+  // Registrar no Log de auditoria
+  const contratoStr = (rel?.contrato as any)?.numero_contrato ? ` do contrato ${(rel?.contrato as any).numero_contrato}` : ''
+  await supabaseAdmin.from('logs').insert({
+    usuario: user.id,
+    cpf: currentUser.cpf || 'ADMIN',
+    perfil: 'ADMIN',
+    operacao: 'EXCLUIR_RELATORIO',
+    descricao: `Relatório de competência ${rel?.competencia_mes}/${rel?.competencia_ano}${contratoStr} foi excluído permanentemente.`
+  })
+
+  revalidatePath('/dashboard/relatorios')
+  revalidatePath('/dashboard/fila')
+  return { success: true }
+}
+

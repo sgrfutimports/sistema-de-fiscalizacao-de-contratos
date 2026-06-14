@@ -4,6 +4,7 @@ import { Calendar, Printer, Eye } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { FiltrosAuditoria } from '@/components/dashboard/filtros-auditoria'
+import { ExcluirRelatorioButton } from '@/components/dashboard/excluir-relatorio-button'
 
 export default async function RelatoriosPage({
   searchParams,
@@ -150,7 +151,7 @@ export default async function RelatoriosPage({
                 <th className="px-6 py-4">Competência</th>
                 <th className="px-6 py-4">Fiscal Responsável</th>
                 <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Ação de Certidão</th>
+                <th className="px-6 py-4 text-right">Controles Adm</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#2a3441]">
@@ -187,13 +188,17 @@ export default async function RelatoriosPage({
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex justify-end">
-                        <Link href={`/dashboard/relatorios/${rel.id}`} title="Analisar Relatório">
+                      <div className="flex justify-end gap-2">
+                        <Link href={`/dashboard/relatorios/${rel.id}`} title={rel.status === 'APROVADO' ? "Visualizar Certidão" : "Visualizar Relatório"}>
                           <button className="flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold text-yellow-500 border border-yellow-500/50 rounded hover:bg-yellow-500/10 transition-colors uppercase tracking-wider">
                             {rel.status === 'APROVADO' ? <Printer className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
-                            {rel.status === 'APROVADO' ? 'Certidão / PDF' : 'Analisar'}
+                            {rel.status === 'APROVADO' ? 'Certidão / PDF' : 'Visualizar'}
                           </button>
                         </Link>
+                        <ExcluirRelatorioButton 
+                          relatorioId={rel.id} 
+                          label={`Contrato Nº ${(rel.contrato as any)?.numero_contrato} - Competência ${formatCompetencia(rel.competencia_mes, rel.competencia_ano)}`} 
+                        />
                       </div>
                     </td>
                   </tr>
