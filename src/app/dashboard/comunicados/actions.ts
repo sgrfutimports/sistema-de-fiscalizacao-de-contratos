@@ -40,7 +40,7 @@ export async function createComunicado(formData: FormData) {
   return { success: true }
 }
 
-export async function deleteComunicado(id: string) {
+export async function deleteComunicado(id: string, passwordConfirm: string) {
   const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
@@ -50,6 +50,20 @@ export async function deleteComunicado(id: string) {
   const { data: currentUserData } = await supabaseAdmin.from('users').select('perfil').eq('id', user.id).single()
   if (currentUserData?.perfil !== 'ADMIN') {
     return { error: 'Apenas administradores podem gerenciar comunicados.' }
+  }
+
+  // Validar senha de confirmação do administrador
+  if (!passwordConfirm) {
+    return { error: 'A senha de confirmação é obrigatória.' }
+  }
+
+  const { error: verifyError } = await supabase.auth.signInWithPassword({
+    email: user.email || '',
+    password: passwordConfirm
+  })
+
+  if (verifyError) {
+    return { error: 'Senha de confirmação incorreta. Exclusão não autorizada.' }
   }
 
   const { error: dbError } = await supabaseAdmin.from('comunicados').delete().eq('id', id)

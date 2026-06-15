@@ -8,6 +8,14 @@ import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { toast } from 'sonner'
 import { AlertCircle, Trash2, Megaphone } from 'lucide-react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 
 interface Comunicado {
   id: string
@@ -20,6 +28,9 @@ interface Comunicado {
 export function GerenciarComunicados({ comunicados }: { comunicados: Comunicado[] }) {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [deleteId, setDeleteId] = useState<string | null>(null)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [confirmPassword, setConfirmPassword] = useState('')
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -37,15 +48,27 @@ export function GerenciarComunicados({ comunicados }: { comunicados: Comunicado[
     })
   }
 
-  function handleDelete(id: string) {
-    if (!confirm('Deseja realmente remover este comunicado?')) return
+  function openDeleteDialog(id: string) {
+    setDeleteId(id)
+    setDeleteOpen(true)
+  }
+
+  function handleConfirmDelete() {
+    if (!deleteId) return
+    if (!confirmPassword) {
+      toast.error('Por favor, insira sua senha de confirmação.')
+      return
+    }
 
     startTransition(async () => {
-      const result = await deleteComunicado(id)
+      const result = await deleteComunicado(deleteId, confirmPassword)
       if (result?.error) {
         toast.error(result.error)
       } else {
         toast.success('Comunicado removido com sucesso!')
+        setDeleteOpen(false)
+        setDeleteId(null)
+        setConfirmPassword('')
       }
     })
   }
@@ -127,8 +150,8 @@ export function GerenciarComunicados({ comunicados }: { comunicados: Comunicado[
                   </div>
                 </div>
                 <button 
-                  onClick={() => handleDelete(com.id)}
-                  className="p-1.5 rounded-lg border border-[#2a3441] text-red-400 hover:bg-red-500/10 hover:text-red-500 transition-colors shrink-0"
+                  onClick={() => openDeleteDialog(com.id)}
+                  className="p-1.5 rounded-lg border border-[#2a3441] text-red-400 hover:bg-red-500/10 hover:text-red-500 transition-colors shrink-0 cursor-pointer"
                   title="Excluir comunicado"
                 >
                   <Trash2 className="h-4 w-4" />
@@ -138,6 +161,52 @@ export function GerenciarComunicados({ comunicados }: { comunicados: Comunicado[
           )}
         </CardContent>
       </Card>
+
+      <Dialog open={deleteOpen} onOpenChange={(val) => { setDeleteOpen(val); if (!val) { setDeleteId(null); setConfirmPassword(''); } }}>
+        <DialogContent className="sm:max-w-[425px] border-red-500/20 bg-[#1b2331] text-white">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold text-white flex items-center gap-2">
+              <Megaphone className="h-5 w-5 text-red-500" />
+              Confirmar Exclusão do Comunicado
+            </DialogTitle>
+            <DialogDescription className="text-gray-400 text-xs leading-relaxed mt-2">
+              Tem certeza que deseja excluir permanentemente este comunicado?
+              <br /><br />
+              Esta ação é **irreversível** e removerá o comunicado do mural de todos os fiscais.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-2 py-3 border-t border-[#2a3441]/50 mt-4">
+            <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider block">
+              Sua Senha de Administrador para Confirmação *
+            </label>
+            <input
+              type="password"
+              autoComplete="new-password"
+              placeholder="Digite sua senha"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              disabled={isPending}
+              className="w-full bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border border-[#2a3441] focus:border-red-500/50 outline-none transition-all shadow-inner"
+            />
+          </div>
+
+          <DialogFooter className="mt-4 flex justify-end gap-2">
+            <Button variant="destructive" size="sm" type="button" onClick={() => setDeleteOpen(false)} disabled={isPending} className="bg-red-600 hover:bg-red-700 text-white font-bold border-none shadow-sm transition-all">
+              Cancelar
+            </Button>
+            <Button 
+              variant="destructive" 
+              size="sm" 
+              onClick={handleConfirmDelete} 
+              disabled={isPending || !confirmPassword}
+              className="bg-red-600 hover:bg-red-700 text-white border-none disabled:opacity-50"
+            >
+              {isPending ? 'Excluindo...' : 'Confirmar Exclusão'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
     </div>
   )

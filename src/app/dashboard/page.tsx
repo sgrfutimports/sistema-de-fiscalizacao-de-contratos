@@ -13,25 +13,68 @@ export default async function DashboardPage() {
 
   // Buscar usuário atual para definir se é admin ou fiscal
   const { data: { user } } = await supabase.auth.getUser()
-  const { data: userData } = await supabaseAdmin.from('users').select('perfil').eq('id', user?.id).single()
+  const { data: userData } = await supabaseAdmin
+    .from('users')
+    .select('perfil, posto_graduacao, nome_guerra')
+    .eq('id', user?.id)
+    .single()
 
   const isAdmin = userData?.perfil === 'ADMIN'
 
   // 1. Contratos Ativos
   let contratosAtivosCount = 0
+  let contratosAtivos: any[] = []
   if (isAdmin) {
-    const { count } = await supabaseAdmin
+    const { data, count } = await supabaseAdmin
       .from('contratos')
-      .select('id', { count: 'exact', head: true })
+      .select(`
+        id,
+        numero_contrato,
+        empresa,
+        objeto,
+        valor,
+        status,
+        data_termino,
+        titular:users!fiscal_titular_id (
+          posto_graduacao,
+          nome_guerra
+        ),
+        substituto:users!fiscal_substituto_id (
+          posto_graduacao,
+          nome_guerra
+        )
+      `, { count: 'exact' })
       .eq('status', 'ATIVO')
+      .order('created_at', { ascending: false })
     contratosAtivosCount = count || 0
+    contratosAtivos = data || []
   } else {
-    const { count } = await supabaseAdmin
+    const { data, count } = await supabaseAdmin
       .from('contratos')
-      .select('id', { count: 'exact', head: true })
+      .select(`
+        id,
+        numero_contrato,
+        empresa,
+        objeto,
+        valor,
+        status,
+        data_termino,
+        fiscal_titular_id,
+        fiscal_substituto_id,
+        titular:users!fiscal_titular_id (
+          posto_graduacao,
+          nome_guerra
+        ),
+        substituto:users!fiscal_substituto_id (
+          posto_graduacao,
+          nome_guerra
+        )
+      `, { count: 'exact' })
       .eq('status', 'ATIVO')
       .or(`fiscal_titular_id.eq.${user?.id},fiscal_substituto_id.eq.${user?.id}`)
+      .order('created_at', { ascending: false })
     contratosAtivosCount = count || 0
+    contratosAtivos = data || []
   }
 
   // 2. Relatórios Pendentes
@@ -125,7 +168,10 @@ export default async function DashboardPage() {
       limpo = '87999334728' // Fallback
     }
     const fone = limpo.startsWith('55') ? limpo : `55${limpo}`
-    const texto = encodeURIComponent(`Olá, sou Fiscal de Contrato do 71º BI Mtz e estou com uma dúvida no Sistema de Fiscalização.`)
+    const rankName = userData?.posto_graduacao && userData?.nome_guerra
+      ? `${userData.posto_graduacao} ${userData.nome_guerra}`
+      : '(posto/graduação + nome de guerra)'
+    const texto = encodeURIComponent(`Olá, sou ${rankName}, Fiscal de Contrato do 71º BI Mtz e estou com uma dúvida no Sistema de Fiscalização, pode me ajudar?`)
     return `https://wa.me/${fone}?text=${texto}`
   }
 
@@ -226,10 +272,76 @@ export default async function DashboardPage() {
           <CardHeader className="bg-muted/30 border-b border-border/50">
             <CardTitle>Visão Geral de Contratos</CardTitle>
           </CardHeader>
-          <CardContent className="p-6 flex flex-col justify-center items-center h-[300px] text-muted-foreground text-center">
-            <FileSignature className="h-10 w-10 text-primary mb-3 opacity-80" />
-            <p className="font-bold text-foreground">Distribuição de Contratos Ativos</p>
-            <p className="text-xs mt-1">Você possui {contratosAtivosCount} contrato(s) ativo(s) vinculado(s) à sua conta no momento.</p>
+          <CardContent className="p-4 h-[300px]">
+            {contratosAtivos.length === 0 ? (
+              <div className="flex flex-col justify-center items-center h-full text-muted-foreground text-center p-6">
+                <FileSignature className="h-10 w-10 text-primary mb-3 opacity-80" />
+                <p className="font-bold text-foreground">Distribuição de Contratos Ativos</p>
+                <p className="text-xs mt-1">Você não possui nenhum contrato ativo vinculado à sua conta no momento.</p>
+              </div>
+            ) : (
+              <div className="flex flex-col justify-start space-y-3 h-full overflow-y-auto pr-1">
+                {contratosAtivos.map((contrato) => {
+                  const formatCurrency = (val: number) => {
+                    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0)
+                  }
+                  const isTitular = !isAdmin && contrato.fiscal_titular_id === user?.id
+                  const roleLabel = isAdmin 
+                    ? null 
+                    : isTitular ? 'Titular' : 'Substituto'
+
+                  const dataTerminoFormatada = contrato.data_termino 
+                    ? contrato.data_termino.split('-').reverse().join('/')
+                    : 'Não informada'
+
+                  return (
+                    <div key={contrato.id} className="p-3.5 rounded-xl bg-muted/40 border border-border/50 space-y-2.5 hover:bg-muted/60 transition-colors">
+                      <div className="flex justify-between items-center gap-2 flex-wrap">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-[0.7rem] font-extrabold text-yellow-600 bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/20 uppercase tracking-wider">
+                            CONTRATO Nº {contrato.numero_contrato}
+                          </span>
+                          {roleLabel && (
+                            <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
+                              roleLabel === 'Titular' ? 'border-green-500 text-green-400 bg-green-500/10' : 'border-yellow-500 text-yellow-400 bg-yellow-500/10'
+                            }`}>
+                              {roleLabel}
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-xs font-black text-yellow-500">{formatCurrency(contrato.valor)}</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <div className="space-y-0.5">
+                          <div className="text-[0.65rem] font-semibold text-gray-400 uppercase tracking-wider">Empresa</div>
+                          <div className="font-bold text-foreground truncate max-w-[200px]" title={contrato.empresa}>{contrato.empresa}</div>
+                        </div>
+                        <div className="space-y-0.5 sm:text-right">
+                          <div className="text-[0.65rem] font-semibold text-gray-400 uppercase tracking-wider">Vigência até</div>
+                          <div className="font-bold text-foreground">{dataTerminoFormatada}</div>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 border-t border-border/30 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[0.7rem] text-muted-foreground">
+                        <div>
+                          <span className="font-semibold block text-[0.6rem] uppercase tracking-wider text-gray-500">Fiscal Titular</span>
+                          <span className="font-bold text-foreground block truncate">
+                            {contrato.titular ? `${contrato.titular.posto_graduacao} ${contrato.titular.nome_guerra}` : 'Não vinculado'}
+                          </span>
+                        </div>
+                        <div>
+                          <span className="font-semibold block text-[0.6rem] uppercase tracking-wider text-gray-500">Fiscal Substituto</span>
+                          <span className="font-bold text-foreground block truncate">
+                            {contrato.substituto ? `${contrato.substituto.posto_graduacao} ${contrato.substituto.nome_guerra}` : 'Não vinculado'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
 

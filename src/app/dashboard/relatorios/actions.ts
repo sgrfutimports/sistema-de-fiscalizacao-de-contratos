@@ -251,7 +251,7 @@ export async function submitRelatoriosUnificados(
   return { success: true }
 }
 
-export async function deleteRelatorio(id: string) {
+export async function deleteRelatorio(id: string, passwordConfirm: string) {
   const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
@@ -262,6 +262,20 @@ export async function deleteRelatorio(id: string) {
   const { data: currentUser } = await supabaseAdmin.from('users').select('perfil, cpf').eq('id', user.id).single()
   if (currentUser?.perfil !== 'ADMIN') {
     return { error: 'Apenas administradores podem excluir relatórios do histórico.' }
+  }
+
+  // Validar senha de confirmação do administrador
+  if (!passwordConfirm) {
+    return { error: 'A senha de confirmação é obrigatória.' }
+  }
+
+  const { error: verifyError } = await supabase.auth.signInWithPassword({
+    email: user.email || '',
+    password: passwordConfirm
+  })
+
+  if (verifyError) {
+    return { error: 'Senha de confirmação incorreta. Exclusão não autorizada.' }
   }
 
   // Primeiro obter detalhes do relatório para log de auditoria

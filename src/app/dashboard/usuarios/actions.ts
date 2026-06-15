@@ -212,7 +212,7 @@ export async function updateUsuario(userId: string, formData: FormData) {
   return { success: true }
 }
 
-export async function deleteUsuario(userId: string) {
+export async function deleteUsuario(userId: string, passwordConfirm: string) {
   const adminAuthClient = createAdminClient()
   const supabase = await createClient()
 
@@ -222,6 +222,20 @@ export async function deleteUsuario(userId: string) {
 
   const { data: currentUserData } = await adminAuthClient.from('users').select('perfil, cpf').eq('id', currentUser.id).single()
   if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem excluir usuários.' }
+
+  // Validar senha de confirmação do administrador
+  if (!passwordConfirm) {
+    return { error: 'A senha de confirmação é obrigatória.' }
+  }
+
+  const { error: verifyError } = await supabase.auth.signInWithPassword({
+    email: currentUser.email || '',
+    password: passwordConfirm
+  })
+
+  if (verifyError) {
+    return { error: 'Senha de confirmação incorreta. Exclusão não autorizada.' }
+  }
 
   // Prevent deleting oneself
   if (userId === currentUser.id) {

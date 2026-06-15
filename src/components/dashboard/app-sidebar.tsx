@@ -5,7 +5,7 @@ import {
   SidebarContent,
   SidebarHeader,
 } from '@/components/ui/sidebar'
-import { BookOpen, FileSignature, Calendar, ClipboardList, Users, CalendarClock, Terminal, LayoutDashboard, FolderArchive } from 'lucide-react'
+import { BookOpen, FileSignature, Calendar, ClipboardList, Users, CalendarClock, Terminal, LayoutDashboard, FolderArchive, KeyRound } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -139,6 +139,22 @@ export function AppSidebar({ userNome, userPerfil }: { userNome?: string; userPe
               </div>
             </>
           )}
+          {/* Alterar Senha - disponível para todos os perfis */}
+          <div className="mt-8 border-t border-[#2a4d2c]/50 pt-4">
+            <Link href="/dashboard/perfil" className="w-full" title="Alterar Senha">
+              <div
+                className={`flex w-full items-center gap-3 px-3 py-3 rounded-lg transition-all ${
+                  pathname === '/dashboard/perfil'
+                    ? 'bg-[#1b262c]/40 border-l-4 border-yellow-500 text-white font-bold'
+                    : 'text-[#8ca190] hover:text-white hover:bg-[#1b262c]/20 border-l-4 border-transparent font-semibold'
+                }`}
+              >
+                <KeyRound className={`h-5 w-5 shrink-0 ${pathname === '/dashboard/perfil' ? 'text-white' : 'text-[#8ca190]'}`} />
+                <span className="text-xs uppercase tracking-wider">Alterar Senha</span>
+              </div>
+            </Link>
+          </div>
+
         </SidebarContent>
 
       </div>
