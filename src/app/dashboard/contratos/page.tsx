@@ -60,15 +60,15 @@ export default async function ContratosPage() {
   }
 
   return (
-    <div className="space-y-8 bg-white p-6 rounded-xl shadow-sm min-h-full">
+    <div className="space-y-8">
       {/* Cabeçalho Oficial */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <h1 className="text-2xl font-black text-[#133215] dark:text-yellow-500 flex items-center gap-2">
             <FileText className="h-6 w-6 text-yellow-500" />
             Contratos Administrativos
           </h1>
-          <p className="text-sm text-gray-500 mt-1 font-medium">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
             Gestão e atribuição de encargo de fiscalização aos militares do batalhão.
           </p>
         </div>
@@ -79,22 +79,22 @@ export default async function ContratosPage() {
       </div>
 
       {/* Barra de Pesquisa e Filtros */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between border rounded-lg p-3 bg-white shadow-sm">
+      <div className="flex flex-col md:flex-row gap-4 items-center justify-between border border-gray-200 dark:border-gray-800 rounded-xl p-3 bg-white dark:bg-card shadow-sm">
         <div className="relative w-full md:w-[400px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 dark:text-gray-500" />
           <input 
             type="text" 
             placeholder="Buscar por Nº Contrato, Empresa, Objeto ou Fiscal..."
-            className="w-full pl-10 pr-4 py-2 border-none outline-none text-sm text-gray-700 bg-transparent placeholder-gray-400"
+            className="w-full pl-10 pr-4 py-2 border-none outline-none text-sm text-gray-700 dark:text-white bg-transparent placeholder-gray-400"
           />
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0">
-          <span className="text-xs font-bold text-gray-700 whitespace-nowrap">FILTRO DE STATUS:</span>
+          <span className="text-xs font-bold text-gray-700 dark:text-gray-300 whitespace-nowrap">FILTRO DE STATUS:</span>
           <div className="flex items-center gap-2">
             <button className="text-xs font-bold bg-[#133215] text-white px-3 py-1.5 rounded-md">TODOS</button>
-            <button className="text-xs font-bold text-gray-500 hover:bg-gray-100 px-3 py-1.5 rounded-md transition-colors">ATIVO</button>
-            <button className="text-xs font-bold text-gray-500 hover:bg-gray-100 px-3 py-1.5 rounded-md transition-colors">SUSPENSO</button>
-            <button className="text-xs font-bold text-gray-500 hover:bg-gray-100 px-3 py-1.5 rounded-md transition-colors">ENCERRADO</button>
+            <button className="text-xs font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-1.5 rounded-md transition-colors">ATIVO</button>
+            <button className="text-xs font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-1.5 rounded-md transition-colors">SUSPENSO</button>
+            <button className="text-xs font-bold text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 px-3 py-1.5 rounded-md transition-colors">ENCERRADO</button>
           </div>
         </div>
       </div>
@@ -102,18 +102,18 @@ export default async function ContratosPage() {
       {/* Grid de Cards de Contrato */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {!contratos || contratos.length === 0 ? (
-          <div className="col-span-full text-center py-12 text-gray-500 font-medium border-2 border-dashed rounded-xl">
+          <div className="col-span-full text-center py-12 text-gray-500 dark:text-gray-400 font-medium border-2 border-dashed rounded-xl border-gray-200 dark:border-gray-800 bg-white dark:bg-card">
             Nenhum contrato cadastrado.
           </div>
         ) : (
           contratos.map((cont) => (
-            <div key={cont.id} className="bg-[#1b2331] rounded-xl border border-[#2a3441] overflow-hidden shadow-lg hover:shadow-xl transition-all p-6 flex flex-col justify-between">
+            <div key={cont.id} className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm hover:shadow-md transition-all p-6 flex flex-col justify-between">
               <div>
                 {/* Header do Card */}
                 <div className="flex justify-between items-start mb-6">
                   <div>
-                    <span className="text-[0.7rem] font-bold text-yellow-500 tracking-wider">CONTRATO ADM.</span>
-                    <h3 className="text-xl font-bold text-white mt-0.5">Nº {cont.numero_contrato}</h3>
+                    <span className="text-[0.7rem] font-bold text-yellow-600 dark:text-yellow-500 tracking-wider">CONTRATO ADM.</span>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mt-0.5">Nº {cont.numero_contrato}</h3>
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className={`font-bold px-3 py-1 uppercase tracking-wide text-[0.65rem] border ${getStatusColor(cont.status)}`}>
@@ -126,32 +126,32 @@ export default async function ContratosPage() {
                 {/* Corpo do Card */}
                 <div className="space-y-5">
                   <div>
-                    <span className="text-[0.7rem] font-bold text-gray-400 tracking-wider uppercase">Empresa Contratada</span>
-                    <p className="font-extrabold text-white text-base mt-0.5">{cont.empresa}</p>
-                    <p className="text-[0.75rem] text-yellow-500/90 font-mono mt-0.5">CNPJ: {cont.cnpj || 'Não informado'}</p>
+                    <span className="text-[0.7rem] font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase">Empresa Contratada</span>
+                    <p className="font-extrabold text-gray-900 dark:text-white text-base mt-0.5">{cont.empresa}</p>
+                    <p className="text-[0.75rem] text-yellow-600 dark:text-yellow-500/90 font-mono mt-0.5">CNPJ: {cont.cnpj || 'Não informado'}</p>
                   </div>
                   
                   <div>
-                    <span className="text-[0.7rem] font-bold text-gray-400 tracking-wider uppercase">Objeto do Contrato</span>
-                    <p className="text-sm text-gray-300 leading-relaxed mt-1 font-medium">{cont.objeto}</p>
+                    <span className="text-[0.7rem] font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase">Objeto do Contrato</span>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed mt-1 font-medium">{cont.objeto}</p>
                   </div>
 
                   {/* Fiscais do Contrato */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 rounded-lg bg-[#131924]/50 border border-[#2a3441]/50">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 p-3 rounded-lg bg-slate-50 dark:bg-[#131924]/50 border border-gray-100 dark:border-[#2a3441]/50">
                     <div className="flex items-start gap-2">
-                      <Shield className="h-4 w-4 text-green-500 shrink-0 mt-0.5" />
+                      <Shield className="h-4 w-4 text-green-600 dark:text-green-500 shrink-0 mt-0.5" />
                       <div>
-                        <span className="text-[0.65rem] font-bold text-gray-400 block uppercase">Fiscal Titular</span>
-                        <span className="text-xs font-bold text-white">
+                        <span className="text-[0.65rem] font-bold text-gray-400 dark:text-gray-500 block uppercase">Fiscal Titular</span>
+                        <span className="text-xs font-bold text-gray-800 dark:text-white">
                           {cont.titular ? `${cont.titular.posto_graduacao} ${cont.titular.nome_guerra}` : 'Não vinculado'}
                         </span>
                       </div>
                     </div>
                     <div className="flex items-start gap-2">
-                      <User className="h-4 w-4 text-yellow-500 shrink-0 mt-0.5" />
+                      <User className="h-4 w-4 text-yellow-600 dark:text-yellow-500 shrink-0 mt-0.5" />
                       <div>
-                        <span className="text-[0.65rem] font-bold text-gray-400 block uppercase">Fiscal Substituto</span>
-                        <span className="text-xs font-bold text-white">
+                        <span className="text-[0.65rem] font-bold text-gray-400 dark:text-gray-500 block uppercase">Fiscal Substituto</span>
+                        <span className="text-xs font-bold text-gray-800 dark:text-white">
                           {cont.substituto ? `${cont.substituto.posto_graduacao} ${cont.substituto.nome_guerra}` : 'Não vinculado'}
                         </span>
                       </div>
@@ -160,15 +160,15 @@ export default async function ContratosPage() {
                 </div>
               </div>
 
-              <div className="flex justify-between items-end pt-4 border-t border-[#2a3441] mt-6">
+              <div className="flex justify-between items-end pt-4 border-t border-gray-100 dark:border-gray-800 mt-6">
                 <div>
-                  <span className="text-[0.7rem] font-bold text-gray-400 tracking-wider uppercase">Valor Global</span>
-                  <p className="font-extrabold text-yellow-500 text-lg mt-0.5">{formatCurrency(cont.valor)}</p>
+                  <span className="text-[0.7rem] font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase">Valor Global</span>
+                  <p className="font-extrabold text-yellow-600 dark:text-yellow-500 text-lg mt-0.5">{formatCurrency(cont.valor)}</p>
                 </div>
                 {cont.processo_administrativo && (
                   <div className="text-right">
-                    <span className="text-[0.7rem] font-bold text-gray-400 tracking-wider uppercase">Processo</span>
-                    <p className="font-bold text-white text-xs mt-0.5">{cont.processo_administrativo}</p>
+                    <span className="text-[0.7rem] font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase">Processo</span>
+                    <p className="font-bold text-gray-800 dark:text-white text-xs mt-0.5">{cont.processo_administrativo}</p>
                   </div>
                 )}
               </div>

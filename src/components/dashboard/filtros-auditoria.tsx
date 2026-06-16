@@ -79,10 +79,10 @@ export function FiltrosAuditoria({ contratos, anos, initialFilters }: FiltrosAud
   ]
 
   return (
-    <div className="bg-[#1b2331] rounded-xl p-5 shadow-md border border-[#2a3441]">
+    <div className="bg-white dark:bg-card rounded-xl p-5 shadow-sm border border-gray-200 dark:border-gray-800">
       <div className="flex items-center gap-2 mb-4">
-        <Filter className="h-4 w-4 text-yellow-500" />
-        <h3 className="text-sm font-bold text-yellow-500 uppercase tracking-wider">Filtros de Auditoria</h3>
+        <Filter className="h-4 w-4 text-yellow-600 dark:text-yellow-500" />
+        <h3 className="text-sm font-bold text-yellow-600 dark:text-yellow-500 uppercase tracking-wider">Filtros de Auditoria</h3>
       </div>
       
       <div className="flex flex-col lg:flex-row gap-4 items-end">
@@ -90,11 +90,11 @@ export function FiltrosAuditoria({ contratos, anos, initialFilters }: FiltrosAud
           
           {/* Situação do Relato */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Situação do Relato</label>
+            <label className="text-[0.65rem] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center block w-full">Situação do Relato</label>
             <select 
               value={initialFilters.status || '-- Todos --'}
               onChange={(e) => updateQueryParam('status', e.target.value)}
-              className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full text-center cursor-pointer"
+              className="bg-slate-50 dark:bg-[#131924] text-gray-700 dark:text-gray-300 text-xs px-3 py-2 rounded-lg border border-gray-200 dark:border-[#2a3441]/60 outline-none w-full text-center cursor-pointer"
             >
               <option value="-- Todos --">-- Todos --</option>
               {statusOptions.map((opt) => (
@@ -105,11 +105,11 @@ export function FiltrosAuditoria({ contratos, anos, initialFilters }: FiltrosAud
           
           {/* Contrato Específico */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Contrato Específico</label>
+            <label className="text-[0.65rem] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center block w-full">Contrato Específico</label>
             <select 
               value={initialFilters.contratoId || '-- Todos --'}
               onChange={(e) => updateQueryParam('contratoId', e.target.value)}
-              className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full text-center cursor-pointer"
+              className="bg-slate-50 dark:bg-[#131924] text-gray-700 dark:text-gray-300 text-xs px-3 py-2 rounded-lg border border-gray-200 dark:border-[#2a3441]/60 outline-none w-full text-center cursor-pointer"
             >
               <option value="-- Todos --">-- Todos --</option>
               {contratos.map((c) => (
@@ -122,11 +122,11 @@ export function FiltrosAuditoria({ contratos, anos, initialFilters }: FiltrosAud
           
           {/* Competência Mês */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Competência Mês</label>
+            <label className="text-[0.65rem] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center block w-full">Competência Mês</label>
             <select 
               value={initialFilters.mes || '-- Todos --'}
               onChange={(e) => updateQueryParam('mes', e.target.value)}
-              className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full text-center cursor-pointer"
+              className="bg-slate-50 dark:bg-[#131924] text-gray-700 dark:text-gray-300 text-xs px-3 py-2 rounded-lg border border-gray-200 dark:border-[#2a3441]/60 outline-none w-full text-center cursor-pointer"
             >
               <option value="-- Todos --">-- Todos --</option>
               {meses.map((m) => (
@@ -137,11 +137,11 @@ export function FiltrosAuditoria({ contratos, anos, initialFilters }: FiltrosAud
           
           {/* Exercício Ano */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Exercício Ano</label>
+            <label className="text-[0.65rem] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center block w-full">Exercício Ano</label>
             <select 
               value={initialFilters.ano || '-- Todos --'}
               onChange={(e) => updateQueryParam('ano', e.target.value)}
-              className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full text-center cursor-pointer"
+              className="bg-slate-50 dark:bg-[#131924] text-gray-700 dark:text-gray-300 text-xs px-3 py-2 rounded-lg border border-gray-200 dark:border-[#2a3441]/60 outline-none w-full text-center cursor-pointer"
             >
               <option value="-- Todos --">-- Todos --</option>
               {anos.map((a) => (
@@ -152,13 +152,13 @@ export function FiltrosAuditoria({ contratos, anos, initialFilters }: FiltrosAud
           
           {/* Busca Livre */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-[0.65rem] font-bold text-gray-400 uppercase tracking-wider text-center block w-full">Busca Livre</label>
+            <label className="text-[0.65rem] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center block w-full">Busca Livre</label>
             <input 
               type="text" 
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               placeholder="Empresa, militar, objeto..." 
-              className="bg-[#131924] text-gray-300 text-xs px-3 py-2 rounded-lg border-none outline-none w-full placeholder-gray-500 text-center"
+              className="bg-slate-50 dark:bg-[#131924] text-gray-700 dark:text-gray-300 text-xs px-3 py-2 rounded-lg border border-gray-200 dark:border-[#2a3441]/60 outline-none w-full placeholder-gray-400 dark:placeholder-gray-500 text-center"
             />
           </div>
 
@@ -167,7 +167,7 @@ export function FiltrosAuditoria({ contratos, anos, initialFilters }: FiltrosAud
         {/* Limpar Filtros */}
         <button 
           onClick={handleClearFilters}
-          className="flex items-center gap-2 px-4 py-2 text-[0.65rem] font-bold text-yellow-500 border border-yellow-500/50 rounded-lg hover:bg-yellow-500/10 transition-colors uppercase tracking-wider whitespace-nowrap mt-4 lg:mt-0 cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 text-[0.65rem] font-bold text-yellow-600 dark:text-yellow-500 border border-yellow-500/50 rounded-lg hover:bg-yellow-500/10 transition-colors uppercase tracking-wider whitespace-nowrap mt-4 lg:mt-0 cursor-pointer"
         >
           <RotateCcw className="h-3 w-3" />
           Limpar Filtros

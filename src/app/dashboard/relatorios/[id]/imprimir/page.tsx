@@ -253,7 +253,7 @@ export default async function ImprimirRelatorioPage({ params }: { params: Promis
           <span className="font-bold text-sm uppercase tracking-wider">Ministério da Defesa</span>
           <span className="font-bold text-sm uppercase tracking-wider">Exército Brasileiro</span>
           <span className="font-bold text-sm uppercase tracking-wider">71º Batalhão de Infantaria Motorizada</span>
-          <span className="text-xs uppercase italic tracking-widest text-gray-600">(Batalhão Duarte Coelho)</span>
+          <span className="text-xs uppercase italic tracking-widest text-gray-600">(Fiscalização)</span>
         </div>
 
         {/* Título da Certidão */}

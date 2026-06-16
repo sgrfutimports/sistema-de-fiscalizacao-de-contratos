@@ -19,7 +19,7 @@ export default function WelcomePage() {
           </div>
           <div className="flex flex-col text-left">
             <span className="text-base font-black tracking-wider text-white">71º BI Mtz</span>
-            <span className="text-[0.6rem] text-yellow-500 font-extrabold uppercase tracking-widest">Batalhão Duarte Coelho</span>
+            <span className="text-[0.6rem] text-yellow-500 font-extrabold uppercase tracking-widest">Fiscalização</span>
           </div>
         </div>
 
@@ -103,8 +103,9 @@ export default function WelcomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 w-full text-center py-6 border-t border-white/5 text-[0.65rem] text-gray-500 font-bold uppercase tracking-widest bg-[#050b06]">
-        71º Batalhão de Infantaria Motorizado &bull; Exército Brasileiro &bull; Duarte Coelho &copy; {new Date().getFullYear()}
+      <footer className="relative z-10 w-full text-center py-6 border-t border-white/5 text-[0.65rem] text-gray-500 font-bold uppercase tracking-widest bg-[#050b06] flex flex-col items-center justify-center gap-1.5 px-6">
+        <span>71º Batalhão de Infantaria Motorizado &bull; Exército Brasileiro &bull; Fiscalização &copy; {new Date().getFullYear()}</span>
+        <span className="text-gray-600 font-medium normal-case tracking-normal text-[0.6rem]">Desenvolvido por 1º Sgt Gaudêncio</span>
       </footer>
 
     </div>

@@ -131,15 +131,15 @@ export default async function RelatoriosPage({
   }
 
   return (
-    <div className="space-y-8 bg-white p-6 rounded-xl shadow-sm min-h-full">
+    <div className="space-y-8">
       {/* Cabeçalho */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+          <h1 className="text-2xl font-black text-[#133215] dark:text-yellow-500 flex items-center gap-2">
             <Calendar className="h-6 w-6 text-yellow-500" />
             Histórico e Acervo de Fiscalizações
           </h1>
-          <p className="text-sm text-gray-500 mt-1 font-medium">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
             Histórico de registros submetido, em análise, pareceres emitidos e certidões eletrônicas militarizadas.
           </p>
         </div>
@@ -152,11 +152,11 @@ export default async function RelatoriosPage({
         initialFilters={initialFilters} 
       />
 
-      {/* Tabela Dark */}
-      <div className="bg-[#1b2331] rounded-xl overflow-hidden shadow-md">
+      {/* Tabela Responsiva */}
+      <div className="bg-white dark:bg-card rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-300">
-            <thead className="bg-[#131924] text-xs uppercase font-bold tracking-wider text-gray-400">
+          <table className="w-full text-left text-sm text-gray-700 dark:text-gray-300">
+            <thead className="bg-slate-50 dark:bg-gray-900/40 text-xs uppercase font-bold tracking-wider text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-800">
               <tr>
                 <th className="px-6 py-4">Contrato / Empresa</th>
                 <th className="px-6 py-4 text-center">Competência</th>
@@ -165,7 +165,7 @@ export default async function RelatoriosPage({
                 <th className="px-6 py-4 text-right">Controles Adm</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#2a3441]">
+            <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
               {!relatorios || relatorios.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center text-gray-500 font-medium">
@@ -174,17 +174,17 @@ export default async function RelatoriosPage({
                 </tr>
               ) : (
                 relatorios.map((rel) => (
-                  <tr key={rel.id} className="hover:bg-[#202a3a] transition-colors">
+                  <tr key={rel.id} className="hover:bg-slate-50/50 dark:hover:bg-muted/10 transition-colors">
                     <td className="px-6 py-4">
-                      <div className="font-bold text-white mb-1">Contrato Nº {(rel.contrato as any)?.numero_contrato}</div>
-                      <div className="text-[0.65rem] text-gray-500 tracking-wider">{(rel.contrato as any)?.empresa}</div>
+                      <div className="font-bold text-gray-900 dark:text-white mb-1">Contrato Nº {(rel.contrato as any)?.numero_contrato}</div>
+                      <div className="text-[0.65rem] text-gray-500 dark:text-gray-400 tracking-wider">{(rel.contrato as any)?.empresa}</div>
                     </td>
-                    <td className="px-6 py-4 font-mono text-xs text-gray-400 text-center">
+                    <td className="px-6 py-4 font-mono text-xs text-gray-600 dark:text-gray-300 text-center">
                       {formatCompetencia(rel.competencia_mes, rel.competencia_ano)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="font-bold text-white mb-1">{(rel.fiscal as any)?.nome || 'Não definido'}</div>
-                      <div className="text-[0.65rem] text-gray-500 tracking-wider">CPF: {formatCPF((rel.fiscal as any)?.cpf)}</div>
+                      <div className="font-bold text-gray-900 dark:text-white mb-1">{(rel.fiscal as any)?.nome || 'Não definido'}</div>
+                      <div className="text-[0.65rem] text-gray-500 dark:text-gray-400 tracking-wider">CPF: {formatCPF((rel.fiscal as any)?.cpf)}</div>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <div className="flex items-center justify-center gap-2">
@@ -201,7 +201,7 @@ export default async function RelatoriosPage({
                     <td className="px-6 py-4">
                       <div className="flex justify-end gap-2">
                         <Link href={`/dashboard/relatorios/${rel.id}`} title={rel.status === 'APROVADO' ? "Visualizar Certidão" : "Visualizar Relatório"}>
-                          <button className="flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold text-yellow-500 border border-yellow-500/50 rounded hover:bg-yellow-500/10 transition-colors uppercase tracking-wider">
+                          <button className="flex items-center gap-1.5 px-3 py-1.5 text-[0.65rem] font-bold text-yellow-600 dark:text-yellow-500 border border-yellow-500/50 rounded hover:bg-yellow-500/10 transition-colors uppercase tracking-wider">
                             {rel.status === 'APROVADO' ? <Printer className="h-3 w-3" /> : <Eye className="h-3 w-3" />}
                             {rel.status === 'APROVADO' ? 'Certidão / PDF' : 'Visualizar'}
                           </button>

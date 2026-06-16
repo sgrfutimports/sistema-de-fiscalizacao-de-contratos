@@ -39,14 +39,14 @@ export default async function FilaHomologacaoPage() {
   return (
     <div className="space-y-6">
       {/* Cabeçalho */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+      <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 p-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
+            <h1 className="text-2xl font-black text-[#133215] dark:text-yellow-500 flex items-center gap-2">
               <ClipboardList className="h-6 w-6 text-yellow-500" />
               Fila de Homologação Administrativa
             </h1>
-            <p className="text-sm text-gray-500 mt-1 font-medium">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
               Parecer técnico nos relatórios preenchidos pelos fiscais. Homologue ou devolva para correção com um clique.
             </p>
           </div>
@@ -59,7 +59,7 @@ export default async function FilaHomologacaoPage() {
             )}
             <form action="/dashboard/fila">
               <button type="submit"
-                className="flex items-center gap-2 bg-[#131924] hover:bg-[#1b2331] text-white px-4 py-2 rounded-lg font-bold text-xs transition-colors shadow-md uppercase tracking-wider whitespace-nowrap cursor-pointer">
+                className="flex items-center gap-2 bg-[#133215] hover:bg-[#1B3B22] dark:bg-[#131924] dark:hover:bg-[#1b2331] text-white px-4 py-2 rounded-lg font-bold text-xs transition-colors shadow-md uppercase tracking-wider whitespace-nowrap cursor-pointer">
                 <RefreshCw className="h-3.5 w-3.5" />
                 Sincronizar Fila
               </button>
@@ -78,10 +78,10 @@ export default async function FilaHomologacaoPage() {
 
       {/* Estado vazio */}
       {totalFila === 0 && !error && (
-        <div className="bg-[#1b2331] rounded-xl shadow-lg border border-[#2a3441] flex flex-col items-center justify-center p-16">
-          <ShieldCheck className="h-16 w-16 text-green-500 mb-6" strokeWidth={1.5} />
-          <p className="text-gray-300 font-bold text-base text-center">Fila zerada!</p>
-          <p className="text-gray-400 font-medium text-sm text-center mt-1">
+        <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 flex flex-col items-center justify-center p-16">
+          <ShieldCheck className="h-16 w-16 text-green-600 dark:text-green-500 mb-6" strokeWidth={1.5} />
+          <p className="text-gray-900 dark:text-white font-bold text-base text-center">Fila zerada!</p>
+          <p className="text-gray-500 dark:text-gray-400 font-medium text-sm text-center mt-1">
             Todos os relatórios enviados já foram apreciados e homologados pela Seção.
           </p>
         </div>
@@ -89,26 +89,26 @@ export default async function FilaHomologacaoPage() {
 
       {/* Tabela da fila */}
       {totalFila > 0 && (
-        <div className="bg-[#1b2331] rounded-xl shadow-lg border border-[#2a3441] overflow-hidden">
-          <div className="px-5 py-3 border-b border-[#2a3441] bg-[#131924]/80">
-            <p className="text-xs font-black uppercase tracking-widest text-yellow-500">
+        <div className="bg-white dark:bg-card rounded-xl shadow-sm border border-gray-200 dark:border-gray-800 overflow-hidden">
+          <div className="px-5 py-3 border-b border-gray-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-900/40">
+            <p className="text-xs font-black uppercase tracking-widest text-yellow-600 dark:text-yellow-500">
               Relatórios Aguardando Análise
             </p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm text-gray-700 dark:text-gray-300">
               <thead>
-                <tr className="border-b border-[#2a3441] bg-[#131924]/50">
-                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-black uppercase tracking-wider text-gray-500">Contrato / Empresa</th>
-                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-black uppercase tracking-wider text-gray-500">Fiscal</th>
-                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-black uppercase tracking-wider text-gray-500">Competência</th>
-                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-black uppercase tracking-wider text-gray-500">Status</th>
-                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-black uppercase tracking-wider text-gray-500">Enviado em</th>
-                  <th className="text-right px-4 py-2.5 text-[0.65rem] font-black uppercase tracking-wider text-gray-500">Ações</th>
+                <tr className="border-b border-gray-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-900/40">
+                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Contrato / Empresa</th>
+                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Fiscal</th>
+                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Competência</th>
+                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Status</th>
+                  <th className="text-left px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Enviado em</th>
+                  <th className="text-right px-4 py-2.5 text-[0.65rem] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Ações</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
                 {fila!.map((item) => (
                   <FilaActions key={item.id} item={item as any} />
                 ))}
@@ -116,9 +116,9 @@ export default async function FilaHomologacaoPage() {
             </table>
           </div>
 
-          <div className="px-5 py-3 border-t border-[#2a3441] bg-[#131924]/50">
-            <p className="text-[0.65rem] text-gray-500 font-medium">
-              Total: <strong className="text-gray-300">{totalFila}</strong> relatório{totalFila !== 1 ? 's' : ''} aguardando homologação
+          <div className="px-5 py-3 border-t border-gray-200 dark:border-gray-800 bg-slate-50 dark:bg-gray-900/40">
+            <p className="text-[0.65rem] text-gray-500 dark:text-gray-400 font-medium">
+              Total: <strong className="text-gray-800 dark:text-gray-300">{totalFila}</strong> relatório{totalFila !== 1 ? 's' : ''} aguardando homologação
             </p>
           </div>
         </div>
