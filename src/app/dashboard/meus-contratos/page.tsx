@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
@@ -9,11 +9,10 @@ import Link from 'next/link'
 import { buttonVariants } from '@/components/ui/button'
 
 export default async function MeusContratosPage() {
-  const supabase = await createClient()
-  const supabaseAdmin = createAdminClient()
-
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user } } = await getCachedUser()
   if (!user) redirect('/login')
+
+  const supabaseAdmin = createAdminClient()
 
   // Busca apenas contratos onde o usuário é titular ou substituto usando o admin client para ignorar RLS
   const { data: contratos } = await supabaseAdmin

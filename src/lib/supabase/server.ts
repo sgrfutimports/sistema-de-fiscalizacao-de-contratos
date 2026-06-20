@@ -1,5 +1,7 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { cache } from 'react'
+import { createAdminClient } from './admin'
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -27,3 +29,18 @@ export async function createClient() {
     }
   )
 }
+
+export const getCachedUser = cache(async () => {
+  const supabase = await createClient()
+  return supabase.auth.getUser()
+})
+
+export const getCachedUserProfile = cache(async (userId: string) => {
+  const supabaseAdmin = createAdminClient()
+  return supabaseAdmin
+    .from('users')
+    .select('*')
+    .eq('id', userId)
+    .single()
+})
+

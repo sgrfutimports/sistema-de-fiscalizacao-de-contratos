@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser, getCachedUserProfile } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { AppSidebar } from '@/components/dashboard/app-sidebar'
 import { SidebarProvider } from '@/components/ui/sidebar'
@@ -7,20 +7,15 @@ import { logout } from '@/app/login/actions'
 import { DashboardLayoutClient } from '@/components/dashboard/dashboard-layout-client'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient()
-  const { data: { user }, error } = await supabase.auth.getUser()
+  const { data: { user }, error } = await getCachedUser()
 
   if (error || !user) {
     redirect('/login')
   }
 
-  // Usar o admin client para bypassar o RLS e garantir que consiga ler o perfil
+  // Usar o admin client para consultas adicionais e o cache para o perfil do usuário logado
   const supabaseAdmin = createAdminClient()
-  const { data: userData } = await supabaseAdmin
-    .from('users')
-    .select('*')
-    .eq('id', user.id)
-    .single()
+  const { data: userData } = await getCachedUserProfile(user.id)
 
   // Redireciona para o primeiro acesso se ainda não tiver alterado a senha inicial
   if (userData?.primeiro_acesso) {

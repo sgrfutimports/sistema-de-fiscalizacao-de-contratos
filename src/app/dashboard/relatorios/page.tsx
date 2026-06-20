@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser, getCachedUserProfile } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Calendar, Printer, Eye } from 'lucide-react'
 import { redirect } from 'next/navigation'
@@ -24,32 +24,37 @@ export default async function RelatoriosPage({
   const activeAno = resolvedParams.ano
   const searchQuery = resolvedParams.q
 
-  const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
   // Verificação de segurança: apenas admin
-  const { data: { user } } = await supabase.auth.getUser()
-  const { data: currentUser } = await supabaseAdmin.from('users').select('perfil').eq('id', user?.id).single()
+  const { data: { user } } = await getCachedUser()
+  if (!user) {
+    redirect('/login')
+  }
+  const { data: currentUser } = await getCachedUserProfile(user.id)
 
   if (currentUser?.perfil !== 'ADMIN') {
     redirect('/dashboard')
   }
 
-  // Busca todos os contratos para popular o dropdown de filtros
-  const { data: contratos } = await supabaseAdmin
-    .from('contratos')
-    .select('id, numero_contrato, empresa')
-    .order('numero_contrato')
+  // Executar consultas de contratos e relatórios em paralelo para otimizar o tempo de carregamento
+  const [contratosRes, rawRelatoriosRes] = await Promise.all([
+    supabaseAdmin
+      .from('contratos')
+      .select('id, numero_contrato, empresa')
+      .order('numero_contrato'),
+    supabaseAdmin
+      .from('relatorios')
+      .select(`
+        *,
+        contrato:contratos!contrato_id(numero_contrato, empresa, objeto),
+        fiscal:users!fiscal_id(nome, cpf)
+      `)
+      .order('created_at', { ascending: false })
+  ])
 
-  // Busca relatórios com detalhes do contrato e fiscal
-  const { data: rawRelatorios } = await supabaseAdmin
-    .from('relatorios')
-    .select(`
-      *,
-      contrato:contratos!contrato_id(numero_contrato, empresa, objeto),
-      fiscal:users!fiscal_id(nome, cpf)
-    `)
-    .order('created_at', { ascending: false })
+  const contratos = contratosRes.data
+  const rawRelatorios = rawRelatoriosRes.data
 
   // Extrai anos distintos de competência dos relatórios para o filtro de Exercício Ano
   const distinctYears = Array.from(

@@ -1,26 +1,33 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser, getCachedUserProfile } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { CalendarClock, Unlock, Lock, AlertTriangle } from 'lucide-react'
 import { redirect } from 'next/navigation'
 
 export default async function PrazosPage() {
-  const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
   // Verificação de segurança: apenas admin
-  const { data: { user } } = await supabase.auth.getUser()
-  const { data: currentUser } = await supabaseAdmin.from('users').select('perfil').eq('id', user?.id).single()
+  const { data: { user } } = await getCachedUser()
+  if (!user) {
+    redirect('/login')
+  }
+
+  // Executar a verificação do perfil atual e busca de contratos em paralelo
+  const [profileRes, contratosRes] = await Promise.all([
+    getCachedUserProfile(user.id),
+    supabaseAdmin
+      .from('contratos')
+      .select('id, numero_contrato, empresa')
+      .eq('status', 'ATIVO')
+      .order('numero_contrato')
+  ])
+
+  const currentUser = profileRes.data
+  const contratos = contratosRes.data
 
   if (currentUser?.perfil !== 'ADMIN') {
     redirect('/dashboard')
   }
-
-  // Busca contratos ativos para o select
-  const { data: contratos } = await supabaseAdmin
-    .from('contratos')
-    .select('id, numero_contrato, empresa')
-    .eq('status', 'ATIVO')
-    .order('numero_contrato')
 
   return (
     <div className="space-y-8">

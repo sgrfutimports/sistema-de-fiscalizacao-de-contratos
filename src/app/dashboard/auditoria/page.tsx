@@ -1,26 +1,33 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser, getCachedUserProfile } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { TerminalSquare, Bell, Search } from 'lucide-react'
 import { redirect } from 'next/navigation'
 
 export default async function AuditoriaPage() {
-  const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
   // Verificação de segurança: apenas admin
-  const { data: { user } } = await supabase.auth.getUser()
-  const { data: currentUser } = await supabaseAdmin.from('users').select('perfil').eq('id', user?.id).single()
+  const { data: { user } } = await getCachedUser()
+  if (!user) {
+    redirect('/login')
+  }
+
+  // Executar a verificação do perfil atual e busca de logs em paralelo
+  const [profileRes, logsRes] = await Promise.all([
+    getCachedUserProfile(user.id),
+    supabaseAdmin
+      .from('logs')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(50)
+  ])
+
+  const currentUser = profileRes.data
+  const dbLogs = logsRes.data
 
   if (currentUser?.perfil !== 'ADMIN') {
     redirect('/dashboard')
   }
-
-  // Busca logs reais da tabela 'logs' no banco de dados do Supabase
-  const { data: dbLogs } = await supabaseAdmin
-    .from('logs')
-    .select('*')
-    .order('created_at', { ascending: false })
-    .limit(50)
 
   // Fallback caso não haja logs gravados no banco de dados
   const logs = dbLogs && dbLogs.length > 0 ? dbLogs.map(l => ({

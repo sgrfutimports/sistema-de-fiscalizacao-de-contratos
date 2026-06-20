@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser, getCachedUserProfile } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -21,42 +21,47 @@ export default async function ContratosPage({
   const activeStatus = resolvedParams.status
   const searchQuery = resolvedParams.q
 
-  const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
   // Verificação de segurança: apenas admin
-  const { data: { user } } = await supabase.auth.getUser()
-  const { data: currentUser } = await supabaseAdmin.from('users').select('perfil').eq('id', user?.id).single()
+  const { data: { user } } = await getCachedUser()
+  if (!user) {
+    redirect('/login')
+  }
+  const { data: currentUser } = await getCachedUserProfile(user.id)
 
   if (currentUser?.perfil !== 'ADMIN') {
     redirect('/dashboard')
   }
 
-  // Busca lista de todos os usuários ativos para o modal de edição
-  const { data: fiscais } = await supabaseAdmin
-    .from('users')
-    .select('id, nome, perfil, posto_graduacao, nome_guerra')
-    .eq('ativo', true)
+  // Executar consultas de fiscais e contratos em paralelo para otimizar latência
+  const [fiscaisRes, rawContratosRes] = await Promise.all([
+    supabaseAdmin
+      .from('users')
+      .select('id, nome, perfil, posto_graduacao, nome_guerra')
+      .eq('ativo', true),
+    supabaseAdmin
+      .from('contratos')
+      .select(`
+        *,
+        titular:users!fiscal_titular_id (
+          id,
+          nome,
+          posto_graduacao,
+          nome_guerra
+        ),
+        substituto:users!fiscal_substituto_id (
+          id,
+          nome,
+          posto_graduacao,
+          nome_guerra
+        )
+      `)
+      .order('created_at', { ascending: false })
+  ])
 
-  // Busca contratos com dados dos fiscais associados
-  const { data: rawContratos } = await supabaseAdmin
-    .from('contratos')
-    .select(`
-      *,
-      titular:users!fiscal_titular_id (
-        id,
-        nome,
-        posto_graduacao,
-        nome_guerra
-      ),
-      substituto:users!fiscal_substituto_id (
-        id,
-        nome,
-        posto_graduacao,
-        nome_guerra
-      )
-    `)
-    .order('created_at', { ascending: false })
+  const fiscais = fiscaisRes.data
+  const rawContratos = rawContratosRes.data
 
   const contratos = (rawContratos || []).filter((cont) => {
     if (activeStatus && activeStatus !== 'TODOS' && cont.status !== activeStatus) {

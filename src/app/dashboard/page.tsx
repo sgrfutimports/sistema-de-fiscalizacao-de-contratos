@@ -1,167 +1,161 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser, getCachedUserProfile } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { DashboardHomeClient } from '@/components/dashboard/dashboard-home-client'
 
 export default async function DashboardPage() {
-  // Garantir que a animação pós-login dure pelo menos 3 segundos para uma transição premium
-  await new Promise(resolve => setTimeout(resolve, 3000))
+  const { data: { user } } = await getCachedUser()
+  const { data: userData } = await getCachedUserProfile(user?.id || '')
 
-  const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
-
-  // Buscar usuário atual para definir se é admin ou fiscal
-  const { data: { user } } = await supabase.auth.getUser()
-  const { data: userData } = await supabaseAdmin
-    .from('users')
-    .select('id, perfil, posto_graduacao, nome_guerra')
-    .eq('id', user?.id)
-    .single()
 
   const userPerfil = userData?.perfil || 'FISCAL'
   const isAdmin = userPerfil === 'ADMIN'
 
-  // 1. Contratos Ativos
-  let contratosAtivosCount = 0
-  let contratosAtivos: any[] = []
-  if (isAdmin) {
-    const { data, count } = await supabaseAdmin
-      .from('contratos')
-      .select(`
-        id,
-        numero_contrato,
-        empresa,
-        objeto,
-        valor,
-        status,
-        data_termino,
-        fiscal_titular_id,
-        fiscal_substituto_id,
-        titular:users!fiscal_titular_id (
-          posto_graduacao,
-          nome_guerra
-        ),
-        substituto:users!fiscal_substituto_id (
-          posto_graduacao,
-          nome_guerra
-        )
-      `, { count: 'exact' })
-      .eq('status', 'ATIVO')
-      .order('created_at', { ascending: false })
-    contratosAtivosCount = count || 0
-    contratosAtivos = data || []
-  } else {
-    const { data, count } = await supabaseAdmin
-      .from('contratos')
-      .select(`
-        id,
-        numero_contrato,
-        empresa,
-        objeto,
-        valor,
-        status,
-        data_termino,
-        fiscal_titular_id,
-        fiscal_substituto_id,
-        titular:users!fiscal_titular_id (
-          posto_graduacao,
-          nome_guerra
-        ),
-        substituto:users!fiscal_substituto_id (
-          posto_graduacao,
-          nome_guerra
-        )
-      `, { count: 'exact' })
-      .eq('status', 'ATIVO')
-      .or(`fiscal_titular_id.eq.${user?.id},fiscal_substituto_id.eq.${user?.id}`)
-      .order('created_at', { ascending: false })
-    contratosAtivosCount = count || 0
-    contratosAtivos = data || []
-  }
+  // Preparar todas as Promises para execução em paralelo
+  const contratosPromise = isAdmin
+    ? supabaseAdmin
+        .from('contratos')
+        .select(`
+          id,
+          numero_contrato,
+          empresa,
+          objeto,
+          valor,
+          status,
+          data_termino,
+          fiscal_titular_id,
+          fiscal_substituto_id,
+          titular:users!fiscal_titular_id (
+            posto_graduacao,
+            nome_guerra
+          ),
+          substituto:users!fiscal_substituto_id (
+            posto_graduacao,
+            nome_guerra
+          )
+        `, { count: 'exact' })
+        .eq('status', 'ATIVO')
+        .order('created_at', { ascending: false })
+    : supabaseAdmin
+        .from('contratos')
+        .select(`
+          id,
+          numero_contrato,
+          empresa,
+          objeto,
+          valor,
+          status,
+          data_termino,
+          fiscal_titular_id,
+          fiscal_substituto_id,
+          titular:users!fiscal_titular_id (
+            posto_graduacao,
+            nome_guerra
+          ),
+          substituto:users!fiscal_substituto_id (
+            posto_graduacao,
+            nome_guerra
+          )
+        `, { count: 'exact' })
+        .eq('status', 'ATIVO')
+        .or(`fiscal_titular_id.eq.${user?.id},fiscal_substituto_id.eq.${user?.id}`)
+        .order('created_at', { ascending: false })
 
-  // 2. Relatórios Pendentes
-  let relatoriosPendentesCount = 0
-  if (isAdmin) {
-    const { count } = await supabaseAdmin
-      .from('relatorios')
-      .select('id', { count: 'exact', head: true })
-      .in('status', ['ENVIADO', 'EM_ANALISE'])
-    relatoriosPendentesCount = count || 0
-  } else {
-    const { count } = await supabaseAdmin
-      .from('relatorios')
-      .select('id', { count: 'exact', head: true })
-      .eq('fiscal_id', user?.id)
-      .eq('status', 'DEVOLVIDO')
-    relatoriosPendentesCount = count || 0
-  }
+  const relatoriosPendentesPromise = isAdmin
+    ? supabaseAdmin
+        .from('relatorios')
+        .select('id', { count: 'exact', head: true })
+        .in('status', ['ENVIADO', 'EM_ANALISE'])
+    : supabaseAdmin
+        .from('relatorios')
+        .select('id', { count: 'exact', head: true })
+        .eq('fiscal_id', user?.id)
+        .eq('status', 'DEVOLVIDO')
 
-  // 3. Relatórios Aprovados / Enviados
-  let relatoriosAprovadosCount = 0
-  if (isAdmin) {
-    const { count } = await supabaseAdmin
-      .from('relatorios')
-      .select('id', { count: 'exact', head: true })
-      .eq('status', 'APROVADO')
-    relatoriosAprovadosCount = count || 0
-  } else {
-    const { count } = await supabaseAdmin
-      .from('relatorios')
-      .select('id', { count: 'exact', head: true })
-      .eq('fiscal_id', user?.id)
-      .in('status', ['ENVIADO', 'EM_ANALISE', 'APROVADO'])
-    relatoriosAprovadosCount = count || 0
-  }
+  const relatoriosAprovadosPromise = isAdmin
+    ? supabaseAdmin
+        .from('relatorios')
+        .select('id', { count: 'exact', head: true })
+        .eq('status', 'APROVADO')
+    : supabaseAdmin
+        .from('relatorios')
+        .select('id', { count: 'exact', head: true })
+        .eq('fiscal_id', user?.id)
+        .in('status', ['ENVIADO', 'EM_ANALISE', 'APROVADO'])
 
-  // 4. Total de Fiscais (apenas para Admin)
-  let totalFiscaisCount = 0
-  if (isAdmin) {
-    const { count } = await supabaseAdmin
-      .from('users')
-      .select('id', { count: 'exact', head: true })
-      .eq('ativo', true)
-      .in('perfil', ['FISCAL_TITULAR', 'FISCAL_SUBSTITUTO'])
-    totalFiscaisCount = count || 0
-  }
+  const totalFiscaisPromise = isAdmin
+    ? supabaseAdmin
+        .from('users')
+        .select('id', { count: 'exact', head: true })
+        .eq('ativo', true)
+        .in('perfil', ['FISCAL_TITULAR', 'FISCAL_SUBSTITUTO'])
+    : Promise.resolve({ count: 0 }) as Promise<{ count: number | null }>
 
-  // 5. Buscar comunicados oficiais do comando
-  const { data: dbComunicados } = await supabaseAdmin
+  const dbComunicadosPromise = supabaseAdmin
     .from('comunicados')
     .select('id, titulo, conteudo, autor, created_at')
     .order('created_at', { ascending: false })
     .limit(5)
 
-  const avisos = dbComunicados || []
+  const unreadComunicadosPromise = (!isAdmin && user)
+    ? supabaseAdmin
+        .from('comunicados')
+        .select('id, titulo, conteudo, autor, created_at')
+        .order('created_at', { ascending: false })
+    : Promise.resolve({ data: null }) as Promise<{ data: any[] | null }>
 
-  // 6. Buscar comunicados não lidos pelo fiscal atual
-  let unreadComunicados: any[] = []
-  if (!isAdmin && user) {
-    const { data: allActive } = await supabaseAdmin
-      .from('comunicados')
-      .select('id, titulo, conteudo, autor, created_at')
-      .order('created_at', { ascending: false })
-
-    if (allActive && allActive.length > 0) {
-      const { data: readLogs } = await supabaseAdmin
+  const readLogsPromise = (!isAdmin && user)
+    ? supabaseAdmin
         .from('comunicados_lidos')
         .select('comunicado_id')
         .eq('user_id', user.id)
+    : Promise.resolve({ data: null }) as Promise<{ data: any[] | null }>
 
-      const readIds = new Set(readLogs?.map(r => r.comunicado_id) || [])
-      unreadComunicados = allActive.filter(c => !readIds.has(c.id))
-    }
+  const adminSuportePromise = (!isAdmin)
+    ? supabaseAdmin
+        .from('users')
+        .select('nome, posto_graduacao, nome_guerra, telefone')
+        .eq('perfil', 'ADMIN')
+        .eq('ativo', true)
+        .limit(1)
+    : Promise.resolve({ data: null }) as Promise<{ data: any[] | null }>
+
+  // Executar todas as consultas em paralelo
+  const [
+    contratosRes,
+    relatoriosPendentesRes,
+    relatoriosAprovadosRes,
+    totalFiscaisRes,
+    dbComunicadosRes,
+    unreadComunicadosRes,
+    readLogsRes,
+    adminSuporteRes
+  ] = await Promise.all([
+    contratosPromise,
+    relatoriosPendentesPromise,
+    relatoriosAprovadosPromise,
+    totalFiscaisPromise,
+    dbComunicadosPromise,
+    unreadComunicadosPromise,
+    readLogsPromise,
+    adminSuportePromise
+  ])
+
+  const contratosAtivosCount = contratosRes.count || 0
+  const contratosAtivos = (contratosRes.data as any[]) || []
+  const relatoriosPendentesCount = relatoriosPendentesRes.count || 0
+  const relatoriosAprovadosCount = relatoriosAprovadosRes.count || 0
+  const totalFiscaisCount = totalFiscaisRes.count || 0
+  const avisos = dbComunicadosRes.data || []
+
+  // Filtrar comunicados não lidos
+  let unreadComunicados: any[] = []
+  if (!isAdmin && user && unreadComunicadosRes.data) {
+    const readIds = new Set((readLogsRes.data || []).map((r: any) => r.comunicado_id))
+    unreadComunicados = (unreadComunicadosRes.data || []).filter((c: any) => !readIds.has(c.id))
   }
 
-  // 7. Buscar administrador para suporte/whatsapp do fiscal
-  let adminSuporte: any = null
-  if (!isAdmin) {
-    const { data: admins } = await supabaseAdmin
-      .from('users')
-      .select('nome, posto_graduacao, nome_guerra, telefone')
-      .eq('perfil', 'ADMIN')
-      .eq('ativo', true)
-      .limit(1)
-    adminSuporte = admins && admins.length > 0 ? admins[0] : null
-  }
+  const adminSuporte = adminSuporteRes.data && adminSuporteRes.data.length > 0 ? adminSuporteRes.data[0] : null
 
   const getWhatsappLink = (telefone: string | null) => {
     let limpo = (telefone || '').replace(/\D/g, '')
@@ -196,3 +190,4 @@ export default async function DashboardPage() {
     />
   )
 }
+

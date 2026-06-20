@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser, getCachedUserProfile } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { ClipboardList, RefreshCw, ShieldCheck, AlertCircle } from 'lucide-react'
 import { redirect } from 'next/navigation'
@@ -8,31 +8,35 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 0
 
 export default async function FilaHomologacaoPage() {
-  const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
   // Verificação de segurança: apenas admin
-  const { data: { user } } = await supabase.auth.getUser()
-  const { data: currentUser } = await supabaseAdmin
-    .from('users')
-    .select('perfil')
-    .eq('id', user?.id)
-    .single()
+  const { data: { user } } = await getCachedUser()
+  if (!user) {
+    redirect('/login')
+  }
+
+  // Executar a verificação do perfil atual e busca da fila em paralelo
+  const [profileRes, filaRes] = await Promise.all([
+    getCachedUserProfile(user.id),
+    supabaseAdmin
+      .from('relatorios')
+      .select(`
+        *,
+        contrato:contratos!contrato_id(numero_contrato, empresa),
+        fiscal:users!fiscal_id(nome, cpf)
+      `)
+      .in('status', ['ENVIADO', 'EM_ANALISE'])
+      .order('created_at', { ascending: true })
+  ])
+
+  const currentUser = profileRes.data
+  const fila = filaRes.data
+  const error = filaRes.error
 
   if (currentUser?.perfil !== 'ADMIN') {
     redirect('/dashboard')
   }
-
-  // Busca relatórios que estão "ENVIADO" ou "EM_ANALISE" aguardando homologação
-  const { data: fila, error } = await supabaseAdmin
-    .from('relatorios')
-    .select(`
-      *,
-      contrato:contratos!contrato_id(numero_contrato, empresa),
-      fiscal:users!fiscal_id(nome, cpf)
-    `)
-    .in('status', ['ENVIADO', 'EM_ANALISE'])
-    .order('created_at', { ascending: true })
 
   const totalFila = fila?.length ?? 0
 

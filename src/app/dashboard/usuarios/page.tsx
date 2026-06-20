@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { getCachedUser, getCachedUserProfile } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -11,22 +11,26 @@ import { ExcluirUsuarioButton } from '@/components/dashboard/excluir-usuario-but
 
 
 export default async function UsuariosPage() {
-  const supabase = await createClient()
   const supabaseAdmin = createAdminClient()
 
   // Verificação de segurança: apenas admin
-  const { data: { user } } = await supabase.auth.getUser()
-  const { data: currentUser } = await supabaseAdmin.from('users').select('perfil').eq('id', user?.id).single()
+  const { data: { user } } = await getCachedUser()
+  if (!user) {
+    redirect('/login')
+  }
+
+  // Executar a verificação do perfil atual e busca de todos os usuários em paralelo
+  const [profileRes, usuariosRes] = await Promise.all([
+    getCachedUserProfile(user.id),
+    supabaseAdmin.from('users').select('*').order('nome')
+  ])
+
+  const currentUser = profileRes.data
+  const usuarios = usuariosRes.data
 
   if (currentUser?.perfil !== 'ADMIN') {
     redirect('/dashboard') // Redireciona se não for admin
   }
-
-  // Busca todos os usuários
-  const { data: usuarios } = await supabaseAdmin
-    .from('users')
-    .select('*')
-    .order('nome')
 
   // Formatar CPF
   const formatCPF = (cpf: string) => {
