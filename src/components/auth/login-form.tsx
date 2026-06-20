@@ -236,6 +236,53 @@ export function LoginForm() {
           </button>
         </form>
       </div>
+
+      {/* Tela de Carregamento Premium e Moderna Pós-Login */}
+      {isPending && (
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#070f08]/95 backdrop-blur-lg animate-fade-in">
+          {/* Efeitos de iluminação militar de fundo */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[350px] w-[350px] rounded-full bg-green-500/10 blur-[90px] pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[200px] w-[200px] rounded-full bg-yellow-500/5 blur-[60px] pointer-events-none" />
+          
+          {/* Linha de Varredura estilo Radar Militar */}
+          <div className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-green-500/40 to-transparent pointer-events-none animate-radar-scan" />
+
+          <div className="relative flex flex-col items-center gap-7 max-w-sm px-6 text-center animate-in zoom-in-95 duration-300">
+            {/* Brasão/Logo pulsante centralizado com anéis orbitais */}
+            <div className="relative w-28 h-28 flex items-center justify-center">
+              {/* Anel orbital externo brilhando */}
+              <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-yellow-500 border-r-yellow-500/30 animate-spin" style={{ animationDuration: '1.2s' }} />
+              {/* Anel orbital interno contra-rotativo */}
+              <div className="absolute inset-2 rounded-full border border-transparent border-b-green-500 border-l-green-500/30 animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }} />
+              
+              {/* Círculo do Logo com pulsação suave */}
+              <div className="w-16 h-16 rounded-full bg-[#133215]/50 border border-yellow-500/30 flex items-center justify-center p-2.5 overflow-hidden animate-pulse-ring">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(234,179,8,0.4)]" />
+              </div>
+            </div>
+
+            {/* Mensagens táticas de carregamento */}
+            <div className="space-y-2 mt-1">
+              <h3 className="text-sm font-black uppercase text-yellow-500 tracking-[0.25em] animate-pulse">
+                Autenticando...
+              </h3>
+              <p className="text-[0.62rem] font-extrabold text-gray-400 uppercase tracking-widest leading-relaxed flex items-center justify-center gap-0.5">
+                Preparando ambiente militar seguro
+              </p>
+            </div>
+            
+            {/* Barra de Progresso com degradê premium */}
+            <div className="w-48 h-1 bg-[#133215] rounded-full overflow-hidden mt-1 border border-white/5 relative">
+              <div className="absolute inset-y-0 left-0 w-full h-full bg-gradient-to-r from-yellow-500 to-green-500 rounded-full animate-loading-progress" />
+            </div>
+
+            <span className="text-[0.55rem] font-extrabold text-gray-500 uppercase tracking-widest mt-1">
+              71º Batalhão de Infantaria Motorizado
+            </span>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
