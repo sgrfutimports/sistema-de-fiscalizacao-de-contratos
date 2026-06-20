@@ -4,6 +4,7 @@ import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
+  useSidebar,
 } from '@/components/ui/sidebar'
 import { BookOpen, FileSignature, Calendar, ClipboardList, Users, CalendarClock, Terminal, LayoutDashboard, FolderArchive, KeyRound } from 'lucide-react'
 import Link from 'next/link'
@@ -15,6 +16,7 @@ import { useRouter } from 'next/navigation'
 export function AppSidebar({ userNome, userPerfil }: { userNome?: string; userPerfil: string }) {
   const pathname = usePathname()
   const router = useRouter()
+  const { isMobile, setOpenMobile } = useSidebar()
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -103,7 +105,17 @@ export function AppSidebar({ userNome, userPerfil }: { userNome?: string; userPe
                   const isActive = pathname === item.url || (item.url !== '/dashboard' && pathname.startsWith(item.url))
                   
                   return (
-                    <Link key={item.title} href={item.url} className="w-full block" title={item.title}>
+                    <Link 
+                      key={item.title} 
+                      href={item.url} 
+                      className="w-full block" 
+                      title={item.title}
+                      onClick={() => {
+                        if (isMobile) {
+                          setOpenMobile(false)
+                        }
+                      }}
+                    >
                       <div 
                         className={`flex w-full items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 border-l-4 ${
                           isActive 
@@ -131,7 +143,17 @@ export function AppSidebar({ userNome, userPerfil }: { userNome?: string; userPe
                     const isActive = pathname === item.url || pathname.startsWith(item.url)
                     
                     return (
-                      <Link key={item.title} href={item.url} className="w-full block" title={item.title}>
+                      <Link 
+                        key={item.title} 
+                        href={item.url} 
+                        className="w-full block" 
+                        title={item.title}
+                        onClick={() => {
+                          if (isMobile) {
+                            setOpenMobile(false)
+                          }
+                        }}
+                      >
                         <div 
                           className={`flex w-full items-center gap-3.5 px-4 py-3 rounded-xl transition-all duration-300 border-l-4 ${
                             isActive 
