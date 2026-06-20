@@ -56,7 +56,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen bg-slate-50 dark:bg-background w-full font-sans overflow-hidden">
+      <div className="flex min-h-screen bg-background w-full font-sans overflow-hidden">
         {/* App Sidebar com design oficial modernizado */}
         <AppSidebar userNome={userNome} userPerfil={userPerfil} />
 

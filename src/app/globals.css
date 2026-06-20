@@ -50,7 +50,7 @@
 }
 
 :root {
-  --background: hsl(0 0% 100%);
+  --background: hsl(85 20% 96%);
   --foreground: hsl(120 30% 15%);
   --card: hsl(0 0% 100%);
   --card-foreground: hsl(120 30% 15%);
