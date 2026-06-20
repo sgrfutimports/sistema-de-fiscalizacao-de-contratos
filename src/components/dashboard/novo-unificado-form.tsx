@@ -371,13 +371,13 @@ export function NovoUnificadoForm({ contratos, userId }: NovoUnificadoFormProps)
       </div>
 
       {/* Footer de submissão */}
-      <div className="flex justify-end gap-4 bg-[#131924] p-4 rounded-xl border border-[#2a3441] sticky bottom-4 shadow-2xl">
+      <div className="flex flex-col sm:flex-row justify-end gap-3 bg-[#131924] p-4 rounded-xl border border-[#2a3441] sticky bottom-4 shadow-2xl">
         <Button type="button" variant="destructive" onClick={() => router.back()}
-          className="bg-red-600 hover:bg-red-700 text-white font-bold border-none shadow-sm transition-all">
+          className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold border-none shadow-sm transition-all">
           Cancelar
         </Button>
         <Button type="submit" disabled={isPending}
-          className="bg-yellow-600 hover:bg-yellow-700 text-white font-black">
+          className="w-full sm:w-auto bg-yellow-600 hover:bg-yellow-700 text-white font-black whitespace-normal h-auto py-2">
           {isPending ? 'Enviando...' : `Salvar e Enviar Relatório Único (${contratos.length} contrato${contratos.length > 1 ? 's' : ''})`}
         </Button>
       </div>

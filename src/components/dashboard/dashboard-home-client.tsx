@@ -172,15 +172,15 @@ export function DashboardHomeClient({
           <div className="h-px bg-white/10 w-full" />
           
           {/* Métricas Horizontais */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 divide-y-2 md:divide-y-0 md:divide-x divide-white/10 text-left">
-            <div className="pt-2 md:pt-0 md:pl-0 flex flex-col">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-left">
+            <div className="flex flex-col">
               <span className="text-[0.65rem] font-bold text-gray-300 uppercase tracking-wider">Contratos Ativos</span>
               <span className="text-2xl font-black text-white mt-1">
                 <VisibilityText value={contratosAtivosCount} />
               </span>
             </div>
             
-            <div className="pt-2 md:pt-0 md:pl-6 flex flex-col">
+            <div className="flex flex-col md:border-l md:border-white/10 md:pl-6">
               <span className="text-[0.65rem] font-bold text-gray-300 uppercase tracking-wider">
                 {isAdmin ? 'Aguardando Análise' : 'Devolvidos p/ Ajuste'}
               </span>
@@ -189,7 +189,7 @@ export function DashboardHomeClient({
               </span>
             </div>
             
-            <div className="pt-2 md:pt-0 md:pl-6 flex flex-col">
+            <div className="flex flex-col md:border-l md:border-white/10 md:pl-6">
               <span className="text-[0.65rem] font-bold text-gray-300 uppercase tracking-wider">
                 {isAdmin ? 'Relatórios Aprovados' : 'Meus Enviados'}
               </span>
@@ -200,10 +200,10 @@ export function DashboardHomeClient({
             
             <button 
               onClick={() => setIsAlertsModalOpen(true)}
-              className="pt-2 md:pt-0 md:pl-6 flex flex-col text-left hover:bg-white/5 p-1 rounded-lg transition-all focus:outline-none cursor-pointer group"
+              className="flex flex-col text-left hover:bg-white/5 p-1 -m-1 rounded-lg transition-all focus:outline-none cursor-pointer group md:border-l md:border-white/10 md:pl-6"
             >
               <span className="text-[0.65rem] font-bold text-gray-300 uppercase tracking-wider group-hover:text-yellow-500 transition-colors">Alertas Críticos</span>
-              <span className="text-2xl font-black text-yellow-500 mt-1 flex items-center gap-2">
+              <span className="text-2xl font-black text-yellow-500 mt-1 flex flex-col items-start gap-1 sm:flex-row sm:items-center sm:gap-2">
                 <VisibilityText value={alertasCount} />
                 <span className="text-[0.6rem] font-black text-yellow-500/70 bg-yellow-500/10 px-1.5 py-0.5 rounded border border-yellow-500/20 group-hover:bg-yellow-500/20 transition-all uppercase tracking-wider">
                   Ver Detalhes
@@ -226,7 +226,7 @@ export function DashboardHomeClient({
                   <action.icon className="h-5 w-5" />
                 </div>
                 {/* Texto abaixo */}
-                <span className="text-[0.65rem] font-extrabold text-gray-600 dark:text-gray-300 group-hover:text-[#133215] dark:group-hover:text-yellow-500 transition-colors leading-tight truncate w-full max-w-[80px]">
+                <span className="text-[0.65rem] font-extrabold text-gray-600 dark:text-gray-300 group-hover:text-[#133215] dark:group-hover:text-yellow-500 transition-colors leading-tight text-center w-full max-w-[80px] break-words line-clamp-2">
                   {action.title}
                 </span>
               </div>

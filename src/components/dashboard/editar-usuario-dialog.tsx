@@ -167,9 +167,9 @@ export function EditarUsuarioDialog({ usuario }: EditarUsuarioDialogProps) {
             </div>
           </div>
 
-          <DialogFooter className="pt-4 gap-2">
-            <Button type="button" variant="destructive" onClick={() => setOpen(false)} className="bg-red-600 hover:bg-red-700 text-white font-bold border-none shadow-sm transition-all">Cancelar</Button>
-            <Button type="submit" disabled={isPending}>
+          <DialogFooter className="pt-4 gap-2 flex flex-col-reverse sm:flex-row sm:justify-end">
+            <Button type="button" variant="destructive" onClick={() => setOpen(false)} className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white font-bold border-none shadow-sm transition-all">Cancelar</Button>
+            <Button type="submit" disabled={isPending} className="w-full sm:w-auto">
               {isPending ? 'Salvando...' : 'Salvar Alterações'}
             </Button>
           </DialogFooter>
