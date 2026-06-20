@@ -15,7 +15,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Contratos 71º BI Mtz",
   description: "Sistema de Fiscalização de Contratos - 71º Batalhão de Infantaria Motorizado",
-  manifest: "/manifest.json"
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Contratos 71º",
+  },
 };
 
 import { TooltipProvider } from "@/components/ui/tooltip";
