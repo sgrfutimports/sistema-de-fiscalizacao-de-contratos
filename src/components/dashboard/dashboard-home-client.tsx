@@ -24,7 +24,8 @@ import {
   Sparkles,
   ArrowRight,
   BookOpen,
-  Eye
+  Eye,
+  X
 } from 'lucide-react'
 
 interface Contrato {
@@ -94,6 +95,7 @@ export function DashboardHomeClient({
   const searchInputRef = useRef<HTMLInputElement>(null)
   
   const [searchTerm, setSearchTerm] = useState('')
+  const [isAlertsModalOpen, setIsAlertsModalOpen] = useState(false)
   
   const isAdmin = userPerfil === 'ADMIN'
 
@@ -196,12 +198,18 @@ export function DashboardHomeClient({
               </span>
             </div>
             
-            <div className="pt-2 md:pt-0 md:pl-6 flex flex-col">
-              <span className="text-[0.65rem] font-bold text-gray-300 uppercase tracking-wider">Alertas Críticos</span>
-              <span className="text-2xl font-black text-yellow-500 mt-1">
+            <button 
+              onClick={() => setIsAlertsModalOpen(true)}
+              className="pt-2 md:pt-0 md:pl-6 flex flex-col text-left hover:bg-white/5 p-1 rounded-lg transition-all focus:outline-none cursor-pointer group"
+            >
+              <span className="text-[0.65rem] font-bold text-gray-300 uppercase tracking-wider group-hover:text-yellow-500 transition-colors">Alertas Críticos</span>
+              <span className="text-2xl font-black text-yellow-500 mt-1 flex items-center gap-2">
                 <VisibilityText value={alertasCount} />
+                <span className="text-[0.6rem] font-black text-yellow-500/70 bg-yellow-500/10 px-1.5 py-0.5 rounded border border-yellow-500/20 group-hover:bg-yellow-500/20 transition-all uppercase tracking-wider">
+                  Ver Detalhes
+                </span>
               </span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
@@ -508,6 +516,136 @@ export function DashboardHomeClient({
           >
             Falar no WhatsApp
           </a>
+        </div>
+      )}
+
+      {/* Modal de Alertas Críticos */}
+      {isAlertsModalOpen && (
+        <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-sm animate-fade-in no-print">
+          <div className="bg-[#1b2331] border border-[#2a3441] text-white rounded-xl shadow-2xl max-w-xl w-full max-h-[85vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="bg-[#131924] border-b border-[#2a3441] p-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="bg-yellow-500/10 p-2.5 rounded-lg border border-yellow-500/30 text-yellow-500">
+                  <AlertCircle className="h-6 w-6" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-black uppercase tracking-wider text-yellow-500">Alertas Críticos Ativos</h2>
+                  <p className="text-xs text-gray-400 font-bold mt-0.5">Pendências e prazos que requerem sua atenção</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setIsAlertsModalOpen(false)}
+                className="text-gray-400 hover:text-white hover:bg-white/10 p-1.5 rounded-lg transition-colors cursor-pointer focus:outline-none"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="overflow-y-auto p-5 space-y-5">
+              {/* Contratos perto do vencimento */}
+              <div className="space-y-3">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <CalendarClock className="h-4 w-4 text-yellow-500" />
+                  Contratos Vencendo Breve (≤ 90 dias)
+                </h3>
+                {contratosVencimentoBreve.length === 0 ? (
+                  <p className="text-xs text-gray-500 font-bold bg-[#131924]/40 p-3 rounded-lg border border-[#2a3441]/40">
+                    Nenhum contrato ativo próximo ao vencimento.
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {contratosVencimentoBreve.map((contrato) => {
+                      const now = new Date()
+                      const term = new Date(contrato.data_termino)
+                      const diffTime = term.getTime() - now.getTime()
+                      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+                      const dataTerminoFormatada = contrato.data_termino.split('-').reverse().join('/')
+
+                      return (
+                        <div key={contrato.id} className="p-3.5 rounded-lg bg-[#131924]/40 border border-[#2a3441]/80 hover:border-yellow-500/40 transition-colors text-left flex flex-col gap-1.5">
+                          <div className="flex justify-between items-center gap-2 flex-wrap">
+                            <span className="text-[0.65rem] font-black text-yellow-500 bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/20 uppercase tracking-wider">
+                              CONTRATO Nº {contrato.numero_contrato}
+                            </span>
+                            <span className="text-[0.65rem] font-bold text-red-400 bg-red-400/10 px-2 py-0.5 rounded border border-red-400/20 uppercase">
+                              vence em {diffDays} dias
+                            </span>
+                          </div>
+                          <div className="text-xs font-bold text-white truncate">{contrato.empresa}</div>
+                          <div className="text-[0.65rem] text-gray-400">
+                            Objeto: <span className="font-semibold text-gray-300">{contrato.objeto}</span>
+                          </div>
+                          <div className="flex justify-between items-center mt-1 text-[0.65rem] text-gray-400 pt-2 border-t border-[#2a3441]/50">
+                            <span>Término: <strong className="text-gray-300">{dataTerminoFormatada}</strong></span>
+                            <Link 
+                              href={isAdmin ? `/dashboard/contratos` : `/dashboard/meus-contratos`}
+                              onClick={() => setIsAlertsModalOpen(false)}
+                              className="text-yellow-500 hover:text-yellow-400 font-extrabold flex items-center gap-0.5 uppercase tracking-wider"
+                            >
+                              Ver Contrato <ArrowRight className="h-3 w-3" />
+                            </Link>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Comunicados Não Lidos */}
+              <div className="space-y-3 pt-3 border-t border-[#2a3441]/50">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-wider flex items-center gap-1.5">
+                  <ClipboardList className="h-4 w-4 text-yellow-500" />
+                  Comunicados Oficiais Não Lidos
+                </h3>
+                {unreadComunicados.length === 0 ? (
+                  <p className="text-xs text-gray-500 font-bold bg-[#131924]/40 p-3 rounded-lg border border-[#2a3441]/40">
+                    Todos os comunicados oficiais foram lidos.
+                  </p>
+                ) : (
+                  <div className="space-y-2">
+                    {unreadComunicados.map((comunicado) => (
+                      <div key={comunicado.id} className="p-3.5 rounded-lg bg-[#131924]/40 border border-[#2a3441]/80 hover:border-yellow-500/40 transition-colors text-left flex flex-col gap-1.5">
+                        <div className="flex justify-between items-center gap-2">
+                          <span className="text-[0.65rem] font-black text-yellow-600 dark:text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded border border-yellow-500/20 uppercase tracking-wider">
+                            NÃO LIDO
+                          </span>
+                          <span className="text-[0.65rem] text-gray-400 font-semibold">
+                            {new Date(comunicado.created_at).toLocaleDateString('pt-BR')}
+                          </span>
+                        </div>
+                        <div className="text-xs font-black text-white">{comunicado.titulo}</div>
+                        <div className="text-[0.65rem] text-gray-400">
+                          Autor: <strong className="text-gray-300">{comunicado.autor}</strong>
+                        </div>
+                        <div className="flex justify-end mt-1 text-[0.65rem] pt-2 border-t border-[#2a3441]/50">
+                          <Link 
+                            href="/dashboard/comunicados"
+                            onClick={() => setIsAlertsModalOpen(false)}
+                            className="text-yellow-500 hover:text-yellow-400 font-extrabold flex items-center gap-0.5 uppercase tracking-wider"
+                          >
+                            Ir para Comunicados <ArrowRight className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="bg-[#131924] border-t border-[#2a3441] p-4 flex justify-end">
+              <button 
+                onClick={() => setIsAlertsModalOpen(false)}
+                className="bg-gray-700 hover:bg-gray-600 text-white font-bold text-xs px-4 py-2 rounded-lg transition-colors cursor-pointer focus:outline-none uppercase tracking-wider"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
