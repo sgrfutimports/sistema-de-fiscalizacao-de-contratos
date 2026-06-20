@@ -94,6 +94,7 @@ export default async function DashboardPage() {
   const dbComunicadosPromise = supabaseAdmin
     .from('comunicados')
     .select('id, titulo, conteudo, autor, created_at')
+    .neq('titulo', 'EXCECAO_PRAZO')
     .order('created_at', { ascending: false })
     .limit(5)
 
@@ -101,6 +102,7 @@ export default async function DashboardPage() {
     ? supabaseAdmin
         .from('comunicados')
         .select('id, titulo, conteudo, autor, created_at')
+        .neq('titulo', 'EXCECAO_PRAZO')
         .order('created_at', { ascending: false })
     : Promise.resolve({ data: null }) as Promise<{ data: any[] | null }>
 

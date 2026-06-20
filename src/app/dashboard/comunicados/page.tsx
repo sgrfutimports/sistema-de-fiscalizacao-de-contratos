@@ -13,12 +13,13 @@ export default async function ComunicadosPage() {
     redirect('/login')
   }
 
-  // Executar a verificação do perfil atual e busca de todos os comunicados em paralelo
+  // Busca lista de comunicados ordenados do mais recente, ocultando as exceções de prazo
   const [profileRes, comunicadosRes] = await Promise.all([
     getCachedUserProfile(user.id),
     supabaseAdmin
       .from('comunicados')
       .select('*')
+      .neq('titulo', 'EXCECAO_PRAZO')
       .order('created_at', { ascending: false })
   ])
 

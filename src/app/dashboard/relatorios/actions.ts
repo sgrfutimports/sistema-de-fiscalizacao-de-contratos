@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { verificarPrazoEnvio } from '@/lib/prazos-util'
 
 export async function submitRelatorio(payload: {
   contrato_id: string
@@ -32,6 +33,24 @@ export async function submitRelatorio(payload: {
   } = payload
 
   const supabaseAdmin = createAdminClient()
+
+  // Buscar exceções de prazo ativas (comunicados com título 'EXCECAO_PRAZO')
+  const { data: excecoes } = await supabaseAdmin
+    .from('comunicados')
+    .select('conteudo, autor')
+    .eq('titulo', 'EXCECAO_PRAZO')
+
+  // Validar o prazo de envio
+  const validacao = verificarPrazoEnvio(
+    competencia_mes,
+    competencia_ano,
+    contrato_id,
+    excecoes || []
+  )
+
+  if (!validacao.valido) {
+    return { error: validacao.erro }
+  }
 
   // Verifica se já existe relatório para este contrato nesta competência
   const query = supabaseAdmin
@@ -180,6 +199,32 @@ export async function submitRelatoriosUnificados(
   if (!user) return { error: 'Não autorizado.' }
 
   const supabaseAdmin = createAdminClient()
+
+  // Buscar exceções de prazo ativas
+  const { data: excecoes } = await supabaseAdmin
+    .from('comunicados')
+    .select('conteudo, autor')
+    .eq('titulo', 'EXCECAO_PRAZO')
+
+  // Validar o prazo de envio para cada contrato
+  for (const rel of relatorios) {
+    const validacao = verificarPrazoEnvio(
+      competencia_mes,
+      competencia_ano,
+      rel.contrato_id,
+      excecoes || []
+    )
+    if (!validacao.valido) {
+      const { data: contrato } = await supabaseAdmin
+        .from('contratos')
+        .select('numero_contrato')
+        .eq('id', rel.contrato_id)
+        .single()
+      return { 
+        error: `Contrato Nº ${contrato?.numero_contrato || 'N/A'}: ${validacao.erro}` 
+      }
+    }
+  }
 
   for (const rel of relatorios) {
     const { data: existente } = await supabaseAdmin
