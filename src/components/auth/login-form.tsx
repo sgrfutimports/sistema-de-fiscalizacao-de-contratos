@@ -256,9 +256,9 @@ export function LoginForm() {
               </div>
               
               {/* Círculo do Logo iluminado */}
-              <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border-2 border-[#fedf00] flex items-center justify-center p-1.5 overflow-hidden shadow-[0_0_30px_rgba(254,223,0,0.6)] relative z-10 animate-bounce">
+              <div className="w-24 h-24 flex items-center justify-center relative z-10 animate-bounce">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-full h-full object-cover rounded-full" />
+                <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(254,223,0,0.6)]" />
               </div>
             </div>
 

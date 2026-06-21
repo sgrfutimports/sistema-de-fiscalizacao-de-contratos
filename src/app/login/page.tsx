@@ -50,18 +50,12 @@ export default function LoginPage() {
 
       <div className="relative z-50 w-full flex flex-col items-center justify-center gap-6 mt-10">
         <div style={{ 
-          background: 'rgba(255, 255, 255, 0.1)',
-          backdropFilter: 'blur(10px)',
           display: 'inline-block',
           lineHeight: 0,
-          borderRadius: '50%',
-          overflow: 'hidden',
-          padding: '8px',
-          border: '2px solid rgba(254, 223, 0, 0.4)',
-          boxShadow: '0 0 30px rgba(254, 223, 0, 0.3)'
+          filter: 'drop-shadow(0 0 20px rgba(254, 223, 0, 0.4))'
         }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Logo 71º BI Mtz" width={140} height={140} style={{ display: 'block', borderRadius: '50%' }} />
+          <img src="/logo.png" alt="Logo 71º BI Mtz" width={140} height={140} style={{ display: 'block' }} />
         </div>
         <LoginForm />
       </div>
