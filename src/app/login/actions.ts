@@ -39,11 +39,11 @@ export async function login(formData: FormData) {
   }
 
   if (userData.primeiro_acesso) {
-    return { success: true, redirectTo: '/primeiro-acesso' }
+    redirect('/primeiro-acesso')
   }
 
   revalidatePath('/dashboard', 'layout')
-  return { success: true, redirectTo: '/dashboard' }
+  redirect('/dashboard')
 }
 
 export async function logout() {
