@@ -34,7 +34,7 @@ export default async function MeusContratosPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-800">Meus Contratos</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Meus Contratos</h1>
           <p className="text-sm text-gray-500 mt-1 font-medium">
             Contratos em que você está vinculado como Titular ou Substituto.
           </p>

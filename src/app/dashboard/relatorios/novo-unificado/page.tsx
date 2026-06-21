@@ -22,7 +22,7 @@ export default async function NovoUnificadoPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-800">Relatório Unificado</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Relatório Unificado</h1>
           <p className="text-sm text-gray-500 mt-1 font-medium">
             Você não possui contratos ativos vinculados ao seu perfil para emitir relatórios.
           </p>
@@ -34,7 +34,7 @@ export default async function NovoUnificadoPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-800">Emitir Relatório Único</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Emitir Relatório Único</h1>
         <p className="text-sm text-gray-500 mt-1 font-medium">
           Preencha a avaliação mensal de todos os seus contratos vinculados em uma única tela.
         </p>

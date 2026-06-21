@@ -39,7 +39,7 @@ export default async function NovoRelatorioPage({ params }: { params: Promise<{ 
           Voltar para Meus Contratos
         </Link>
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-800">Emitir Relatório de Fiscalização</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Emitir Relatório de Fiscalização</h1>
           <p className="text-sm text-gray-500 mt-1 font-medium">
             Contrato <strong className="text-gray-700">{contrato.numero_contrato}</strong> - {contrato.empresa}
           </p>

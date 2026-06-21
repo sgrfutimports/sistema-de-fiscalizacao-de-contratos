@@ -59,7 +59,7 @@ export default async function MeusRelatoriosPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-gray-800">Meus Relatórios</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Meus Relatórios</h1>
           <p className="text-sm text-gray-500 mt-1 font-medium">
             Acompanhe o status de aprovação dos seus relatórios mensais.
           </p>

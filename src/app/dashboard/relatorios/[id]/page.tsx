@@ -214,7 +214,7 @@ export default async function DetalhesRelatorioPage({ params }: { params: Promis
         </Link>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-gray-800">
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
               {isDevolvidoEdicao ? 'Corrigir Relatório Devolvido' : 'Visualizar Relatório'}
             </h1>
             <p className="text-sm text-gray-500 mt-1 font-medium">
