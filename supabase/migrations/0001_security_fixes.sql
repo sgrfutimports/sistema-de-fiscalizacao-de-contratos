@@ -1,7 +1,5 @@
--- ====================================================================================================
 -- MIGRATION: 0001_security_fixes.sql
 -- DESCRIÇÃO: Correções Críticas de Segurança de RLS (Recursão Infinita) e spoofing de Logs
--- ====================================================================================================
 
 -- 1. Criação de Função SECURITY DEFINER para obter o perfil atual sem causar Recursão
 -- A função executa como o dono do banco (postgres) para poder ler a tabela users sem engatilhar RLS
