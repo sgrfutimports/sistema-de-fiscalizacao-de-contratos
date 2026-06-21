@@ -266,7 +266,7 @@ export function DashboardHomeClient({
           {/* Card 1 */}
           <Card className="rounded-[20px] shadow-sm border-gray-100 dark:border-gray-800 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 bg-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 pt-4 px-4">
-              <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider truncate">Contratos Ativos</CardTitle>
+              <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider leading-tight pr-2">Contratos Ativos</CardTitle>
               <div className="h-7 w-7 rounded-full bg-[#133215]/10 flex items-center justify-center text-[#133215] dark:text-[#a0c5a2]">
                 <FileSignature className="h-3.5 w-3.5" />
               </div>
@@ -285,7 +285,7 @@ export function DashboardHomeClient({
           {/* Card 2 */}
           <Card className="rounded-[20px] shadow-sm border-gray-100 dark:border-gray-800 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 bg-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 pt-4 px-4">
-              <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider truncate">
+              <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider leading-tight pr-2">
                 {isAdmin ? 'Aguardando Análise' : 'Pendentes de Correção'}
               </CardTitle>
               <div className="h-7 w-7 rounded-full bg-yellow-500/10 flex items-center justify-center text-yellow-600 dark:text-yellow-400">
@@ -305,7 +305,7 @@ export function DashboardHomeClient({
           {/* Card 3 */}
           <Card className="rounded-[20px] shadow-sm border-gray-100 dark:border-gray-800 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 bg-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 pt-4 px-4">
-              <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider truncate">
+              <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider leading-tight pr-2">
                 {isAdmin ? 'Aprovados' : 'Meus Enviados'}
               </CardTitle>
               <div className="h-7 w-7 rounded-full bg-green-500/10 flex items-center justify-center text-green-600 dark:text-green-400">
@@ -326,7 +326,7 @@ export function DashboardHomeClient({
           {isAdmin ? (
             <Card className="rounded-[20px] shadow-sm border-gray-100 dark:border-gray-800 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 bg-card">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 pt-4 px-4">
-                <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider truncate">Total de Fiscais</CardTitle>
+                <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider leading-tight pr-2">Total de Fiscais</CardTitle>
                 <div className="h-7 w-7 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
                   <Users className="h-3.5 w-3.5" />
                 </div>
@@ -343,7 +343,7 @@ export function DashboardHomeClient({
           ) : (
             <Card className="rounded-[20px] shadow-sm border-gray-100 dark:border-gray-800 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 bg-card">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-1.5 pt-4 px-4">
-                <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider truncate">Perfil de Acesso</CardTitle>
+                <CardTitle className="text-[0.65rem] font-extrabold text-gray-400 dark:text-gray-300 uppercase tracking-wider leading-tight pr-2">Perfil de Acesso</CardTitle>
                 <div className="h-7 w-7 rounded-full bg-[#133215]/10 flex items-center justify-center text-[#133215] dark:text-[#a0c5a2]">
                   <ShieldAlert className="h-3.5 w-3.5" />
                 </div>
