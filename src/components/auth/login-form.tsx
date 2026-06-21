@@ -22,6 +22,7 @@ export function LoginForm() {
   // Controlled states for credentials
   const [cpf, setCpf] = useState('')
   const [password, setPassword] = useState('')
+  const [rememberCpf, setRememberCpf] = useState(false)
 
   // Estados do Reset de Senha
   const [resetOpen, setResetOpen] = useState(false)
@@ -32,6 +33,12 @@ export function LoginForm() {
   // Pre-populate fields from URL if present (e.g. autofill or fallback redirects)
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      const savedCpf = localStorage.getItem('saved_cpf')
+      if (savedCpf) {
+        setCpf(savedCpf)
+        setRememberCpf(true)
+      }
+
       const params = new URLSearchParams(window.location.search)
       const cpfParam = params.get('cpf')
       const passwordParam = params.get('password')
@@ -61,6 +68,13 @@ export function LoginForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
+
+    if (rememberCpf) {
+      localStorage.setItem('saved_cpf', cpf)
+    } else {
+      localStorage.removeItem('saved_cpf')
+    }
+
     const formData = new FormData()
     formData.append('cpf', cpf)
     formData.append('password', password)
@@ -225,6 +239,19 @@ export function LoginForm() {
                 )}
               </button>
             </div>
+          </div>
+          
+          <div className="flex items-center gap-2 mt-1 px-1">
+            <input 
+              type="checkbox" 
+              id="remember" 
+              checked={rememberCpf}
+              onChange={(e) => setRememberCpf(e.target.checked)}
+              className="w-4 h-4 rounded border-white/20 bg-white/10 text-[#009b3a] focus:ring-[#fedf00] cursor-pointer"
+            />
+            <Label htmlFor="remember" className="text-[0.7rem] font-bold text-white/90 cursor-pointer select-none">
+              Lembrar meu CPF
+            </Label>
           </div>
  
           <button 
