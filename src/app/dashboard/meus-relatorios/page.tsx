@@ -159,13 +159,24 @@ export default async function MeusRelatoriosPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-center">
-                        <Link 
-                          href={`/dashboard/relatorios/${rel.id}`} 
-                          className="inline-flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700/50 p-1.5 rounded-lg transition-colors"
-                          title="Ver Detalhes"
-                        >
-                          <Eye className="h-4.5 w-4.5" />
-                        </Link>
+                        <div className="flex items-center justify-center gap-2">
+                          <Link 
+                            href={`/dashboard/relatorios/${rel.id}`} 
+                            className="inline-flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700/50 p-1.5 rounded-lg transition-colors"
+                            title="Ver Detalhes"
+                          >
+                            <Eye className="h-4.5 w-4.5" />
+                          </Link>
+                          {rel.status === 'APROVADO' && (
+                            <Link
+                              href={`/dashboard/relatorios/${rel.id}/imprimir`}
+                              className="inline-flex items-center justify-center text-yellow-500 hover:text-yellow-400 hover:bg-gray-700/50 p-1.5 rounded-lg transition-colors"
+                              title="Imprimir Certidão Individual"
+                            >
+                              <Printer className="h-4.5 w-4.5" />
+                            </Link>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))
@@ -208,13 +219,24 @@ export default async function MeusRelatoriosPage() {
                       <div className="text-[0.6rem] font-bold text-gray-400 uppercase tracking-wider">Data de Envio</div>
                       <div className="text-gray-300 mt-0.5">{rel.data_envio ? new Date(rel.data_envio).toLocaleDateString('pt-BR') : ''}</div>
                     </div>
-                    <Link 
-                      href={`/dashboard/relatorios/${rel.id}`} 
-                      className="inline-flex items-center justify-center bg-[#131924] hover:bg-[#1b2331] text-gray-300 hover:text-white p-2 rounded-xl border border-[#2a3441] transition-colors"
-                      title="Ver Detalhes"
-                    >
-                      <Eye className="h-4.5 w-4.5" />
-                    </Link>
+                    <div className="flex items-center gap-2">
+                      <Link 
+                        href={`/dashboard/relatorios/${rel.id}`} 
+                        className="inline-flex items-center justify-center bg-[#131924] hover:bg-[#1b2331] text-gray-300 hover:text-white p-2 rounded-xl border border-[#2a3441] transition-colors"
+                        title="Ver Detalhes"
+                      >
+                        <Eye className="h-4.5 w-4.5" />
+                      </Link>
+                      {rel.status === 'APROVADO' && (
+                        <Link
+                          href={`/dashboard/relatorios/${rel.id}/imprimir`}
+                          className="inline-flex items-center justify-center bg-yellow-600/10 hover:bg-yellow-600/20 text-yellow-500 hover:text-yellow-400 p-2 rounded-xl border border-yellow-500/20 transition-colors"
+                          title="Imprimir Certidão Individual"
+                        >
+                          <Printer className="h-4.5 w-4.5" />
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))
