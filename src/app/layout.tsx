@@ -31,6 +31,7 @@ export const metadata: Metadata = {
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { InstallPwa } from "@/components/InstallPwa";
 
 export default function RootLayout({
   children,
@@ -52,6 +53,7 @@ export default function RootLayout({
             {children}
           </TooltipProvider>
           <Toaster />
+          <InstallPwa />
         </ThemeProvider>
         
         {/* Registro do Service Worker para PWA */}

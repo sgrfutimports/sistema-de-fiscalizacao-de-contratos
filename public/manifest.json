@@ -2,21 +2,27 @@
   "name": "Contratos 71º BI Mtz",
   "short_name": "Contratos 71º",
   "description": "Sistema de Fiscalização de Contratos - 71º Batalhão de Infantaria Motorizado",
-  "start_url": "/dashboard",
+  "start_url": "/",
   "display": "standalone",
-  "background_color": "#133215",
-  "theme_color": "#133215",
+  "background_color": "#009b3a",
+  "theme_color": "#009b3a",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/logo.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/logo.png",
       "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "any",
       "type": "image/png",
       "purpose": "any maskable"
     }
