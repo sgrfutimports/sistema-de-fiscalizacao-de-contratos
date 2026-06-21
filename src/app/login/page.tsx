@@ -58,27 +58,54 @@ export default function LoginPage() {
         <div className="absolute top-[60%] right-[10%] w-56 h-56 rounded-full animate-explode" style={{ background: 'radial-gradient(circle, rgba(254,223,0,1) 0%, rgba(254,223,0,0) 70%)', '--duration': '4s', '--delay': '3s' } as React.CSSProperties} />
       </div>
 
-      {/* Balões Juninos */}
+      {/* Balões Juninos Tradicionais */}
       <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
-        {/* Balão 1 */}
+        {/* Balão 1 (Esquerda) */}
         <div className="absolute left-[15%] animate-balloon" style={{ '--duration': '15s', '--delay': '0s' } as React.CSSProperties}>
-          <svg width="40" height="60" viewBox="0 0 50 70" className="drop-shadow-lg">
-            <polygon points="25,0 50,25 25,50 0,25" fill="#fedf00" stroke="#009b3a" strokeWidth="2" />
-            <polygon points="25,50 35,70 15,70" fill="#002776" />
+          <svg width="60" height="90" viewBox="0 0 60 90" className="drop-shadow-[0_5px_10px_rgba(0,0,0,0.5)]">
+            <path d="M30 0 L0 30 L30 30 Z" fill="#009b3a" />
+            <path d="M30 0 L60 30 L30 30 Z" fill="#fedf00" />
+            <path d="M30 30 L60 30 L30 60 Z" fill="#002776" />
+            <path d="M30 30 L0 30 L30 60 Z" fill="#ffffff" />
+            <path d="M30 0 L30 60 M0 30 L60 30" stroke="#000" strokeWidth="1" opacity="0.3" />
+            <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#fff" strokeWidth="1.5" />
+            <rect x="25" y="60" width="10" height="8" fill="#8b5a2b" />
+            <path d="M25 60 L35 60 M25 64 L35 64 M25 68 L35 68" stroke="#5c3a21" strokeWidth="1" />
+            <path d="M30 60 Q 25 55 30 50 Q 35 55 30 60" fill="#ff4500" />
+            <path d="M25 68 Q 20 75 25 80" fill="none" stroke="#fedf00" strokeWidth="1.5" />
+            <path d="M35 68 Q 40 75 35 80" fill="none" stroke="#009b3a" strokeWidth="1.5" />
           </svg>
         </div>
-        {/* Balão 2 */}
-        <div className="absolute left-[80%] animate-balloon" style={{ '--duration': '18s', '--delay': '4s' } as React.CSSProperties}>
-          <svg width="50" height="75" viewBox="0 0 50 70" className="drop-shadow-lg">
-            <polygon points="25,0 50,25 25,50 0,25" fill="#009b3a" stroke="#fedf00" strokeWidth="2" />
-            <polygon points="25,50 35,70 15,70" fill="#ffffff" />
+        {/* Balão 2 (Direita) */}
+        <div className="absolute left-[80%] animate-balloon" style={{ '--duration': '18s', '--delay': '4s', transform: 'scale(0.8)' } as React.CSSProperties}>
+          <svg width="60" height="90" viewBox="0 0 60 90" className="drop-shadow-[0_5px_10px_rgba(0,0,0,0.5)]">
+            <path d="M30 0 L0 30 L30 30 Z" fill="#ffffff" />
+            <path d="M30 0 L60 30 L30 30 Z" fill="#002776" />
+            <path d="M30 30 L60 30 L30 60 Z" fill="#fedf00" />
+            <path d="M30 30 L0 30 L30 60 Z" fill="#009b3a" />
+            <path d="M30 0 L30 60 M0 30 L60 30" stroke="#000" strokeWidth="1" opacity="0.3" />
+            <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#fff" strokeWidth="1.5" />
+            <rect x="25" y="60" width="10" height="8" fill="#8b5a2b" />
+            <path d="M25 60 L35 60 M25 64 L35 64 M25 68 L35 68" stroke="#5c3a21" strokeWidth="1" />
+            <path d="M30 60 Q 25 55 30 50 Q 35 55 30 60" fill="#ff4500" />
+            <path d="M25 68 Q 20 75 25 80" fill="none" stroke="#002776" strokeWidth="1.5" />
+            <path d="M35 68 Q 40 75 35 80" fill="none" stroke="#ffffff" strokeWidth="1.5" />
           </svg>
         </div>
-        {/* Balão 3 */}
-        <div className="absolute left-[45%] animate-balloon" style={{ '--duration': '22s', '--delay': '8s' } as React.CSSProperties}>
-          <svg width="35" height="50" viewBox="0 0 50 70" className="drop-shadow-lg">
-            <polygon points="25,0 50,25 25,50 0,25" fill="#002776" stroke="#ffffff" strokeWidth="2" />
-            <polygon points="25,50 35,70 15,70" fill="#fedf00" />
+        {/* Balão 3 (Centro) */}
+        <div className="absolute left-[45%] animate-balloon" style={{ '--duration': '22s', '--delay': '8s', transform: 'scale(1.2)' } as React.CSSProperties}>
+          <svg width="60" height="90" viewBox="0 0 60 90" className="drop-shadow-[0_5px_10px_rgba(0,0,0,0.5)]">
+            <path d="M30 0 L0 30 L30 30 Z" fill="#fedf00" />
+            <path d="M30 0 L60 30 L30 30 Z" fill="#009b3a" />
+            <path d="M30 30 L60 30 L30 60 Z" fill="#ffffff" />
+            <path d="M30 30 L0 30 L30 60 Z" fill="#002776" />
+            <path d="M30 0 L30 60 M0 30 L60 30" stroke="#000" strokeWidth="1" opacity="0.3" />
+            <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#fff" strokeWidth="1.5" />
+            <rect x="25" y="60" width="10" height="8" fill="#8b5a2b" />
+            <path d="M25 60 L35 60 M25 64 L35 64 M25 68 L35 68" stroke="#5c3a21" strokeWidth="1" />
+            <path d="M30 60 Q 25 55 30 50 Q 35 55 30 60" fill="#ff4500" />
+            <path d="M25 68 Q 20 75 25 80" fill="none" stroke="#009b3a" strokeWidth="1.5" />
+            <path d="M35 68 Q 40 75 35 80" fill="none" stroke="#fedf00" strokeWidth="1.5" />
           </svg>
         </div>
       </div>
@@ -89,18 +116,25 @@ export default function LoginPage() {
           lineHeight: 0,
           filter: 'drop-shadow(0 0 20px rgba(254, 223, 0, 0.4))'
         }}>
-          {/* Chapéu de Palha sobre a logo */}
-          <div className="absolute -top-10 -right-8 z-10 transform rotate-[15deg] animate-bounce" style={{ animationDuration: '3s' }}>
-            <svg width="70" height="50" viewBox="0 0 100 60" className="drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
-              {/* Aba do chapéu */}
-              <ellipse cx="50" cy="45" rx="45" ry="12" fill="#d2b48c" stroke="#8b5a2b" strokeWidth="2" />
-              {/* Copa do chapéu */}
-              <path d="M25 40 C 25 15, 75 15, 75 40" fill="#d2b48c" stroke="#8b5a2b" strokeWidth="2" />
-              {/* Fita verde e amarela */}
-              <path d="M26 38 Q 50 48, 74 38 L 74 33 Q 50 43, 26 33 Z" fill="#fedf00" />
-              <path d="M27 34 Q 50 44, 73 34 L 73 30 Q 50 40, 27 30 Z" fill="#009b3a" />
-              {/* Remendo */}
-              <rect x="40" y="20" width="12" height="12" fill="#002776" transform="rotate(15 46 26)" stroke="#fff" strokeWidth="1" strokeDasharray="2,2" />
+          {/* Chapéu de Couro Nordestino (Cangaceiro) sobre a logo (Lado Esquerdo) */}
+          <div className="absolute -top-6 -left-12 z-10 transform rotate-[-20deg] animate-bounce" style={{ animationDuration: '3.5s' }}>
+            <svg width="85" height="55" viewBox="0 0 100 60" className="drop-shadow-[0_8px_8px_rgba(0,0,0,0.6)]">
+              {/* Aba traseira (elipse base) */}
+              <ellipse cx="50" cy="45" rx="40" ry="8" fill="#8B4513" stroke="#5C3A21" strokeWidth="2" />
+              {/* Copa */}
+              <path d="M30 43 C 30 10, 70 10, 70 43" fill="#A0522D" stroke="#5C3A21" strokeWidth="2" />
+              {/* Aba frontal dobrada (meia-lua para cima) */}
+              <path d="M10 45 C 10 45, 50 15, 90 45 C 70 52, 30 52, 10 45 Z" fill="#8B4513" stroke="#5C3A21" strokeWidth="2" />
+              {/* Estrela de 8 pontas (Enfeite clássico de cangaceiro) */}
+              <g transform="translate(50, 32) scale(0.6)">
+                <path d="M0 -15 L 4 -4 L 15 0 L 4 4 L 0 15 L -4 4 L -15 0 L -4 -4 Z" fill="#DEB887" />
+                <circle cx="0" cy="0" r="2" fill="#5C3A21" />
+              </g>
+              {/* Estrelinhas laterais */}
+              <circle cx="30" cy="38" r="2.5" fill="#DEB887" />
+              <circle cx="70" cy="38" r="2.5" fill="#DEB887" />
+              {/* Cordinha */}
+              <path d="M20 45 Q 50 70, 80 45" fill="none" stroke="#DEB887" strokeWidth="1.5" strokeDasharray="3,3" />
             </svg>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
