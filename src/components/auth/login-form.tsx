@@ -108,7 +108,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[#09170a]/75 backdrop-blur-xl p-8 shadow-2xl relative overflow-hidden">
+    <div className="w-full max-w-md rounded-2xl border border-white/30 bg-white/10 backdrop-blur-md p-8 shadow-[0_0_50px_rgba(254,223,0,0.15)] relative overflow-hidden">
       {/* Linha brilhante no topo para efeito premium */}
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-yellow-500/30 to-transparent" />
       
@@ -139,7 +139,7 @@ export function LoginForm() {
               placeholder="000.000.000-00" 
               onChange={handleCpfChange}
               required 
-              className="w-full h-12 px-3.5 bg-[#050c05]/60 border border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:outline-none focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl transition-all"
+              className="w-full h-12 px-3.5 bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:border-[#fedf00] focus:outline-none focus:ring-1 focus:ring-[#fedf00]/50 font-bold rounded-xl transition-all shadow-inner"
             />
           </div>
 
@@ -185,7 +185,7 @@ export function LoginForm() {
                         placeholder="000.000.000-00" 
                         onChange={handleCpfChange}
                         required 
-                        className="w-full h-11 px-3 bg-[#050c05]/60 border border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:outline-none rounded-xl transition-all"
+                        className="w-full h-11 px-3 bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:border-[#fedf00] focus:outline-none focus:ring-1 focus:ring-[#fedf00]/50 rounded-xl transition-all shadow-inner"
                       />
                     </div>
                     <DialogFooter className="mt-2">
@@ -209,7 +209,7 @@ export function LoginForm() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required 
-                className="w-full h-12 pl-3.5 pr-12 bg-[#050c05]/60 border border-white/10 text-white placeholder-gray-500 focus:border-yellow-500/50 focus:outline-none focus:ring-1 focus:ring-yellow-500/50 font-bold rounded-xl relative z-0"
+                className="w-full h-12 pl-3.5 pr-12 bg-white/10 border border-white/20 text-white placeholder-gray-300 focus:border-[#fedf00] focus:outline-none focus:ring-1 focus:ring-[#fedf00]/50 font-bold rounded-xl relative z-0 shadow-inner"
               />
               <button
                 type="button"
@@ -228,7 +228,7 @@ export function LoginForm() {
           </div>
  
           <button 
-            className="w-full h-12 text-[0.7rem] font-black uppercase tracking-widest transition-all bg-gradient-to-r from-yellow-500 via-yellow-600 to-yellow-500 hover:from-yellow-600 hover:to-yellow-700 text-[#070f08] rounded-xl shadow-lg shadow-yellow-500/10 active:scale-[0.98] mt-6 border-none cursor-pointer relative z-10 disabled:opacity-50 disabled:pointer-events-none" 
+            className="w-full h-12 text-[0.8rem] font-black uppercase tracking-widest transition-all bg-gradient-to-r from-[#009b3a] to-[#005f23] hover:from-[#00b043] hover:to-[#00702a] text-[#fedf00] rounded-xl shadow-[0_0_20px_rgba(0,155,58,0.4)] active:scale-[0.98] mt-6 border border-[#fedf00]/30 cursor-pointer relative z-10 disabled:opacity-50 disabled:pointer-events-none" 
             type="submit" 
             disabled={isPending}
           >
@@ -239,46 +239,46 @@ export function LoginForm() {
 
       {/* Tela de Carregamento Premium e Moderna Pós-Login */}
       {isPending && (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#070f08]/95 backdrop-blur-lg animate-fade-in">
-          {/* Efeitos de iluminação militar de fundo */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[350px] w-[350px] rounded-full bg-green-500/10 blur-[90px] pointer-events-none" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[200px] w-[200px] rounded-full bg-yellow-500/5 blur-[60px] pointer-events-none" />
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gradient-to-b from-[#005f23]/90 to-[#002776]/90 backdrop-blur-md animate-fade-in">
+          {/* Luzes de Fogueira e Refletores */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-[#ff7300]/20 blur-[100px] pointer-events-none animate-flicker" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[200px] w-[200px] rounded-full bg-[#fedf00]/30 blur-[60px] pointer-events-none animate-pulse" />
           
-          {/* Linha de Varredura estilo Radar Militar */}
-          <div className="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-green-500/40 to-transparent pointer-events-none animate-radar-scan" />
-
-          <div className="relative flex flex-col items-center gap-7 max-w-sm px-6 text-center animate-in zoom-in-95 duration-300">
-            {/* Brasão/Logo pulsante centralizado com anéis orbitais */}
-            <div className="relative w-28 h-28 flex items-center justify-center">
-              {/* Anel orbital externo brilhando */}
-              <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-yellow-500 border-r-yellow-500/30 animate-spin" style={{ animationDuration: '1.2s' }} />
-              {/* Anel orbital interno contra-rotativo */}
-              <div className="absolute inset-2 rounded-full border border-transparent border-b-green-500 border-l-green-500/30 animate-spin" style={{ animationDuration: '0.8s', animationDirection: 'reverse' }} />
+          <div className="relative flex flex-col items-center gap-7 max-w-sm px-6 text-center animate-in zoom-in-95 duration-500">
+            {/* Brasão/Logo com a Fogueira Atrás */}
+            <div className="relative w-36 h-36 flex items-center justify-center">
               
-              {/* Círculo do Logo com pulsação suave */}
-              <div className="w-16 h-16 rounded-full bg-[#133215]/50 border border-yellow-500/30 flex items-center justify-center p-2.5 overflow-hidden animate-pulse-ring">
+              {/* Efeito de labaredas em CSS */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-80 mix-blend-screen animate-flicker">
+                <div className="absolute w-20 h-28 bg-[#ff2a00] rounded-[50%_0_50%_50%] transform rotate-45 blur-[15px] -bottom-4" />
+                <div className="absolute w-16 h-24 bg-[#ff7300] rounded-[50%_0_50%_50%] transform rotate-45 blur-[10px] -bottom-2" />
+                <div className="absolute w-12 h-20 bg-[#fedf00] rounded-[50%_0_50%_50%] transform rotate-45 blur-[5px]" />
+              </div>
+              
+              {/* Círculo do Logo iluminado */}
+              <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border-2 border-[#fedf00] flex items-center justify-center p-1.5 overflow-hidden shadow-[0_0_30px_rgba(254,223,0,0.6)] relative z-10 animate-bounce">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(234,179,8,0.4)]" />
+                <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-full h-full object-cover rounded-full" />
               </div>
             </div>
 
-            {/* Mensagens táticas de carregamento */}
-            <div className="space-y-2 mt-1">
-              <h3 className="text-sm font-black uppercase text-yellow-500 tracking-[0.25em] animate-pulse">
-                Autenticando...
+            {/* Mensagens Temáticas */}
+            <div className="space-y-3 mt-4">
+              <h3 className="text-xl font-black uppercase text-[#fedf00] drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-widest animate-pulse">
+                Aquecendo os motores!
               </h3>
-              <p className="text-[0.62rem] font-extrabold text-gray-400 uppercase tracking-widest leading-relaxed flex items-center justify-center gap-0.5">
-                Preparando ambiente militar seguro
+              <p className="text-xs font-extrabold text-white uppercase tracking-[0.2em] leading-relaxed drop-shadow-md">
+                Puxando o fole da sanfona e abrindo o portal...
               </p>
             </div>
             
-            {/* Barra de Progresso com degradê premium */}
-            <div className="w-48 h-1 bg-[#133215] rounded-full overflow-hidden mt-1 border border-white/5 relative">
-              <div className="absolute inset-y-0 left-0 w-full h-full bg-gradient-to-r from-yellow-500 to-green-500 rounded-full animate-loading-progress" />
+            {/* Barra de Progresso Hexa */}
+            <div className="w-56 h-2 bg-white/20 rounded-full overflow-hidden mt-2 border border-white/30 relative shadow-inner">
+              <div className="absolute inset-y-0 left-0 w-full h-full bg-gradient-to-r from-[#009b3a] via-[#fedf00] to-[#002776] rounded-full animate-loading-progress" />
             </div>
 
-            <span className="text-[0.55rem] font-extrabold text-gray-500 uppercase tracking-widest mt-1">
-              71º Batalhão de Infantaria Motorizado
+            <span className="text-[0.6rem] font-extrabold text-white/80 uppercase tracking-[0.3em] mt-2 drop-shadow-sm">
+              Rumo ao Hexa!
             </span>
           </div>
         </div>
