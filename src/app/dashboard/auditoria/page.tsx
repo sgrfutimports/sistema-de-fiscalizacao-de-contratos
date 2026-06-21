@@ -1,7 +1,8 @@
 import { getCachedUser, getCachedUserProfile } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { TerminalSquare, Bell, Search } from 'lucide-react'
+import { TerminalSquare, Search } from 'lucide-react'
 import { redirect } from 'next/navigation'
+import { NotificarButton } from './notificar-button'
 
 export default async function AuditoriaPage() {
   const supabaseAdmin = createAdminClient()
@@ -66,10 +67,7 @@ export default async function AuditoriaPage() {
             Rastreamento completo e irrefutável de transações militares, logins, assinaturas digitais e disparador de cobranças.
           </p>
         </div>
-        <button className="flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-lg font-bold text-sm transition-colors shadow-md uppercase tracking-wider shrink-0 whitespace-nowrap cursor-pointer">
-          <Bell className="h-4 w-4" />
-          Notificar Atrasados (E-mail)
-        </button>
+        <NotificarButton />
       </div>
 
       {/* Barra de Pesquisa Adaptiva */}
