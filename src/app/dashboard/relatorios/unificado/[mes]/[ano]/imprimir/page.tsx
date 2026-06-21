@@ -78,7 +78,7 @@ export default async function ImprimirRelatorioUnificadoPage({
     }
 
     return (
-      <div className="my-4 border border-black rounded overflow-hidden">
+      <div className="my-4 border border-black rounded overflow-x-auto">
         <table className="w-full text-[0.7rem] text-left border-collapse">
           <thead>
             <tr className="bg-gray-100 border-b border-black font-bold">
@@ -235,9 +235,9 @@ export default async function ImprimirRelatorioUnificadoPage({
   }
 
   return (
-    <div className="min-h-screen bg-white text-black p-8 font-serif leading-relaxed max-w-4xl mx-auto shadow-inner relative">
+    <div className="min-h-screen bg-white text-black p-4 sm:p-8 font-serif leading-relaxed max-w-4xl mx-auto shadow-inner relative overflow-x-hidden">
       {/* Botões do Topo (Escondidos na impressão) */}
-      <div className="no-print mb-8 flex justify-between items-center bg-gray-100 p-4 rounded-lg border border-gray-200">
+      <div className="no-print mb-8 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-gray-100 p-4 rounded-lg border border-gray-200">
         <Link href="/dashboard/meus-relatorios" className={buttonVariants({ variant: "outline", className: "text-gray-700 border-gray-300" })}>
           <ArrowLeft className="mr-2 h-4 w-4" />
           Voltar para Meus Relatórios
@@ -281,7 +281,7 @@ export default async function ImprimirRelatorioUnificadoPage({
           </p>
 
           {/* Tabela Consolidada de Contratos */}
-          <div className="my-6 border border-black rounded overflow-hidden">
+          <div className="my-6 border border-black rounded overflow-x-auto">
             <table className="w-full text-[0.75rem] text-left border-collapse">
               <thead>
                 <tr className="bg-gray-100 border-b border-black font-bold">
@@ -327,7 +327,7 @@ export default async function ImprimirRelatorioUnificadoPage({
                   {hasDetailedVerifications ? (
                     renderVerificacoesTable(rel.verificacoes, rel.documentos || {})
                   ) : (
-                    <div className="my-2 border border-black rounded overflow-hidden">
+                    <div className="my-2 border border-black rounded overflow-x-auto">
                       <table className="w-full text-[0.7rem] text-left border-collapse">
                         <thead>
                           <tr className="bg-gray-100 border-b border-black font-bold">
@@ -437,7 +437,7 @@ export default async function ImprimirRelatorioUnificadoPage({
             padding: 0 !important;
             margin: 0 !important;
           }
-          header, aside, [data-sidebar], .no-print {
+          header, aside, [data-sidebar], .no-print, nav.fixed.bottom-0, #mobile-nav {
             display: none !important;
           }
           main {
