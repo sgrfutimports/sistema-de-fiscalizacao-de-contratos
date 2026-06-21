@@ -35,6 +35,11 @@ self.addEventListener('activate', (e) => {
 
 // Intercepção e roteamento de requisições (Fetch)
 self.addEventListener('fetch', (e) => {
+  // Desativar em localhost / desenvolvimento
+  if (self.location.hostname === 'localhost' || self.location.hostname === '127.0.0.1') {
+    return;
+  }
+
   // Apenas tratar requisições GET
   if (e.request.method !== 'GET') return;
 

@@ -55,11 +55,19 @@ export default function RootLayout({
             __html: `
               if ('serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
-                  navigator.serviceWorker.register('/sw.js').then(function(reg) {
-                    console.log('ServiceWorker registrado com sucesso:', reg.scope);
-                  }).catch(function(err) {
-                    console.log('Falha ao registrar o ServiceWorker:', err);
-                  });
+                  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                    navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                      for (let registration of registrations) {
+                        registration.unregister();
+                      }
+                    });
+                  } else {
+                    navigator.serviceWorker.register('/sw.js').then(function(reg) {
+                      console.log('ServiceWorker registrado com sucesso:', reg.scope);
+                    }).catch(function(err) {
+                      console.log('Falha ao registrar o ServiceWorker:', err);
+                    });
+                  }
                 });
               }
             `
