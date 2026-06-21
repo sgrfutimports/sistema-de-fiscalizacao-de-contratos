@@ -5,6 +5,7 @@ import { SidebarProvider } from '@/components/ui/sidebar'
 import { redirect } from 'next/navigation'
 import { logout } from '@/app/login/actions'
 import { DashboardLayoutClient } from '@/components/dashboard/dashboard-layout-client'
+import { AutoLogout } from '@/components/auth/auto-logout'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data: { user }, error } = await getCachedUser()
@@ -57,6 +58,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <SidebarProvider>
+      <AutoLogout />
       <div className="flex min-h-screen bg-background w-full font-sans overflow-hidden">
         {/* App Sidebar com design oficial modernizado */}
         <AppSidebar userNome={userNome} userPerfil={userPerfil} />
