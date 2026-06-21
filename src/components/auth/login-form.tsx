@@ -13,8 +13,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
+import { useRouter } from 'next/navigation'
 
-export function LoginForm() {
+interface LoginFormProps {
+  onSuccess?: () => void;
+}
+
+export function LoginForm({ onSuccess }: LoginFormProps) {
+  const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -83,6 +89,15 @@ export function LoginForm() {
       const result = await login(formData)
       if (result?.error) {
         setError(result.error)
+      } else if (result?.success && result.redirectTo) {
+        if (onSuccess) {
+          onSuccess()
+          setTimeout(() => {
+            router.push(result.redirectTo)
+          }, 2000) // 2 segundos para a animação do foguete!
+        } else {
+          router.push(result.redirectTo)
+        }
       }
     })
   }

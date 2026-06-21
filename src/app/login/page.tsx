@@ -1,6 +1,10 @@
+'use client'
+
+import { useState } from 'react'
 import { LoginForm } from '@/components/auth/login-form'
 
 export default function LoginPage() {
+  const [isSuccess, setIsSuccess] = useState(false)
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-[#009b3a] to-[#005f23] p-4 sm:p-8 py-10 relative overflow-hidden">
       
@@ -48,77 +52,105 @@ export default function LoginPage() {
         ))}
       </div>
 
-      {/* Fogos de Artifício */}
+      {/* Fogos de Artifício Premium */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* Explosões usando radial gradient simulando fogos */}
-        <div className="absolute top-[10%] left-[20%] w-40 h-40 rounded-full animate-explode" style={{ background: 'radial-gradient(circle, rgba(254,223,0,1) 0%, rgba(254,223,0,0) 70%)', '--duration': '3s', '--delay': '0s' } as React.CSSProperties} />
-        <div className="absolute top-[25%] right-[15%] w-60 h-60 rounded-full animate-explode" style={{ background: 'radial-gradient(circle, rgba(0,155,58,1) 0%, rgba(0,155,58,0) 70%)', '--duration': '4s', '--delay': '1s' } as React.CSSProperties} />
-        <div className="absolute top-[40%] left-[10%] w-32 h-32 rounded-full animate-explode" style={{ background: 'radial-gradient(circle, rgba(0,39,118,1) 0%, rgba(0,39,118,0) 70%)', '--duration': '2.5s', '--delay': '2s' } as React.CSSProperties} />
-        <div className="absolute top-[15%] right-[30%] w-48 h-48 rounded-full animate-explode" style={{ background: 'radial-gradient(circle, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 70%)', '--duration': '3.5s', '--delay': '1.5s' } as React.CSSProperties} />
-        <div className="absolute top-[60%] right-[10%] w-56 h-56 rounded-full animate-explode" style={{ background: 'radial-gradient(circle, rgba(254,223,0,1) 0%, rgba(254,223,0,0) 70%)', '--duration': '4s', '--delay': '3s' } as React.CSSProperties} />
+        {[
+          { top: '15%', left: '25%', color: '#fedf00', duration: '3s', delay: '0s', scale: 1 },
+          { top: '25%', left: '80%', color: '#009b3a', duration: '4s', delay: '1s', scale: 1.5 },
+          { top: '45%', left: '15%', color: '#002776', duration: '2.5s', delay: '2s', scale: 1.2 },
+          { top: '20%', left: '60%', color: '#ffffff', duration: '3.5s', delay: '1.5s', scale: 0.8 },
+          { top: '65%', left: '85%', color: '#fedf00', duration: '4s', delay: '3s', scale: 1.3 },
+          { top: '75%', left: '20%', color: '#009b3a', duration: '3.2s', delay: '0.5s', scale: 1.1 }
+        ].map((fw, idx) => (
+          <div key={idx} className="absolute animate-firework-premium" style={{ top: fw.top, left: fw.left, '--duration': fw.duration, '--delay': fw.delay, transform: `scale(${fw.scale})` } as React.CSSProperties}>
+            <svg width="100" height="100" viewBox="0 0 100 100" className="overflow-visible">
+              <g stroke={fw.color} strokeWidth="3" strokeLinecap="round">
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <line 
+                    key={i} 
+                    x1="50" y1="50" 
+                    x2={50 + 40 * Math.cos(i * 30 * Math.PI / 180)} 
+                    y2={50 + 40 * Math.sin(i * 30 * Math.PI / 180)} 
+                  />
+                ))}
+              </g>
+            </svg>
+          </div>
+        ))}
       </div>
 
-      {/* Balões Juninos Tradicionais */}
+      {/* Balões Juninos Premium (Baseados na Referência) */}
       <div className="absolute inset-0 z-10 pointer-events-none overflow-hidden">
         {/* Balão 1 (Esquerda) */}
         <div className="absolute left-[15%] animate-balloon" style={{ '--duration': '15s', '--delay': '0s' } as React.CSSProperties}>
-          <svg width="60" height="90" viewBox="0 0 60 90" className="drop-shadow-[0_5px_10px_rgba(0,0,0,0.5)]">
-            <path d="M30 0 L0 30 L30 30 Z" fill="#009b3a" />
-            <path d="M30 0 L60 30 L30 30 Z" fill="#fedf00" />
-            <path d="M30 30 L60 30 L30 60 Z" fill="#002776" />
-            <path d="M30 30 L0 30 L30 60 Z" fill="#ffffff" />
-            <path d="M30 0 L30 60 M0 30 L60 30" stroke="#000" strokeWidth="1" opacity="0.3" />
-            <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#fff" strokeWidth="1.5" />
-            <rect x="25" y="60" width="10" height="8" fill="#8b5a2b" />
-            <path d="M25 60 L35 60 M25 64 L35 64 M25 68 L35 68" stroke="#5c3a21" strokeWidth="1" />
-            <path d="M30 60 Q 25 55 30 50 Q 35 55 30 60" fill="#ff4500" />
-            <path d="M25 68 Q 20 75 25 80" fill="none" stroke="#fedf00" strokeWidth="1.5" />
-            <path d="M35 68 Q 40 75 35 80" fill="none" stroke="#009b3a" strokeWidth="1.5" />
+          <svg width="60" height="120" viewBox="0 0 100 160" className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)]">
+            {/* Alça superior */}
+            <path d="M40 15 C 40 0, 60 0, 60 15" fill="none" stroke="#FFD700" strokeWidth="4" />
+            {/* Topo e Fundo */}
+            <ellipse cx="50" cy="15" rx="15" ry="3" fill="#cc0000" />
+            <ellipse cx="50" cy="95" rx="15" ry="3" fill="#006600" />
+            {/* Corpo 3D (Gomos Verticais) */}
+            <path d="M35 15 L15 55 L35 95 Z" fill="#E60000" /> {/* Esquerda */}
+            <path d="M35 15 L65 15 L65 95 L35 95 Z" fill="#FFD700" /> {/* Centro */}
+            <path d="M65 15 L85 55 L65 95 Z" fill="#007BFF" /> {/* Direita */}
+            {/* Sombreamento/Linhas */}
+            <path d="M35 15 L35 95 M65 15 L65 95" stroke="#000" strokeWidth="1" opacity="0.1" />
+            <path d="M35 15 L15 55 L35 95 L65 95 L85 55 L65 15 Z" fill="none" stroke="#fff" strokeWidth="1.5" opacity="0.5" />
+            {/* Fitas onduladas */}
+            <path d="M35 95 Q 20 115, 30 135 T 20 160" fill="none" stroke="#007BFF" strokeWidth="4" />
+            <path d="M42 95 Q 35 115, 45 135 T 35 160" fill="none" stroke="#FFD700" strokeWidth="4" />
+            <path d="M50 95 Q 40 120, 55 140 T 45 160" fill="none" stroke="#009b3a" strokeWidth="4" />
+            <path d="M58 95 Q 65 115, 55 135 T 65 160" fill="none" stroke="#007BFF" strokeWidth="4" />
+            <path d="M65 95 Q 75 115, 65 135 T 75 160" fill="none" stroke="#E60000" strokeWidth="4" />
           </svg>
         </div>
         {/* Balão 2 (Direita) */}
         <div className="absolute left-[80%] animate-balloon" style={{ '--duration': '18s', '--delay': '4s', transform: 'scale(0.8)' } as React.CSSProperties}>
-          <svg width="60" height="90" viewBox="0 0 60 90" className="drop-shadow-[0_5px_10px_rgba(0,0,0,0.5)]">
-            <path d="M30 0 L0 30 L30 30 Z" fill="#ffffff" />
-            <path d="M30 0 L60 30 L30 30 Z" fill="#002776" />
-            <path d="M30 30 L60 30 L30 60 Z" fill="#fedf00" />
-            <path d="M30 30 L0 30 L30 60 Z" fill="#009b3a" />
-            <path d="M30 0 L30 60 M0 30 L60 30" stroke="#000" strokeWidth="1" opacity="0.3" />
-            <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#fff" strokeWidth="1.5" />
-            <rect x="25" y="60" width="10" height="8" fill="#8b5a2b" />
-            <path d="M25 60 L35 60 M25 64 L35 64 M25 68 L35 68" stroke="#5c3a21" strokeWidth="1" />
-            <path d="M30 60 Q 25 55 30 50 Q 35 55 30 60" fill="#ff4500" />
-            <path d="M25 68 Q 20 75 25 80" fill="none" stroke="#002776" strokeWidth="1.5" />
-            <path d="M35 68 Q 40 75 35 80" fill="none" stroke="#ffffff" strokeWidth="1.5" />
+          <svg width="60" height="120" viewBox="0 0 100 160" className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)]">
+            <path d="M40 15 C 40 0, 60 0, 60 15" fill="none" stroke="#FFFFFF" strokeWidth="4" />
+            <ellipse cx="50" cy="15" rx="15" ry="3" fill="#001F5C" />
+            <ellipse cx="50" cy="95" rx="15" ry="3" fill="#005C00" />
+            <path d="M35 15 L15 55 L35 95 Z" fill="#009b3a" />
+            <path d="M35 15 L65 15 L65 95 L35 95 Z" fill="#FFFFFF" />
+            <path d="M65 15 L85 55 L65 95 Z" fill="#002776" />
+            <path d="M35 15 L35 95 M65 15 L65 95" stroke="#000" strokeWidth="1" opacity="0.1" />
+            <path d="M35 15 L15 55 L35 95 L65 95 L85 55 L65 15 Z" fill="none" stroke="#fff" strokeWidth="1.5" opacity="0.5" />
+            <path d="M35 95 Q 20 115, 30 135 T 20 160" fill="none" stroke="#009b3a" strokeWidth="4" />
+            <path d="M42 95 Q 35 115, 45 135 T 35 160" fill="none" stroke="#FFD700" strokeWidth="4" />
+            <path d="M50 95 Q 40 120, 55 140 T 45 160" fill="none" stroke="#002776" strokeWidth="4" />
+            <path d="M58 95 Q 65 115, 55 135 T 65 160" fill="none" stroke="#FFFFFF" strokeWidth="4" />
+            <path d="M65 95 Q 75 115, 65 135 T 75 160" fill="none" stroke="#009b3a" strokeWidth="4" />
           </svg>
         </div>
         {/* Balão 3 (Centro) */}
         <div className="absolute left-[45%] animate-balloon" style={{ '--duration': '22s', '--delay': '8s', transform: 'scale(1.2)' } as React.CSSProperties}>
-          <svg width="60" height="90" viewBox="0 0 60 90" className="drop-shadow-[0_5px_10px_rgba(0,0,0,0.5)]">
-            <path d="M30 0 L0 30 L30 30 Z" fill="#fedf00" />
-            <path d="M30 0 L60 30 L30 30 Z" fill="#009b3a" />
-            <path d="M30 30 L60 30 L30 60 Z" fill="#ffffff" />
-            <path d="M30 30 L0 30 L30 60 Z" fill="#002776" />
-            <path d="M30 0 L30 60 M0 30 L60 30" stroke="#000" strokeWidth="1" opacity="0.3" />
-            <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="#fff" strokeWidth="1.5" />
-            <rect x="25" y="60" width="10" height="8" fill="#8b5a2b" />
-            <path d="M25 60 L35 60 M25 64 L35 64 M25 68 L35 68" stroke="#5c3a21" strokeWidth="1" />
-            <path d="M30 60 Q 25 55 30 50 Q 35 55 30 60" fill="#ff4500" />
-            <path d="M25 68 Q 20 75 25 80" fill="none" stroke="#009b3a" strokeWidth="1.5" />
-            <path d="M35 68 Q 40 75 35 80" fill="none" stroke="#fedf00" strokeWidth="1.5" />
+          <svg width="60" height="120" viewBox="0 0 100 160" className="drop-shadow-[0_10px_15px_rgba(0,0,0,0.6)]">
+            <path d="M40 15 C 40 0, 60 0, 60 15" fill="none" stroke="#E60000" strokeWidth="4" />
+            <ellipse cx="50" cy="15" rx="15" ry="3" fill="#B3A000" />
+            <ellipse cx="50" cy="95" rx="15" ry="3" fill="#001F5C" />
+            <path d="M35 15 L15 55 L35 95 Z" fill="#FFD700" />
+            <path d="M35 15 L65 15 L65 95 L35 95 Z" fill="#009b3a" />
+            <path d="M65 15 L85 55 L65 95 Z" fill="#FFFFFF" />
+            <path d="M35 15 L35 95 M65 15 L65 95" stroke="#000" strokeWidth="1" opacity="0.1" />
+            <path d="M35 15 L15 55 L35 95 L65 95 L85 55 L65 15 Z" fill="none" stroke="#000" strokeWidth="1.5" opacity="0.2" />
+            <path d="M35 95 Q 20 115, 30 135 T 20 160" fill="none" stroke="#E60000" strokeWidth="4" />
+            <path d="M42 95 Q 35 115, 45 135 T 35 160" fill="none" stroke="#002776" strokeWidth="4" />
+            <path d="M50 95 Q 40 120, 55 140 T 45 160" fill="none" stroke="#FFD700" strokeWidth="4" />
+            <path d="M58 95 Q 65 115, 55 135 T 65 160" fill="none" stroke="#009b3a" strokeWidth="4" />
+            <path d="M65 95 Q 75 115, 65 135 T 75 160" fill="none" stroke="#FFFFFF" strokeWidth="4" />
           </svg>
         </div>
       </div>
 
       <div className="relative z-50 w-full flex flex-col items-center justify-center gap-6 mt-10">
-        <div className="relative" style={{ 
+        <div className={`relative transition-all duration-500 ${isSuccess ? 'animate-rocket-launch z-[100]' : ''}`} style={{ 
           display: 'inline-block',
           lineHeight: 0,
           filter: 'drop-shadow(0 0 20px rgba(254, 223, 0, 0.4))'
         }}>
-          {/* Chapéu de Couro Nordestino (Cangaceiro) sobre a logo (Lado Esquerdo) */}
-          <div className="absolute -top-6 -left-12 z-10 transform rotate-[-20deg] animate-bounce" style={{ animationDuration: '3.5s' }}>
-            <svg width="85" height="55" viewBox="0 0 100 60" className="drop-shadow-[0_8px_8px_rgba(0,0,0,0.6)]">
+          {/* Chapéu de Couro Nordestino (Cangaceiro) sobre a logo - Maior e Centralizado */}
+          <div className="absolute -top-[35px] left-1/2 -translate-x-1/2 z-10 transform" style={{ width: '130px' }}>
+            <svg viewBox="0 0 100 60" className="w-full h-auto drop-shadow-[0_8px_8px_rgba(0,0,0,0.6)]">
               {/* Aba traseira (elipse base) */}
               <ellipse cx="50" cy="45" rx="40" ry="8" fill="#8B4513" stroke="#5C3A21" strokeWidth="2" />
               {/* Copa */}
@@ -133,14 +165,23 @@ export default function LoginPage() {
               {/* Estrelinhas laterais */}
               <circle cx="30" cy="38" r="2.5" fill="#DEB887" />
               <circle cx="70" cy="38" r="2.5" fill="#DEB887" />
-              {/* Cordinha */}
-              <path d="M20 45 Q 50 70, 80 45" fill="none" stroke="#DEB887" strokeWidth="1.5" strokeDasharray="3,3" />
             </svg>
           </div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo.png" alt="Logo 71º BI Mtz" width={140} height={140} style={{ display: 'block', position: 'relative', zIndex: 0 }} />
+          
+          {/* Fogo do Foguete (Aparece apenas no sucesso) */}
+          {isSuccess && (
+            <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-16 h-24 z-[-1] animate-exhaust-fire flex justify-center">
+              <svg viewBox="0 0 50 100" className="w-full h-full drop-shadow-[0_10px_20px_rgba(255,69,0,0.8)]">
+                <path d="M25 0 Q 50 50, 25 100 Q 0 50, 25 0 Z" fill="#FF4500" />
+                <path d="M25 10 Q 40 50, 25 80 Q 10 50, 25 10 Z" fill="#FFD700" />
+                <path d="M25 20 Q 30 45, 25 60 Q 20 45, 25 20 Z" fill="#FFFFFF" />
+              </svg>
+            </div>
+          )}
         </div>
-        <LoginForm />
+        <LoginForm onSuccess={() => setIsSuccess(true)} />
       </div>
 
       <div className="z-10 mt-12 text-center text-sm text-green-100/90 drop-shadow-md font-medium">
