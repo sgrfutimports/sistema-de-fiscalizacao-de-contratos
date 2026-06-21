@@ -23,14 +23,18 @@ export async function listarAtrasados() {
 
   // Filtra apenas os que têm e-mail cadastrado
   const atrasados = contratos
-    .filter(c => c.fiscal && c.fiscal.email)
-    .map(c => ({
-      contrato_id: c.id,
-      contrato_desc: `Nº ${c.numero_contrato} - ${c.objeto}`,
-      fiscal_id: c.fiscal.id,
-      nome_fiscal: c.fiscal.nome_guerra || 'Fiscal',
-      email: c.fiscal.email
-    }))
+    .map(c => {
+      // Supabase pode retornar como array ou objeto dependendo da tipagem gerada
+      const fiscal = Array.isArray(c.fiscal) ? c.fiscal[0] : c.fiscal
+      return {
+        contrato_id: c.id,
+        contrato_desc: `Nº ${c.numero_contrato} - ${c.objeto}`,
+        fiscal_id: fiscal?.id,
+        nome_fiscal: fiscal?.nome_guerra || 'Fiscal',
+        email: fiscal?.email
+      }
+    })
+    .filter(item => item.email)
 
   // Para simulação vamos limitar ou dedup
   const uniqueAtrasados = []
