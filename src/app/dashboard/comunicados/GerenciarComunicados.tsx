@@ -35,7 +35,8 @@ export function GerenciarComunicados({ comunicados }: { comunicados: Comunicado[
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
-    const formData = new FormData(event.currentTarget)
+    const form = event.currentTarget
+    const formData = new FormData(form)
     
     startTransition(async () => {
       const result = await createComunicado(formData)
@@ -43,7 +44,7 @@ export function GerenciarComunicados({ comunicados }: { comunicados: Comunicado[
         setError(result.error)
       } else {
         toast.success('Comunicado publicado com sucesso!')
-        event.currentTarget.reset()
+        form.reset()
       }
     })
   }
