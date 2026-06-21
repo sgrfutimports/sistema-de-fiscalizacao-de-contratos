@@ -192,3 +192,24 @@
 .animate-sway { animation: sway 3s ease-in-out infinite; }
 .animate-flicker { animation: flicker 0.5s ease-in-out infinite alternate; }
 .animate-float-up { animation: float-up 5s linear infinite; }
+
+@keyframes explode {
+  0% { transform: scale(0); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.8; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+.animate-explode {
+  animation: explode var(--duration) ease-out infinite;
+  animation-delay: var(--delay);
+}
+
+@keyframes balloon-float {
+  0% { transform: translateY(100vh) rotate(-10deg) scale(0.8); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-20vh) rotate(10deg) scale(1.2); opacity: 0; }
+}
+.animate-balloon {
+  animation: balloon-float var(--duration) linear infinite;
+  animation-delay: var(--delay);
+}
