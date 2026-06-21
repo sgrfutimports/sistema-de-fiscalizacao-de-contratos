@@ -21,6 +21,11 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Contratos 71º",
   },
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 import { TooltipProvider } from "@/components/ui/tooltip";
