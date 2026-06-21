@@ -9,7 +9,8 @@ import { DashboardLayoutClient } from '@/components/dashboard/dashboard-layout-c
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { data: { user }, error } = await getCachedUser()
 
-  if (error || !user) {
+  if (!user) {
+    // Fallback de segurança caso o middleware falhe em algum edge case
     redirect('/login')
   }
 
