@@ -7,6 +7,7 @@ import { FileText, PlusCircle, Search, Shield, User } from 'lucide-react'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { EditarContratoDialog } from '@/components/dashboard/editar-contrato-dialog'
+import { ExcluirContratoButton } from '@/components/dashboard/excluir-contrato-button'
 import { FiltrosContratos } from '@/components/dashboard/filtros-contratos'
 
 export default async function ContratosPage({
@@ -152,6 +153,7 @@ export default async function ContratosPage({
                       {cont.status}
                     </Badge>
                     <EditarContratoDialog contrato={cont} fiscais={fiscais || []} />
+                    <ExcluirContratoButton contratoId={cont.id} numeroContrato={cont.numero_contrato} />
                   </div>
                 </div>
 

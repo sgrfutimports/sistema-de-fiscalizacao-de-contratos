@@ -1,4 +1,4 @@
-'use server'
+﻿'use server'
 
 import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
@@ -9,7 +9,7 @@ export async function createContrato(formData: FormData) {
   const supabaseAdmin = createAdminClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Não autorizado.' }
+  if (!user) return { error: 'NÃ£o autorizado.' }
 
   const { data: currentUserData } = await supabaseAdmin.from('users').select('perfil').eq('id', user.id).single()
   if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem gerenciar contratos.' }
@@ -26,7 +26,7 @@ export async function createContrato(formData: FormData) {
   const fiscal_substituto_id = formData.get('fiscal_substituto_id') as string
 
   if (fiscal_titular_id === fiscal_substituto_id) {
-    return { error: 'O fiscal titular e substituto não podem ser a mesma pessoa.' }
+    return { error: 'O fiscal titular e substituto nÃ£o podem ser a mesma pessoa.' }
   }
 
   // Validar limite de 5 contratos para Titular
@@ -37,7 +37,7 @@ export async function createContrato(formData: FormData) {
     .eq('status', 'ATIVO')
 
   if (countTitular !== null && countTitular >= 5) {
-    return { error: 'O fiscal TITULAR selecionado atingiu o limite máximo permitido de 5 contratos ativos.' }
+    return { error: 'O fiscal TITULAR selecionado atingiu o limite mÃ¡ximo permitido de 5 contratos ativos.' }
   }
 
   // Validar limite de 5 contratos para Substituto
@@ -48,7 +48,7 @@ export async function createContrato(formData: FormData) {
     .eq('status', 'ATIVO')
 
   if (countSubstituto !== null && countSubstituto >= 5) {
-    return { error: 'O fiscal SUBSTITUTO selecionado atingiu o limite máximo permitido de 5 contratos ativos.' }
+    return { error: 'O fiscal SUBSTITUTO selecionado atingiu o limite mÃ¡ximo permitido de 5 contratos ativos.' }
   }
 
   const { error: dbError } = await supabaseAdmin.from('contratos').insert({
@@ -79,7 +79,7 @@ export async function updateContrato(formData: FormData) {
   const supabaseAdmin = createAdminClient()
 
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Não autorizado.' }
+  if (!user) return { error: 'NÃ£o autorizado.' }
 
   const { data: currentUserData } = await supabaseAdmin.from('users').select('perfil').eq('id', user.id).single()
   if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem gerenciar contratos.' }
@@ -97,12 +97,12 @@ export async function updateContrato(formData: FormData) {
   const status = formData.get('status') as string
 
   if (fiscal_titular_id === fiscal_substituto_id) {
-    return { error: 'O fiscal titular e substituto não podem ser a mesma pessoa.' }
+    return { error: 'O fiscal titular e substituto nÃ£o podem ser a mesma pessoa.' }
   }
 
-  // Obter o contrato antes da atualização para verificar se mudou de fiscal titular e validar limite
+  // Obter o contrato antes da atualizaÃ§Ã£o para verificar se mudou de fiscal titular e validar limite
   const { data: oldContrato } = await supabaseAdmin.from('contratos').select('*').eq('id', id).single()
-  if (!oldContrato) return { error: 'Contrato não encontrado.' }
+  if (!oldContrato) return { error: 'Contrato nÃ£o encontrado.' }
 
   // Se alterou o titular ou reativou, validar limite de 5
   if ((oldContrato.fiscal_titular_id !== fiscal_titular_id || oldContrato.status !== 'ATIVO') && status === 'ATIVO') {
@@ -114,7 +114,7 @@ export async function updateContrato(formData: FormData) {
       .neq('id', id)
 
     if (countTitular !== null && countTitular >= 5) {
-      return { error: 'O fiscal TITULAR selecionado atingiu o limite máximo permitido de 5 contratos ativos.' }
+      return { error: 'O fiscal TITULAR selecionado atingiu o limite mÃ¡ximo permitido de 5 contratos ativos.' }
     }
   }
 
@@ -128,7 +128,7 @@ export async function updateContrato(formData: FormData) {
       .neq('id', id)
 
     if (countSubstituto !== null && countSubstituto >= 5) {
-      return { error: 'O fiscal SUBSTITUTO selecionado atingiu o limite máximo permitido de 5 contratos ativos.' }
+      return { error: 'O fiscal SUBSTITUTO selecionado atingiu o limite mÃ¡ximo permitido de 5 contratos ativos.' }
     }
   }
 
@@ -151,6 +151,35 @@ export async function updateContrato(formData: FormData) {
   if (dbError) {
     console.error(dbError)
     return { error: 'Erro ao atualizar contrato no banco de dados.' }
+  }
+
+  revalidatePath('/dashboard/contratos')
+  return { success: true }
+}
+
+export async function deleteContrato(id: string, passwordAdmin: string) {
+  const supabaseAdmin = createAdminClient()
+  const supabase = await createClient()
+
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Não autorizado.' }
+
+  const { data: currentUserData } = await supabaseAdmin.from('users').select('perfil').eq('id', user.id).single()
+  if (currentUserData?.perfil !== 'ADMIN') return { error: 'Apenas administradores podem excluir contratos.' }
+
+  const { data: validUser, error: authError } = await supabase.auth.signInWithPassword({
+    email: user.email!,
+    password: passwordAdmin
+  })
+
+  if (authError || !validUser.user) {
+    return { error: 'Senha de administrador incorreta.' }
+  }
+
+  const { error: dbError } = await supabaseAdmin.from('contratos').delete().eq('id', id)
+  if (dbError) {
+    console.error(dbError)
+    return { error: 'Erro ao excluir contrato no banco de dados.' }
   }
 
   revalidatePath('/dashboard/contratos')
