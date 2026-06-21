@@ -446,11 +446,19 @@ export default async function ImprimirRelatorioUnificadoPage({
             background: transparent !important;
           }
           .print-area {
-            width: 100% !important;
-            margin: 0 !important;
+            width: 210mm !important;
+            max-width: 210mm !important;
+            margin: 0 auto !important;
             padding: 0 !important;
             border: none !important;
             box-shadow: none !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          /* Força as tabelas a não quebrarem a formatação no mobile */
+          table {
+            width: 100% !important;
+            table-layout: fixed !important;
           }
           .break-inside-avoid {
             break-inside: avoid;
