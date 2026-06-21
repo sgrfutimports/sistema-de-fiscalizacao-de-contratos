@@ -54,9 +54,9 @@ function HeaderAndNav({
   }
 
   return (
-    <div className="flex flex-1 flex-col overflow-hidden min-h-screen pb-16 md:pb-0">
-      {/* Cabeçalho Premium Fixo (Sticky Header) - Estilo Banco do Brasil */}
-      <header className="sticky top-0 z-40 flex h-16 shrink-0 items-center justify-between border-b border-yellow-500/20 bg-[#133215] px-4 md:px-6 shadow-md text-white">
+    <div className="flex flex-1 flex-col h-screen overflow-hidden pb-16 md:pb-0 relative">
+      {/* Cabeçalho Premium Fixo - Estilo Banco do Brasil */}
+      <header className="flex h-16 shrink-0 items-center justify-between border-b border-yellow-500/20 bg-[#133215] px-4 md:px-6 shadow-md text-white z-40 relative">
         
         {/* Lado Esquerdo: Menu Hambúrguer + Logo + Saudação */}
         <div className="flex items-center gap-3">
