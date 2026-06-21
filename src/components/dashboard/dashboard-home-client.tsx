@@ -99,12 +99,22 @@ export function DashboardHomeClient({
   
   const isAdmin = userPerfil === 'ADMIN'
 
-  // Foca no campo de busca se vier o query param focusSearch
+  // Lida com parâmetros da URL (foco na busca ou abrir modal de alertas)
   useEffect(() => {
+    // Foca na busca
     if (searchParams.get('focusSearch') === 'true' && searchInputRef.current) {
       searchInputRef.current.focus()
-      // Scroll suave até o campo de busca
       searchInputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+    
+    // Abre o modal de Alertas Críticos
+    if (searchParams.get('show_alerts') === 'true') {
+      setIsAlertsModalOpen(true)
+      
+      // Limpa o parâmetro da URL silenciosamente para permitir que o botão funcione novamente
+      const newUrl = new URL(window.location.href)
+      newUrl.searchParams.delete('show_alerts')
+      window.history.replaceState({}, '', newUrl.toString())
     }
   }, [searchParams])
 

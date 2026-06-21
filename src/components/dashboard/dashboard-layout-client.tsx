@@ -43,7 +43,7 @@ function HeaderAndNav({
   // Determinar link dos contratos com base no perfil
   const contratosUrl = userPerfil === 'ADMIN' ? '/dashboard/contratos' : '/dashboard/meus-contratos'
   const historicoUrl = userPerfil === 'ADMIN' ? '/dashboard/relatorios' : '/dashboard/meus-relatorios'
-  const alertasUrl = userPerfil === 'ADMIN' ? '/dashboard/auditoria' : '/dashboard'
+  const alertasUrl = userPerfil === 'ADMIN' ? '/dashboard/auditoria' : '/dashboard?show_alerts=true'
 
   // Função para abreviar nome de guerra
   const formatGreetingName = (name: string) => {
