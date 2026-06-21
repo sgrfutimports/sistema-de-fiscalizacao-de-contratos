@@ -93,8 +93,8 @@ export default function PerfilPage() {
                 />
                 <button
                   type="button"
-                  onClick={() => setShowSenhaAtual(v => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors cursor-pointer"
+                  onClick={(e) => { e.preventDefault(); setShowSenhaAtual(v => !v); }}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors cursor-pointer z-10 p-2"
                   tabIndex={-1}
                 >
                   {showSenhaAtual ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -120,8 +120,8 @@ export default function PerfilPage() {
                   />
                   <button
                     type="button"
-                    onClick={() => setShowNovaSenha(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors cursor-pointer"
+                    onClick={(e) => { e.preventDefault(); setShowNovaSenha(v => !v); }}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors cursor-pointer z-10 p-2"
                     tabIndex={-1}
                   >
                     {showNovaSenha ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -146,8 +146,8 @@ export default function PerfilPage() {
                   />
                   <button
                     type="button"
-                    onClick={() => setShowConfirmar(v => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors cursor-pointer"
+                    onClick={(e) => { e.preventDefault(); setShowConfirmar(v => !v); }}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors cursor-pointer z-10 p-2"
                     tabIndex={-1}
                   >
                     {showConfirmar ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

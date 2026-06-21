@@ -227,8 +227,8 @@ export function LoginForm() {
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-1.5 z-20 cursor-pointer"
+                onClick={(e) => { e.preventDefault(); setShowPassword(!showPassword); }}
+                className="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors p-2 z-20 cursor-pointer"
                 tabIndex={-1}
                 aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
               >
