@@ -31,9 +31,9 @@ export default function WelcomePage() {
       <main className="relative z-10 w-full max-w-5xl mx-auto px-6 py-12 md:py-20 text-center flex-1 flex flex-col justify-center items-center">
         
         {/* Badge Slogan */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#fedf00]/20 backdrop-blur-md border border-[#fedf00]/50 text-[#fedf00] text-[0.65rem] font-black uppercase tracking-wider mb-6 animate-pulse shadow-[0_0_15px_rgba(254,223,0,0.4)]">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#fedf00] text-[0.65rem] font-black uppercase tracking-wider mb-6 shadow-md">
           <ShieldCheck className="h-3.5 w-3.5" />
-          Portal de Controle Festivo e Conformidade
+          Portal de Controle e Conformidade
         </div>
 
         {/* Headline */}
