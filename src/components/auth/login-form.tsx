@@ -18,6 +18,8 @@ export function LoginForm() {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [isAnimating, setIsAnimating] = useState(false)
+  const [loginProgress, setLoginProgress] = useState(0)
 
   // Controlled states for credentials
   const [cpf, setCpf] = useState('')
@@ -79,12 +81,32 @@ export function LoginForm() {
     formData.append('cpf', cpf)
     formData.append('password', password)
     
-    startTransition(async () => {
-      const result = await login(formData)
-      if (result?.error) {
-        setError(result.error)
+    setIsAnimating(true)
+    setLoginProgress(0)
+
+    const duration = 3000
+    const steps = 100
+    const stepTime = duration / steps
+    let currentProgress = 0
+
+    const interval = setInterval(() => {
+      currentProgress += 1
+      if (currentProgress >= 100) {
+        currentProgress = 100
+        clearInterval(interval)
+        
+        // Após os 3 segundos (100%), iniciar a transição de login real
+        startTransition(async () => {
+          const result = await login(formData)
+          if (result?.error) {
+            setError(result.error)
+            setIsAnimating(false)
+            setLoginProgress(0)
+          }
+        })
       }
-    })
+      setLoginProgress(currentProgress)
+    }, stepTime)
   }
 
   async function handleResetSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -257,38 +279,58 @@ export function LoginForm() {
           <button 
             className="w-full h-12 text-[0.8rem] font-black uppercase tracking-widest transition-all bg-gradient-to-r from-[#009b3a] to-[#005f23] hover:from-[#00b043] hover:to-[#00702a] text-[#fedf00] rounded-xl shadow-[0_0_20px_rgba(0,155,58,0.4)] active:scale-[0.98] mt-6 border border-[#fedf00]/30 cursor-pointer relative z-10 disabled:opacity-50 disabled:pointer-events-none" 
             type="submit" 
-            disabled={isPending}
+            disabled={isPending || isAnimating}
           >
-            {isPending ? 'Autenticando...' : 'Entrar no Portal'}
+            {isPending || isAnimating ? 'Autenticando...' : 'Entrar no Portal'}
           </button>
         </form>
       </div>
 
       {/* Tela de Carregamento Institucional Pós-Login */}
-      {isPending && (
+      {(isPending || isAnimating) && (
         <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0a180b]/90 backdrop-blur-md animate-fade-in">
           <div className="relative flex flex-col items-center gap-7 max-w-sm px-6 text-center animate-in zoom-in-95 duration-500">
             {/* Brasão/Logo */}
             <div className="relative w-36 h-36 flex items-center justify-center">
-              <div className="w-24 h-24 flex items-center justify-center relative z-10 animate-pulse">
+              <div className="w-24 h-24 flex items-center justify-center relative z-10">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(254,223,0,0.3)]" />
+                <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(254,223,0,0.3)] animate-pulse" />
               </div>
+              {/* Circular Progress border around the logo */}
+              <svg className="absolute inset-0 w-full h-full transform -rotate-90">
+                <circle cx="72" cy="72" r="68" stroke="rgba(255,255,255,0.1)" strokeWidth="2" fill="none" />
+                <circle 
+                  cx="72" cy="72" r="68" 
+                  stroke="#fedf00" 
+                  strokeWidth="2" 
+                  fill="none" 
+                  strokeDasharray="427" 
+                  strokeDashoffset={427 - (427 * loginProgress) / 100} 
+                  className="transition-all duration-75 ease-linear" 
+                />
+              </svg>
             </div>
 
             {/* Mensagens Temáticas */}
-            <div className="space-y-3 mt-4">
+            <div className="space-y-1 mt-2">
               <h3 className="text-xl font-black uppercase text-white drop-shadow-md tracking-widest">
                 Autenticando
               </h3>
-              <p className="text-xs font-extrabold text-gray-300 uppercase tracking-[0.2em] leading-relaxed drop-shadow-md">
+              <p className="text-[0.65rem] font-extrabold text-gray-400 uppercase tracking-[0.2em] leading-relaxed drop-shadow-md">
                 Acessando o Sistema de Fiscalização...
               </p>
+              {/* Percentage */}
+              <div className="text-3xl font-black text-[#fedf00] tracking-wider mt-4 drop-shadow-[0_0_10px_rgba(254,223,0,0.4)]">
+                {loginProgress}%
+              </div>
             </div>
             
             {/* Barra de Progresso */}
-            <div className="w-56 h-2 bg-white/10 rounded-full overflow-hidden mt-2 border border-white/20 relative shadow-inner">
-              <div className="absolute inset-y-0 left-0 w-full h-full bg-[#fedf00] rounded-full animate-pulse" />
+            <div className="w-64 h-1.5 bg-white/10 rounded-full overflow-hidden mt-2 border border-white/20 relative shadow-inner">
+              <div 
+                className="absolute inset-y-0 left-0 h-full bg-gradient-to-r from-[#fedf00] to-[#ffd700] rounded-full transition-all duration-75 ease-linear" 
+                style={{ width: `${loginProgress}%` }}
+              />
             </div>
           </div>
         </div>
