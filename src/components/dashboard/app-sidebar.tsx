@@ -6,7 +6,7 @@ import {
   SidebarHeader,
   useSidebar,
 } from '@/components/ui/sidebar'
-import { BookOpen, FileSignature, Calendar, ClipboardList, Users, CalendarClock, Terminal, LayoutDashboard, FolderArchive, KeyRound } from 'lucide-react'
+import { BookOpen, FileSignature, Calendar, ClipboardList, Users, CalendarClock, Terminal, LayoutDashboard, FolderArchive, KeyRound, FileText } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -40,6 +40,7 @@ export function AppSidebar({ userNome, userPerfil }: { userNome?: string; userPe
     { title: 'INÍCIO', url: '/dashboard', icon: LayoutDashboard },
     { title: 'CONTRATOS', url: '/dashboard/meus-contratos', icon: FileSignature },
     { title: 'HISTÓRICO', url: '/dashboard/meus-relatorios', icon: FolderArchive },
+    { title: 'DOCUMENTOS', url: '/dashboard/documentos', icon: FileText },
   ]
 
   const items = userPerfil === 'ADMIN' ? adminMenu : fiscalMenu
