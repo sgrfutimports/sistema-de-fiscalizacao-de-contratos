@@ -631,10 +631,10 @@ export default async function ImprimirDocumentoPage({
         <PrintTrigger />
       </div>
 
-      {/* Container de visualização (scroll horizontal no mobile para manter formato A4) */}
-      <div className="flex-1 overflow-x-auto p-4 sm:p-8 flex justify-center">
-        {/* Folha simulada estilo A4 fixa */}
-        <div className="w-[210mm] min-w-[210mm] bg-white shadow-xl shrink-0">
+      {/* Container de visualização (escala no mobile para manter formato A4 sem cortar) */}
+      <div className="flex-1 overflow-x-auto p-4 sm:p-8 flex justify-center bg-gray-200">
+        {/* Folha simulada estilo A4 com zoom automático */}
+        <div className="mobile-a4-wrapper bg-white shadow-xl shrink-0">
           {/* Conteúdo imprimível com margens oficiais idênticas à impressão */}
           <div className="px-[30mm] py-[25mm] print-area text-base">
             {renderDocumento()}
@@ -649,6 +649,18 @@ export default async function ImprimirDocumentoPage({
 }
 
 const printCSS = `
+  .mobile-a4-wrapper {
+    width: 210mm;
+    min-width: 210mm;
+    margin: 0 auto;
+    transform-origin: top center;
+  }
+  @media screen and (max-width: 850px) {
+    .mobile-a4-wrapper {
+      zoom: calc(100vw / 860);
+    }
+  }
+
   @page {
     size: A4 portrait;
     margin: 25mm 20mm 25mm 30mm;
