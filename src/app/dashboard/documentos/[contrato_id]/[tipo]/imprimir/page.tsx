@@ -82,7 +82,7 @@ function BlocoAssinaturaDigital({
   tipoDoc: string
 }) {
   return (
-    <div className="mt-12 pt-8 border-t border-black grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 text-[0.65rem] leading-normal font-mono break-inside-avoid">
+    <div className="mt-12 pt-8 border-t border-black grid grid-cols-2 gap-8 text-[0.65rem] leading-normal font-mono break-inside-avoid">
 
       {/* Assinatura do Fiscal */}
       <div className="p-3 border border-dashed border-gray-400 bg-gray-50/50 rounded flex flex-col justify-between">
@@ -618,30 +618,32 @@ export default async function ImprimirDocumentoPage({
   }
 
   return (
-    <div className="bg-gray-100 text-black font-serif leading-relaxed">
-      {/* Folha simulada estilo A4 */}
-      <div className="w-full max-w-[210mm] mx-auto bg-white shadow-xl">
-
-        {/* Barra de ações — oculta na impressão */}
-        <div className="no-print flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-gray-100 px-6 py-4 border-b border-gray-200">
-          <Link
-            href="/dashboard/documentos"
-            className={buttonVariants({ variant: 'outline', className: 'text-gray-700 border-gray-300' })}
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar para Documentos
-          </Link>
-          <PrintTrigger />
-        </div>
-
-        {/* Conteúdo imprimível com margens adaptativas (tela x impressão) */}
-        <div className="px-4 py-6 sm:px-8 sm:py-8 md:px-[30mm] md:py-[25mm] print-area text-sm sm:text-base break-words">
-          {renderDocumento()}
-        </div>
-
-        {/* Estilos de impressão */}
-        <style dangerouslySetInnerHTML={{ __html: printCSS }} />
+    <div className="bg-gray-200 text-black font-serif leading-relaxed min-h-screen flex flex-col">
+      {/* Barra de ações — oculta na impressão */}
+      <div className="no-print flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-gray-100 px-6 py-4 border-b border-gray-300 shadow-sm sticky top-0 z-10">
+        <Link
+          href="/dashboard/documentos"
+          className={buttonVariants({ variant: 'outline', className: 'text-gray-700 border-gray-300 bg-white' })}
+        >
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Voltar para Documentos
+        </Link>
+        <PrintTrigger />
       </div>
+
+      {/* Container de visualização (scroll horizontal no mobile para manter formato A4) */}
+      <div className="flex-1 overflow-x-auto p-4 sm:p-8 flex justify-center">
+        {/* Folha simulada estilo A4 fixa */}
+        <div className="w-[210mm] min-w-[210mm] bg-white shadow-xl shrink-0">
+          {/* Conteúdo imprimível com margens oficiais idênticas à impressão */}
+          <div className="px-[30mm] py-[25mm] print-area text-base">
+            {renderDocumento()}
+          </div>
+        </div>
+      </div>
+
+      {/* Estilos de impressão */}
+      <style dangerouslySetInnerHTML={{ __html: printCSS }} />
     </div>
   )
 }
