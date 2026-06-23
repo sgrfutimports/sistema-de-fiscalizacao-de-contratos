@@ -288,7 +288,7 @@ export function LoginForm() {
 
       {/* Tela de Carregamento Institucional Pós-Login */}
       {(isPending || isAnimating) && (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0a180b]/90 backdrop-blur-md animate-fade-in">
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#133215]/95 backdrop-blur-md animate-fade-in">
           <div className="relative flex flex-col items-center gap-7 max-w-sm px-6 text-center animate-in zoom-in-95 duration-500">
             {/* Brasão/Logo */}
             <div className="relative w-36 h-36 flex items-center justify-center">

@@ -3,7 +3,7 @@ import { FileSignature, ShieldCheck, Clock, FileText, ArrowRight } from 'lucide-
 
 export default function WelcomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1a381c] to-[#0a180b] text-white relative overflow-hidden font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-[#133215] text-white relative overflow-hidden font-sans flex flex-col justify-between">
 
       {/* Header com Identificação do Batalhão */}
       <header className="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between border-b border-white/20 mt-16 sm:mt-0">
