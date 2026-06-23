@@ -82,7 +82,7 @@ function BlocoAssinaturaDigital({
   tipoDoc: string
 }) {
   return (
-    <div className="mt-12 pt-8 border-t border-black grid grid-cols-2 gap-8 text-[0.65rem] leading-normal font-mono break-inside-avoid">
+    <div className="mt-12 pt-8 border-t border-black grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 text-[0.65rem] leading-normal font-mono break-inside-avoid">
 
       {/* Assinatura do Fiscal */}
       <div className="p-3 border border-dashed border-gray-400 bg-gray-50/50 rounded flex flex-col justify-between">
@@ -634,8 +634,8 @@ export default async function ImprimirDocumentoPage({
           <PrintTrigger />
         </div>
 
-        {/* Conteúdo imprimível com margens oficiais */}
-        <div className="px-[30mm] py-[25mm] print-area">
+        {/* Conteúdo imprimível com margens adaptativas (tela x impressão) */}
+        <div className="px-4 py-6 sm:px-8 sm:py-8 md:px-[30mm] md:py-[25mm] print-area text-sm sm:text-base break-words">
           {renderDocumento()}
         </div>
 
