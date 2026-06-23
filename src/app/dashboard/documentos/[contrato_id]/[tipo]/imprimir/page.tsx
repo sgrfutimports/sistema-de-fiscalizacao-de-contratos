@@ -183,41 +183,72 @@ function CapaLivro({ contratos, params }: any) {
 }
 
 // ─── DOCUMENTO 1: Termo de Abertura do Livro ─────────────────────────────────
-function TermoAberturaLivro({ contrato, fiscal, papel, params }: any) {
+function TermoAberturaLivro({ contratos, fiscal, papel, params }: any) {
   const dataAbertura = params.data_abertura || ''
   const numeroLivro = params.numero_livro || ''
+  const isMulti = contratos.length > 1
+  const contratoId = isMulti ? contratos.map((c: any) => c.id).join(',') : contratos[0].id
 
   return (
     <div className="print-area">
       <CabecalhoExercito
         titulo="Termo de Abertura do Livro de Acompanhamento"
-        subtitulo={`Contrato nº ${contrato.numero_contrato}${numeroLivro ? ` — Livro nº ${numeroLivro}` : ''}`}
+        subtitulo={isMulti ? `Múltiplos Contratos${numeroLivro ? ` — Livro nº ${numeroLivro}` : ''}` : `Contrato nº ${contratos[0].numero_contrato}${numeroLivro ? ` — Livro nº ${numeroLivro}` : ''}`}
       />
 
       <div className="space-y-5 text-sm text-justify leading-relaxed">
         <p>
           Aos <strong>{formatarData(dataAbertura)}</strong>, eu, <strong>{fiscal.posto_graduacao}{' '}
-          {fiscal.nome}</strong>, na qualidade de Fiscal <strong>{papel}</strong> do Contrato nº{' '}
-          <strong>{contrato.numero_contrato}</strong>, celebrado entre o{' '}
-          <strong>71º Batalhão de Infantaria Motorizado</strong> e a empresa{' '}
-          <strong>{contrato.empresa}</strong> (CNPJ: {contrato.cnpj}), cujo objeto é{' '}
-          <em>&quot;{contrato.objeto}&quot;</em>, procedo à abertura do presente Livro de
-          Acompanhamento da Execução Contratual.
+          {fiscal.nome}</strong>, na qualidade de Fiscal <strong>{papel}</strong>{' '}
+          {isMulti ? (
+            <>
+              dos contratos abaixo relacionados, celebrados pelo{' '}
+              <strong>71º Batalhão de Infantaria Motorizado</strong>, procedo à abertura do presente Livro de
+              Acompanhamento da Execução Contratual.
+            </>
+          ) : (
+            <>
+              do Contrato nº <strong>{contratos[0].numero_contrato}</strong>, celebrado entre o{' '}
+              <strong>71º Batalhão de Infantaria Motorizado</strong> e a empresa{' '}
+              <strong>{contratos[0].empresa}</strong> (CNPJ: {contratos[0].cnpj}), cujo objeto é{' '}
+              <em>&quot;{contratos[0].objeto}&quot;</em>, procedo à abertura do presente Livro de
+              Acompanhamento da Execução Contratual.
+            </>
+          )}
         </p>
+
+        {isMulti && (
+          <div className="my-6 pl-4 border-l-2 border-gray-300 space-y-3">
+            {contratos.map((c: any) => (
+              <div key={c.id}>
+                <strong>Contrato nº {c.numero_contrato}</strong> — {c.empresa} (CNPJ: {c.cnpj})<br/>
+                <span className="text-xs text-gray-600">
+                  Vigência: {new Date(c.data_inicio + 'T00:00:00').toLocaleDateString('pt-BR')} a {new Date(c.data_termino + 'T00:00:00').toLocaleDateString('pt-BR')} | Valor: {formatarMoeda(c.valor)}
+                </span>
+                <p className="text-xs italic mt-0.5">&quot;{c.objeto}&quot;</p>
+              </div>
+            ))}
+          </div>
+        )}
+
         <p>
           O presente livro destina-se ao registro cronológico de todas as ocorrências, anotações,
           notificações, correspondências e demais documentos relacionados à fiscalização e ao
-          acompanhamento da execução do referido contrato, em conformidade com o disposto na{' '}
+          acompanhamento da execução {isMulti ? 'dos referidos contratos' : 'do referido contrato'}, em conformidade com o disposto na{' '}
           <strong>Lei nº 14.133, de 1º de abril de 2021</strong> (Lei de Licitações e Contratos
           Administrativos) e nas normas internas do Exército Brasileiro.
         </p>
-        <p>
-          O valor global do contrato é de <strong>{formatarMoeda(contrato.valor)}</strong>, com
-          vigência de{' '}
-          <strong>{new Date(contrato.data_inicio + 'T00:00:00').toLocaleDateString('pt-BR')}</strong>{' '}
-          a{' '}
-          <strong>{new Date(contrato.data_termino + 'T00:00:00').toLocaleDateString('pt-BR')}</strong>.
-        </p>
+
+        {!isMulti && (
+          <p>
+            O valor global do contrato é de <strong>{formatarMoeda(contratos[0].valor)}</strong>, com
+            vigência de{' '}
+            <strong>{new Date(contratos[0].data_inicio + 'T00:00:00').toLocaleDateString('pt-BR')}</strong>{' '}
+            a{' '}
+            <strong>{new Date(contratos[0].data_termino + 'T00:00:00').toLocaleDateString('pt-BR')}</strong>.
+          </p>
+        )}
+
         <p>
           Determino que todas as anotações sejam efetuadas com clareza e objetividade, assinadas
           pelo fiscal responsável, visando garantir a transparência, o controle e a regularidade
@@ -232,10 +263,10 @@ function TermoAberturaLivro({ contrato, fiscal, papel, params }: any) {
         fiscal={fiscal}
         papel={papel}
         dataGeracao={formatarData(dataAbertura)}
-        contratoId={contrato.id}
+        contratoId={contratoId}
         tipoDoc="Termo de Abertura do Livro"
       />
-      <Rodape contratoId={contrato.id} />
+      <Rodape contratoId={contratoId} />
     </div>
   )
 }
@@ -572,7 +603,7 @@ export default async function ImprimirDocumentoPage({
       case 'capa-livro':
         return <CapaLivro contratos={contratos} params={sp} />
       case 'abertura-livro':
-        return <TermoAberturaLivro contrato={contrato} fiscal={fiscal} papel={papel} params={sp} />
+        return <TermoAberturaLivro contratos={contratos} fiscal={fiscal} papel={papel} params={sp} />
       case 'solicitacao-preposto':
         return <OficioSolicitacaoPreposto contrato={contrato} fiscal={fiscal} papel={papel} params={sp} />
       case 'notificacao-irregularidade':

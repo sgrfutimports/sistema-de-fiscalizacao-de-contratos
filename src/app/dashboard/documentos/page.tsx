@@ -26,6 +26,7 @@ const TIPOS_DOCUMENTO = [
     corBorder: 'border-emerald-500/40',
     corBg: 'bg-emerald-500/10',
     corText: 'text-emerald-400',
+    multiContrato: true,
     campos: [
       { name: 'data_abertura', label: 'Data de Abertura', type: 'date', required: true },
       { name: 'numero_livro', label: 'Nº do Livro (opcional)', type: 'text', required: false, placeholder: 'Ex: 001' },
@@ -208,11 +209,36 @@ export default function DocumentosPage() {
     router.push(url)
   }
 
+  // Validação de datas
+  let erroData = ''
+  if (tipoAtual) {
+    tipoAtual.campos.forEach(campo => {
+      if (campo.type === 'date' && campos[campo.name]) {
+        // Usa o timestamp a partir da string em ISO 8601 YYYY-MM-DD forçando 00:00 do timezone local
+        const [ano, mes, dia] = campos[campo.name].split('-').map(Number)
+        const dateInput = new Date(ano, mes - 1, dia)
+        
+        const hoje = new Date()
+        hoje.setHours(0, 0, 0, 0)
+        
+        const limiteRetroativo = new Date()
+        limiteRetroativo.setHours(0, 0, 0, 0)
+        limiteRetroativo.setDate(limiteRetroativo.getDate() - 60)
+
+        if (dateInput > hoje) {
+          erroData = 'A data do documento não pode ser posterior ao dia de hoje.'
+        } else if (dateInput < limiteRetroativo) {
+          erroData = 'A data do documento não pode ter mais de 60 dias retroativos.'
+        }
+      }
+    })
+  }
+
   const camposValidos = tipoAtual
     ? tipoAtual.campos.filter(c => c.required).every(c => campos[c.name]?.trim())
     : false
 
-  const podeGerar = selectedContratos.length > 0 && selectedTipo && camposValidos
+  const podeGerar = selectedContratos.length > 0 && selectedTipo && camposValidos && !erroData
 
   if (loading) {
     return (
@@ -415,9 +441,16 @@ export default function DocumentosPage() {
                     ))}
                   </div>
 
-                  {/* Validação */}
+                  {/* Validação Geral */}
+                  {erroData && (
+                    <div className="flex items-center gap-2 bg-red-500/5 border border-red-500/20 rounded-xl px-4 py-3 mt-4">
+                      <AlertTriangle className="h-4 w-4 text-red-500 shrink-0" />
+                      <p className="text-xs font-medium text-red-400">{erroData}</p>
+                    </div>
+                  )}
+
                   {selectedContratos.length === 0 && (
-                    <div className="flex items-center gap-2 bg-yellow-500/5 border border-yellow-500/20 rounded-xl px-4 py-3">
+                    <div className="flex items-center gap-2 bg-yellow-500/5 border border-yellow-500/20 rounded-xl px-4 py-3 mt-4">
                       <AlertTriangle className="h-4 w-4 text-yellow-500 shrink-0" />
                       <p className="text-xs font-medium text-yellow-400">Selecione um contrato antes de gerar.</p>
                     </div>
