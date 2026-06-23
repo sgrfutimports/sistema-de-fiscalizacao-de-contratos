@@ -264,49 +264,32 @@ export function LoginForm() {
         </form>
       </div>
 
-      {/* Tela de Carregamento Premium e Moderna Pós-Login */}
+      {/* Tela de Carregamento Institucional Pós-Login */}
       {isPending && (
-        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-gradient-to-b from-[#005f23]/90 to-[#002776]/90 backdrop-blur-md animate-fade-in">
-          {/* Luzes de Fogueira e Refletores */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[400px] w-[400px] rounded-full bg-[#ff7300]/20 blur-[100px] pointer-events-none animate-flicker" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[200px] w-[200px] rounded-full bg-[#fedf00]/30 blur-[60px] pointer-events-none animate-pulse" />
-          
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0a180b]/90 backdrop-blur-md animate-fade-in">
           <div className="relative flex flex-col items-center gap-7 max-w-sm px-6 text-center animate-in zoom-in-95 duration-500">
-            {/* Brasão/Logo com a Fogueira Atrás */}
+            {/* Brasão/Logo */}
             <div className="relative w-36 h-36 flex items-center justify-center">
-              
-              {/* Efeito de labaredas em CSS */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-80 mix-blend-screen animate-flicker">
-                <div className="absolute w-20 h-28 bg-[#ff2a00] rounded-[50%_0_50%_50%] transform rotate-45 blur-[15px] -bottom-4" />
-                <div className="absolute w-16 h-24 bg-[#ff7300] rounded-[50%_0_50%_50%] transform rotate-45 blur-[10px] -bottom-2" />
-                <div className="absolute w-12 h-20 bg-[#fedf00] rounded-[50%_0_50%_50%] transform rotate-45 blur-[5px]" />
-              </div>
-              
-              {/* Círculo do Logo iluminado */}
-              <div className="w-24 h-24 flex items-center justify-center relative z-10 animate-bounce">
+              <div className="w-24 h-24 flex items-center justify-center relative z-10 animate-pulse">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(254,223,0,0.6)]" />
+                <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-full h-full object-contain drop-shadow-[0_0_15px_rgba(254,223,0,0.3)]" />
               </div>
             </div>
 
             {/* Mensagens Temáticas */}
             <div className="space-y-3 mt-4">
-              <h3 className="text-xl font-black uppercase text-[#fedf00] drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-widest animate-pulse">
-                Aquecendo os motores!
+              <h3 className="text-xl font-black uppercase text-white drop-shadow-md tracking-widest">
+                Autenticando
               </h3>
-              <p className="text-xs font-extrabold text-white uppercase tracking-[0.2em] leading-relaxed drop-shadow-md">
-                Puxando o fole da sanfona e abrindo o portal...
+              <p className="text-xs font-extrabold text-gray-300 uppercase tracking-[0.2em] leading-relaxed drop-shadow-md">
+                Acessando o Sistema de Fiscalização...
               </p>
             </div>
             
-            {/* Barra de Progresso Hexa */}
-            <div className="w-56 h-2 bg-white/20 rounded-full overflow-hidden mt-2 border border-white/30 relative shadow-inner">
-              <div className="absolute inset-y-0 left-0 w-full h-full bg-gradient-to-r from-[#009b3a] via-[#fedf00] to-[#002776] rounded-full animate-loading-progress" />
+            {/* Barra de Progresso */}
+            <div className="w-56 h-2 bg-white/10 rounded-full overflow-hidden mt-2 border border-white/20 relative shadow-inner">
+              <div className="absolute inset-y-0 left-0 w-full h-full bg-[#fedf00] rounded-full animate-pulse" />
             </div>
-
-            <span className="text-[0.6rem] font-extrabold text-white/80 uppercase tracking-[0.3em] mt-2 drop-shadow-sm">
-              Rumo ao Hexa!
-            </span>
           </div>
         </div>
       )}
