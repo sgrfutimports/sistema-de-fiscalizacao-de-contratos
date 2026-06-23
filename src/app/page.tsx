@@ -3,50 +3,7 @@ import { FileSignature, ShieldCheck, Clock, FileText, ArrowRight } from 'lucide-
 
 export default function WelcomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#009b3a] to-[#005f23] text-white relative overflow-hidden font-sans flex flex-col justify-between">
-      
-      {/* Luzes Vibrantes de Fundo - Copa do Mundo */}
-      <div className="absolute top-[-10%] right-[-10%] h-[600px] w-[600px] rounded-full bg-[#fedf00]/20 blur-[120px] pointer-events-none z-0" />
-      <div className="absolute bottom-[-15%] left-[-10%] h-[500px] w-[500px] rounded-full bg-[#002776]/30 blur-[100px] pointer-events-none z-0" />
-
-      {/* Confetes Flutuantes */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        {/* Confetes Amarelos */}
-        <div className="absolute left-[10%] bottom-0 w-3 h-6 bg-[#fedf00] opacity-80 animate-float-up" style={{ animationDelay: '0s', animationDuration: '6s' }} />
-        <div className="absolute left-[30%] bottom-0 w-4 h-4 rounded-full bg-[#fedf00] opacity-90 animate-float-up" style={{ animationDelay: '2s', animationDuration: '5s' }} />
-        <div className="absolute left-[50%] bottom-0 w-3 h-8 bg-[#fedf00] opacity-70 animate-float-up" style={{ animationDelay: '1s', animationDuration: '7s' }} />
-        <div className="absolute left-[70%] bottom-0 w-5 h-5 rounded-full bg-[#fedf00] opacity-80 animate-float-up" style={{ animationDelay: '4s', animationDuration: '4s' }} />
-        <div className="absolute left-[90%] bottom-0 w-2 h-6 bg-[#fedf00] opacity-90 animate-float-up" style={{ animationDelay: '3s', animationDuration: '6s' }} />
-        
-        {/* Confetes Azuis */}
-        <div className="absolute left-[20%] bottom-0 w-4 h-4 bg-[#002776] opacity-80 animate-float-up" style={{ animationDelay: '1.5s', animationDuration: '5.5s' }} />
-        <div className="absolute left-[40%] bottom-0 w-3 h-3 rounded-full bg-[#002776] opacity-70 animate-float-up" style={{ animationDelay: '0.5s', animationDuration: '6.5s' }} />
-        <div className="absolute left-[60%] bottom-0 w-5 h-2 bg-[#002776] opacity-90 animate-float-up" style={{ animationDelay: '2.5s', animationDuration: '4.5s' }} />
-        <div className="absolute left-[80%] bottom-0 w-3 h-3 rounded-full bg-[#002776] opacity-80 animate-float-up" style={{ animationDelay: '3.5s', animationDuration: '5s' }} />
-        
-        {/* Confetes Brancos */}
-        <div className="absolute left-[15%] bottom-0 w-2 h-2 rounded-full bg-white opacity-80 animate-float-up" style={{ animationDelay: '0.2s', animationDuration: '4s' }} />
-        <div className="absolute left-[45%] bottom-0 w-3 h-3 bg-white opacity-90 animate-float-up" style={{ animationDelay: '1.8s', animationDuration: '7s' }} />
-        <div className="absolute left-[75%] bottom-0 w-4 h-2 bg-white opacity-70 animate-float-up" style={{ animationDelay: '2.2s', animationDuration: '5s' }} />
-        <div className="absolute left-[85%] bottom-0 w-2 h-2 rounded-full bg-white opacity-80 animate-float-up" style={{ animationDelay: '4.5s', animationDuration: '6s' }} />
-      </div>
-
-      {/* Bandeirinhas de Festa Junina estilizadas */}
-      <div className="absolute top-0 inset-x-0 h-24 overflow-hidden pointer-events-none z-10 flex justify-around opacity-90">
-        <div className="absolute top-4 left-[-10%] right-[-10%] h-[1px] bg-white/30 transform rotate-[-2deg] z-0" />
-        {[
-          '#fedf00', '#002776', '#ffffff', '#fedf00', '#009b3a', 
-          '#ffffff', '#002776', '#fedf00', '#009b3a', '#ffffff',
-          '#fedf00', '#002776', '#ffffff', '#fedf00', '#009b3a',
-          '#ffffff', '#fedf00', '#002776', '#ffffff', '#fedf00'
-        ].map((color, i) => (
-          <div key={i} className={`relative w-8 sm:w-12 h-12 sm:h-16 origin-top animate-sway`} style={{ animationDelay: `${i * 0.15}s` }}>
-            <svg viewBox="0 0 100 120" preserveAspectRatio="none" className="w-full h-full drop-shadow-md">
-              <path d="M0,0 L100,0 L100,120 L50,90 L0,120 Z" fill={color} />
-            </svg>
-          </div>
-        ))}
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-[#1a381c] to-[#0a180b] text-white relative overflow-hidden font-sans flex flex-col justify-between">
 
       {/* Header com Identificação do Batalhão */}
       <header className="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between border-b border-white/20 mt-16 sm:mt-0">
@@ -86,7 +43,7 @@ export default function WelcomePage() {
 
         {/* Subhead */}
         <p className="text-green-50 text-sm sm:text-lg max-w-2xl leading-relaxed mb-10 font-bold drop-shadow-md">
-          Otimize a emissão de relatórios mensais, acompanhe os prazos de vigência e garanta a total conformidade das empresas prestadoras de serviço no 71º Batalhão de Infantaria Motorizado. 🔥 Pula a fogueira e bora pro Hexa!
+          Otimize a emissão de relatórios mensais, acompanhe os prazos de vigência e garanta a total conformidade das empresas prestadoras de serviço no 71º Batalhão de Infantaria Motorizado.
         </p>
 
         {/* Primary CTA Buttons */}
@@ -141,9 +98,9 @@ export default function WelcomePage() {
       </main>
 
       {/* Footer */}
-      <footer className="relative z-10 w-full text-center py-6 border-t border-white/20 text-[0.65rem] text-[#fedf00] font-bold uppercase tracking-widest bg-gradient-to-t from-[#002776]/40 to-transparent flex flex-col items-center justify-center gap-1.5 px-6 backdrop-blur-sm">
+      <footer className="relative z-10 w-full text-center py-6 border-t border-white/20 text-[0.65rem] text-[#fedf00] font-bold uppercase tracking-widest bg-gradient-to-t from-[#0a180b]/40 to-transparent flex flex-col items-center justify-center gap-1.5 px-6 backdrop-blur-sm">
         <span className="drop-shadow-md">71º Batalhão de Infantaria Motorizado &bull; Exército Brasileiro &bull; Fiscalização &copy; {new Date().getFullYear()}</span>
-        <span className="text-white font-medium normal-case tracking-normal text-[0.6rem] opacity-90 drop-shadow-md">Desenvolvido por 1º Sgt Gaudêncio | Feliz São João! 🇧🇷</span>
+        <span className="text-white font-medium normal-case tracking-normal text-[0.6rem] opacity-90 drop-shadow-md">Desenvolvido por 1º Sgt Gaudêncio</span>
       </footer>
 
     </div>
