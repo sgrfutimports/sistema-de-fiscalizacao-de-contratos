@@ -52,7 +52,7 @@ export function ComunicadosModal({ comunicados }: ComunicadosModalProps) {
           </div>
           <div>
             <h2 className="text-lg font-black uppercase tracking-wider text-yellow-500">Leitura Obrigatória</h2>
-            <p className="text-xs text-gray-400 font-bold mt-0.5">Há novos comunicados oficiais do comando para você</p>
+            <p className="text-xs text-gray-400 font-bold mt-0.5">Há novos comunicados oficiais para você</p>
           </div>
         </div>
 
@@ -91,7 +91,7 @@ export function ComunicadosModal({ comunicados }: ComunicadosModalProps) {
               className="mt-0.5 h-4 w-4 rounded border-[#2a3441] bg-[#1b2331] text-yellow-600 focus:ring-yellow-500 focus:ring-offset-[#131924]"
             />
             <span className="text-xs font-bold text-gray-300 leading-tight">
-              Confirmo que realizei a leitura atenta e integral do(s) comunicado(s) oficial(is) acima e estou ciente das instruções do comando.
+              Confirmo que realizei a leitura atenta e integral do(s) comunicado(s) oficial(is) acima e estou ciente das instruções.
             </span>
           </label>
 

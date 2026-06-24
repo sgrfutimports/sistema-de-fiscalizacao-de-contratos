@@ -35,7 +35,7 @@ export default async function ComunicadosPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight flex items-center gap-2">
           <Megaphone className="h-7 w-7 text-yellow-500" />
-          Gerenciar Comunicados do Comando
+          Gerenciar Comunicados
         </h1>
         <p className="text-muted-foreground mt-1">
           Envie avisos, atualizações e comunicados oficiais aos fiscais titulares e substitutos cadastrados no sistema.

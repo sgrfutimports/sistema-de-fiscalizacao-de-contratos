@@ -474,12 +474,12 @@ export function DashboardHomeClient({
         {/* Bloco de Avisos Recentes */}
         <Card className="col-span-1 lg:col-span-3 shadow-sm border-gray-100 dark:border-gray-800 rounded-[20px] overflow-hidden bg-card">
           <CardHeader className="bg-gray-50/50 dark:bg-gray-900/40 border-b border-gray-100 dark:border-gray-800 py-4 px-5">
-            <CardTitle className="text-sm font-black text-[#133215] dark:text-yellow-500 uppercase tracking-wider">Avisos Recentes do Comando</CardTitle>
+            <CardTitle className="text-sm font-black text-[#133215] dark:text-yellow-500 uppercase tracking-wider">Avisos Recentes</CardTitle>
           </CardHeader>
           <CardContent className="p-4 h-[350px] overflow-y-auto flex flex-col gap-3.5">
             {avisos.length === 0 ? (
               <div className="flex justify-center items-center h-full text-muted-foreground text-sm">
-                Nenhum comunicado oficial do comando registrado.
+                Nenhum comunicado oficial registrado.
               </div>
             ) : (
               avisos.map((aviso, idx) => (
