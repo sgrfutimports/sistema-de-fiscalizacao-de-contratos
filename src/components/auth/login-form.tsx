@@ -281,7 +281,7 @@ export function LoginForm() {
             type="submit" 
             disabled={isPending || isAnimating}
           >
-            {isPending || isAnimating ? 'Autenticando...' : 'Entrar no Portal'}
+            {isPending || isAnimating ? 'Autenticando...' : 'Entrar'}
           </button>
         </form>
       </div>
