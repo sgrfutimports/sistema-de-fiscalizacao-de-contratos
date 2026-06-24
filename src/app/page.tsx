@@ -72,7 +72,7 @@ export default function WelcomePage() {
 
             {/* Imagem Realista da Aplicação (Fornecida pelo Usuário) */}
             <Image 
-              src="/mobile-mockup.png" 
+              src="/screenshot-real.png" 
               alt="Interface Mobile do Sistema" 
               fill
               className="object-cover object-top"
