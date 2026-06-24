@@ -34,7 +34,7 @@ export default async function UsuariosPage() {
         <div>
           <h1 className="text-2xl font-black text-[#133215] dark:text-yellow-500 flex items-center gap-2">
             <Shield className="h-6 w-6 text-yellow-500" />
-            Cadastros de Oficiais & Praças
+            Cadastro
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-medium">
             Gestão operacional dos Fiscais Titulares/Substitutos e perfis administradores do sistema de contratos.
