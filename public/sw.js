@@ -1,4 +1,4 @@
-const CACHE_NAME = 'contratos-71bi-v3';
+const CACHE_NAME = 'contratos-71bi-v4';
 const PRECACHE_ASSETS = [
   '/',
   '/logo.png',
