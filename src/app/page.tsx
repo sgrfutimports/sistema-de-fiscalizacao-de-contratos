@@ -54,42 +54,24 @@ export default function WelcomePage() {
           Aplicação pioneira e exclusiva do <strong>71º BI Mtz</strong> focada na gestão rápida de prazos, emissão de relatórios mensais e geração de documentos nativos.
         </p>
 
-        {/* Mockup do App (Plano B com Imagem Real + Efeito 3D Isométrico) */}
-        <div className="w-full relative flex justify-center mb-16 animate-in fade-in zoom-in-95 duration-1000" style={{ animationDelay: '400ms', perspective: '1200px' }}>
+        {/* Mockup do App (Imagem Completa Final fornecida pelo Usuário) */}
+        <div className="w-full max-w-[360px] mx-auto relative flex justify-center mb-12 animate-in fade-in zoom-in-95 duration-1000" style={{ animationDelay: '400ms' }}>
           {/* Efeitos Visuais ao Redor da Imagem */}
-          <div className="absolute inset-0 bg-gradient-to-t from-[#050A06] via-transparent to-transparent z-10 pointer-events-none" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] h-[90%] bg-[#009b3a]/20 blur-[70px] rounded-full pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[100%] h-[100%] bg-[#009b3a]/15 blur-[80px] rounded-full pointer-events-none" />
           
-          <div className="relative w-[280px] h-[580px] md:w-[320px] md:h-[650px] rounded-[3rem] overflow-hidden border-y-[8px] border-x-[6px] border-[#2a2a2a] bg-[#112415] z-0 group transition-all duration-[2000ms] ease-out hover:rotate-y-0 hover:rotate-x-0 hover:rotate-z-0"
-               style={{
-                 transformStyle: 'preserve-3d',
-                 transform: 'rotateY(-18deg) rotateX(8deg) rotateZ(-2deg) scale(0.95)',
-                 boxShadow: '-25px 25px 50px rgba(0,0,0,0.8), inset 0 0 10px rgba(255,255,255,0.1)'
-               }}>
-            
-            {/* Brilho da Borda Esquerda (Simulando Metal) */}
-            <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-white/20 via-white/5 to-transparent z-30" />
-
-            {/* Imagem Realista da Aplicação (Fornecida pelo Usuário) */}
+          <div className="relative w-full aspect-[1/2] z-10 group">
             <Image 
-              src="/screenshot-real.png" 
-              alt="Interface Mobile do Sistema" 
+              src="/mockup-final.png" 
+              alt="Mockup Mobile Completo do Sistema" 
               fill
-              className="object-cover object-top"
+              className="object-contain transition-transform duration-[2000ms] group-hover:scale-105 drop-shadow-2xl"
               priority
+              unoptimized
             />
-            {/* Notch Fake (para estética de celular) */}
-            <div className="absolute w-[130px] h-[30px] bg-[#1a1a1a] top-0 left-1/2 -translate-x-1/2 rounded-b-[1.2rem] z-30 flex items-center justify-center">
-              <div className="w-12 h-1.5 rounded-full bg-[#333] mt-1" />
-              <div className="w-2.5 h-2.5 rounded-full bg-blue-900/50 absolute right-4 mt-1 border border-black/50" />
-            </div>
-            
-            {/* Efeito de Reflexo no Vidro do Celular */}
-            <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.08] to-transparent pointer-events-none z-20" />
           </div>
 
           {/* Floater Informativo sobreposto na imagem */}
-          <div className="absolute bottom-12 right-0 md:-right-4 p-4 rounded-2xl bg-[#0a180b]/90 border border-[#009b3a]/30 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-xl z-20 animate-in slide-in-from-right-8 duration-1000" style={{ animationDelay: '800ms', transform: 'translateZ(50px)' }}>
+          <div className="absolute bottom-16 -right-2 md:-right-8 p-4 rounded-2xl bg-[#0a180b]/90 border border-[#009b3a]/30 shadow-[0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-xl z-20 animate-in slide-in-from-right-8 duration-1000" style={{ animationDelay: '800ms' }}>
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-full bg-[#009b3a]/20 flex items-center justify-center border border-[#009b3a]/30">
                 <FileSignature className="h-5 w-5 text-[#009b3a]" />
