@@ -82,7 +82,7 @@ function BlocoAssinaturaDigital({
   tipoDoc: string
 }) {
   return (
-    <div className="mt-12 pt-8 border-t border-black grid grid-cols-2 gap-8 text-[0.65rem] leading-normal font-mono break-inside-avoid">
+    <div className="mt-12 pt-8 border-t border-black grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8 text-[0.7rem] sm:text-[0.65rem] leading-normal font-mono break-inside-avoid">
 
       {/* Assinatura do Fiscal */}
       <div className="p-3 border border-dashed border-gray-400 bg-gray-50/50 rounded flex flex-col justify-between">
@@ -631,12 +631,12 @@ export default async function ImprimirDocumentoPage({
         <PrintTrigger />
       </div>
 
-      {/* Container de visualização (escala no mobile para manter formato A4 sem cortar) */}
-      <div className="flex-1 overflow-x-auto p-4 sm:p-8 flex justify-center bg-gray-200">
-        {/* Folha simulada estilo A4 com zoom automático */}
-        <div className="mobile-a4-wrapper bg-white shadow-xl shrink-0">
-          {/* Conteúdo imprimível com margens oficiais idênticas à impressão */}
-          <div className="px-[30mm] py-[25mm] print-area text-base">
+      {/* Container de visualização (layout Smart Paper responsivo) */}
+      <div className="flex-1 p-2 sm:p-8 flex justify-center bg-gray-200">
+        {/* Folha simulada: 100% da largura no celular, A4 fixo no PC */}
+        <div className="w-full sm:w-[210mm] sm:min-w-[210mm] bg-white shadow-xl shrink-0 print:w-[210mm] print:min-w-[210mm] mx-auto">
+          {/* Margens adaptativas: menores no celular (sobra mais espaço para o texto) e tamanho oficial no PC/Impressão */}
+          <div className="px-5 py-6 sm:px-[30mm] sm:py-[25mm] print:px-[30mm] print:py-[25mm] print-area text-base sm:text-base break-words">
             {renderDocumento()}
           </div>
         </div>
@@ -649,24 +649,6 @@ export default async function ImprimirDocumentoPage({
 }
 
 const printCSS = `
-  .mobile-a4-wrapper {
-    width: 210mm;
-    min-width: 210mm;
-    margin: 0 auto;
-    transform-origin: top center;
-    -webkit-text-size-adjust: 100%;
-  }
-  
-  /* Garantindo suporte completo para Android (Chrome/Firefox) e iOS (Safari) */
-  @media screen and (max-width: 850px) { .mobile-a4-wrapper { zoom: 0.9; -moz-transform: scale(0.9); } }
-  @media screen and (max-width: 768px) { .mobile-a4-wrapper { zoom: 0.85; -moz-transform: scale(0.85); } }
-  @media screen and (max-width: 640px) { .mobile-a4-wrapper { zoom: 0.7; -moz-transform: scale(0.7); } }
-  @media screen and (max-width: 550px) { .mobile-a4-wrapper { zoom: 0.6; -moz-transform: scale(0.6); } }
-  @media screen and (max-width: 480px) { .mobile-a4-wrapper { zoom: 0.52; -moz-transform: scale(0.52); } }
-  @media screen and (max-width: 430px) { .mobile-a4-wrapper { zoom: 0.46; -moz-transform: scale(0.46); } }
-  @media screen and (max-width: 390px) { .mobile-a4-wrapper { zoom: 0.42; -moz-transform: scale(0.42); } }
-  @media screen and (max-width: 350px) { .mobile-a4-wrapper { zoom: 0.38; -moz-transform: scale(0.38); } }
-
   @page {
     size: A4 portrait;
     margin: 25mm 20mm 25mm 30mm;
