@@ -28,8 +28,8 @@ export default function WelcomePage() {
             <img src="/logo.png" alt="Logo" className="relative w-8 h-8 object-contain filter drop-shadow-[0_0_8px_rgba(254,223,0,0.4)]" />
           </div>
           <div className="flex flex-col items-start">
-            <span className="text-sm font-black tracking-widest text-white uppercase leading-none">71º BI Mtz</span>
-            <span className="text-[0.55rem] text-[#fedf00] font-bold uppercase tracking-[0.2em] opacity-80 mt-1">Pioneiro</span>
+            <span className="text-sm font-black tracking-widest text-white uppercase leading-none">Fiscalização</span>
+            <span className="text-[0.55rem] text-[#fedf00] font-bold uppercase tracking-[0.2em] opacity-80 mt-1">Inteligente</span>
           </div>
         </div>
       </header>
@@ -50,8 +50,8 @@ export default function WelcomePage() {
           </span>
         </h1>
 
-        <p className="text-zinc-400 text-[0.95rem] leading-relaxed mb-10 max-w-[300px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000" style={{ animationDelay: '300ms' }}>
-          Aplicação pioneira e exclusiva do <strong>71º BI Mtz</strong> focada na gestão rápida de prazos, emissão de relatórios mensais e geração de documentos nativos.
+        <p className="text-zinc-400 text-[0.95rem] leading-relaxed mb-10 max-w-[320px] mx-auto animate-in fade-in slide-in-from-bottom-4 duration-1000" style={{ animationDelay: '300ms' }}>
+          Transforme a burocracia em eficiência. Assuma o controle total sobre prazos, alertas críticos e geração de relatórios mensais com um fluxo ágil desenhado para fiscais.
         </p>
 
         {/* Mockup do App (Imagem Completa Final fornecida pelo Usuário) */}
@@ -103,7 +103,7 @@ export default function WelcomePage() {
       {/* Grade de Facilidades */}
       <section className="relative z-10 w-full max-w-md mx-auto px-5 mt-16 pb-12">
         <div className="text-center mb-8 animate-in fade-in slide-in-from-bottom-8 duration-1000" style={{ animationDelay: '700ms' }}>
-          <h2 className="text-xl font-black text-white">Funções Exclusivas do 71º BI Mtz</h2>
+          <h2 className="text-xl font-black text-white">Arsenal Exclusivo do Fiscal</h2>
         </div>
 
         <div className="grid grid-cols-1 gap-4 animate-in fade-in slide-in-from-bottom-12 duration-1000" style={{ animationDelay: '800ms' }}>
