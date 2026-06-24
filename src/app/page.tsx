@@ -9,7 +9,8 @@ import {
   CheckCircle2,
   AlertCircle,
   FileCheck2,
-  Briefcase
+  Briefcase,
+  History
 } from 'lucide-react'
 
 export default function WelcomePage() {
