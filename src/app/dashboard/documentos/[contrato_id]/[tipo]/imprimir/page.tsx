@@ -654,17 +654,18 @@ const printCSS = `
     min-width: 210mm;
     margin: 0 auto;
     transform-origin: top center;
+    -webkit-text-size-adjust: 100%;
   }
   
-  /* Fallback escalonado para navegadores mobile que não suportam calc() no zoom */
-  @media screen and (max-width: 850px) { .mobile-a4-wrapper { zoom: 0.9; } }
-  @media screen and (max-width: 768px) { .mobile-a4-wrapper { zoom: 0.85; } }
-  @media screen and (max-width: 640px) { .mobile-a4-wrapper { zoom: 0.7; } }
-  @media screen and (max-width: 550px) { .mobile-a4-wrapper { zoom: 0.6; } }
-  @media screen and (max-width: 480px) { .mobile-a4-wrapper { zoom: 0.52; } }
-  @media screen and (max-width: 430px) { .mobile-a4-wrapper { zoom: 0.46; } }
-  @media screen and (max-width: 390px) { .mobile-a4-wrapper { zoom: 0.42; } }
-  @media screen and (max-width: 350px) { .mobile-a4-wrapper { zoom: 0.38; } }
+  /* Garantindo suporte completo para Android (Chrome/Firefox) e iOS (Safari) */
+  @media screen and (max-width: 850px) { .mobile-a4-wrapper { zoom: 0.9; -moz-transform: scale(0.9); } }
+  @media screen and (max-width: 768px) { .mobile-a4-wrapper { zoom: 0.85; -moz-transform: scale(0.85); } }
+  @media screen and (max-width: 640px) { .mobile-a4-wrapper { zoom: 0.7; -moz-transform: scale(0.7); } }
+  @media screen and (max-width: 550px) { .mobile-a4-wrapper { zoom: 0.6; -moz-transform: scale(0.6); } }
+  @media screen and (max-width: 480px) { .mobile-a4-wrapper { zoom: 0.52; -moz-transform: scale(0.52); } }
+  @media screen and (max-width: 430px) { .mobile-a4-wrapper { zoom: 0.46; -moz-transform: scale(0.46); } }
+  @media screen and (max-width: 390px) { .mobile-a4-wrapper { zoom: 0.42; -moz-transform: scale(0.42); } }
+  @media screen and (max-width: 350px) { .mobile-a4-wrapper { zoom: 0.38; -moz-transform: scale(0.38); } }
 
   @page {
     size: A4 portrait;
