@@ -25,7 +25,8 @@ import {
   ArrowRight,
   BookOpen,
   Eye,
-  X
+  X,
+  FolderOpen
 } from 'lucide-react'
 
 interface Contrato {
@@ -157,6 +158,7 @@ export function DashboardHomeClient({
   ] : [
     { title: 'Contratos', icon: FileSignature, url: '/dashboard/meus-contratos', bg: 'bg-[#133215]/10 dark:bg-yellow-500/10 text-[#133215] dark:text-yellow-500' },
     { title: 'Histórico', icon: FileText, url: '/dashboard/meus-relatorios', bg: 'bg-blue-500/10 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400' },
+    { title: 'Documentos', icon: FolderOpen, url: '/dashboard/documentos', bg: 'bg-purple-500/10 dark:bg-purple-500/20 text-purple-600 dark:text-purple-400' },
     { title: 'Suporte Gestor', icon: MessageCircle, url: whatsappLink, external: true, bg: 'bg-green-500/10 dark:bg-green-500/20 text-green-600 dark:text-green-400' },
     { title: 'Configurações', icon: Settings, url: '/dashboard/perfil', bg: 'bg-teal-500/10 dark:bg-teal-500/20 text-teal-600 dark:text-teal-400' },
   ]
