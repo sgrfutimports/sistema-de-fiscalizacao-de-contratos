@@ -1,108 +1,180 @@
 import Link from 'next/link'
-import { FileSignature, ShieldCheck, Clock, FileText, ArrowRight } from 'lucide-react'
+import { 
+  FileSignature, 
+  ShieldCheck, 
+  Clock, 
+  FileText, 
+  ArrowRight, 
+  Smartphone, 
+  History, 
+  CheckCircle2,
+  BarChart3,
+  ChevronRight
+} from 'lucide-react'
 
 export default function WelcomePage() {
   return (
-    <div className="min-h-screen bg-[#133215] text-white relative overflow-hidden font-sans flex flex-col justify-between">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#133516] via-[#061207] to-[#000000] text-white relative overflow-hidden font-sans selection:bg-[#fedf00] selection:text-black">
+      
+      {/* Background Decorativo Premium */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[500px] bg-[#fedf00] opacity-[0.03] blur-[150px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#009b3a] opacity-[0.04] blur-[120px] rounded-full pointer-events-none" />
 
-      {/* Header com Identificação do Batalhão */}
-      <header className="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between border-b border-white/20 mt-16 sm:mt-0">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 flex items-center justify-center filter drop-shadow-[0_0_10px_rgba(254,223,0,0.5)]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.png" alt="Logo 71º BI Mtz" className="w-10 h-10 object-contain" />
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Header Elegante */}
+        <header className="w-full max-w-7xl mx-auto px-6 py-8 flex items-center justify-between mt-8 sm:mt-0 animate-in fade-in duration-1000">
+          <div className="flex items-center gap-4 group cursor-default">
+            <div className="relative w-14 h-14 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+              <div className="absolute inset-0 bg-[#fedf00]/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.png" alt="Logo 71º BI Mtz" className="relative w-12 h-12 object-contain filter drop-shadow-[0_0_15px_rgba(254,223,0,0.4)]" />
+            </div>
+            <div className="flex flex-col text-left">
+              <span className="text-lg font-black tracking-widest text-white/90 uppercase">71º BI Mtz</span>
+              <span className="text-[0.65rem] text-[#fedf00] font-bold uppercase tracking-[0.3em] opacity-80">Fiscalização</span>
+            </div>
           </div>
-          <div className="flex flex-col text-left">
-            <span className="text-base font-black tracking-wider text-white drop-shadow-md">71º BI Mtz</span>
-            <span className="text-[0.6rem] text-[#fedf00] font-extrabold uppercase tracking-widest drop-shadow-md">Fiscalização</span>
-          </div>
-        </div>
 
-        <Link 
-          href="/dashboard" 
-          className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-[#fedf00]/40 hover:bg-white/20 text-[#fedf00] px-4 py-2 rounded-xl text-xs font-bold transition-all uppercase tracking-wider shadow-md"
-        >
-          Acessar Sistema
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
-      </header>
-
-      {/* Hero Section */}
-      <main className="relative z-10 w-full max-w-5xl mx-auto px-6 py-12 md:py-20 text-center flex-1 flex flex-col justify-center items-center">
-        
-        {/* Badge Slogan */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#fedf00] text-[0.65rem] font-black uppercase tracking-wider mb-6 shadow-md">
-          <ShieldCheck className="h-3.5 w-3.5" />
-          Portal de Controle e Conformidade
-        </div>
-
-        {/* Headline */}
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-white mb-6 leading-tight max-w-4xl drop-shadow-lg">
-          Sistema de Fiscalização de <span className="bg-gradient-to-r from-[#fedf00] via-white to-[#fedf00] bg-clip-text text-transparent">Contratos Administrativos</span>
-        </h1>
-
-        {/* Subhead */}
-        <p className="text-green-50 text-sm sm:text-lg max-w-2xl leading-relaxed mb-10 font-bold drop-shadow-md">
-          Otimize a emissão de relatórios mensais, acompanhe os prazos de vigência e garanta a total conformidade das empresas prestadoras de serviço no 71º Batalhão de Infantaria Motorizado.
-        </p>
-
-        {/* Primary CTA Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-16 w-full sm:w-auto">
           <Link 
             href="/dashboard" 
-            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#fedf00] to-[#e6c900] hover:from-[#e6c900] hover:to-[#cca300] text-[#005f23] px-8 py-4 rounded-xl text-sm font-black transition-all shadow-[0_0_30px_rgba(254,223,0,0.5)] uppercase tracking-widest hover:scale-105"
+            className="hidden sm:inline-flex items-center gap-2 bg-white/5 hover:bg-white/10 backdrop-blur-md border border-white/10 hover:border-[#fedf00]/50 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all uppercase tracking-widest shadow-2xl"
           >
-            Entrar no Portal Seguro
-            <ArrowRight className="h-4 w-4" />
+            Acessar Sistema
+            <ArrowRight className="h-4 w-4 text-[#fedf00]" />
           </Link>
-        </div>
+        </header>
 
-        {/* Features Grid */}
-        <div className="grid gap-6 grid-cols-1 md:grid-cols-3 w-full text-left">
+        {/* Hero Section Masterpiece */}
+        <main className="w-full max-w-7xl mx-auto px-6 py-12 md:py-24 flex-1 flex flex-col items-center text-center">
           
-          {/* Card 1 */}
-          <div className="p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:border-[#fedf00]/50 hover:-translate-y-1 transition-all duration-300 group shadow-lg">
-            <div className="h-10 w-10 rounded-xl bg-[#fedf00]/20 border border-[#fedf00]/30 flex items-center justify-center text-[#fedf00] mb-4 group-hover:bg-[#fedf00]/40 transition-colors shadow-inner">
-              <FileSignature className="h-5 w-5" />
-            </div>
-            <h3 className="text-sm font-black text-[#fedf00] uppercase tracking-wider mb-2">Relatórios Digitais</h3>
-            <p className="text-xs text-green-50 leading-relaxed font-bold">
-              Preenchimento intuitivo e rápido das avaliações mensais de serviços de forma 100% digital e sem papelada física.
-            </p>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#fedf00]/10 border border-[#fedf00]/20 text-[#fedf00] text-xs font-black uppercase tracking-widest mb-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both" style={{ animationDelay: '100ms' }}>
+            <ShieldCheck className="h-4 w-4" />
+            Exclusivo para Fiscais de Contrato
           </div>
 
-          {/* Card 2 */}
-          <div className="p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:border-[#fedf00]/50 hover:-translate-y-1 transition-all duration-300 group shadow-lg">
-            <div className="h-10 w-10 rounded-xl bg-[#fedf00]/20 border border-[#fedf00]/30 flex items-center justify-center text-[#fedf00] mb-4 group-hover:bg-[#fedf00]/40 transition-colors shadow-inner">
-              <Clock className="h-5 w-5" />
-            </div>
-            <h3 className="text-sm font-black text-[#fedf00] uppercase tracking-wider mb-2">Controle de Prazos</h3>
-            <p className="text-xs text-green-50 leading-relaxed font-bold">
-              Alertas automáticos de vigência de contratos e notificações imediatas para preenchimento de obrigações contratuais.
-            </p>
+          <h1 className="text-5xl md:text-7xl font-black tracking-tighter text-white mb-8 leading-[1.1] max-w-5xl animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both" style={{ animationDelay: '200ms' }}>
+            Gestão Contratual Inteligente e <br className="hidden md:block" />
+            <span className="bg-gradient-to-r from-[#fedf00] via-[#ffed4a] to-[#d4b900] bg-clip-text text-transparent">Sem Burocracia.</span>
+          </h1>
+
+          <p className="text-zinc-400 text-lg md:text-xl max-w-3xl leading-relaxed mb-12 font-medium animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both" style={{ animationDelay: '300ms' }}>
+            A plataforma definitiva projetada para otimizar o seu tempo. Fiscalize, avalie e emita relatórios com precisão cirúrgica e total conformidade legal, tudo em um só lugar.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-5 mb-24 w-full sm:w-auto animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both" style={{ animationDelay: '400ms' }}>
+            <Link 
+              href="/dashboard" 
+              className="group relative inline-flex items-center justify-center gap-3 bg-[#fedf00] hover:bg-[#ffed4a] text-[#051006] px-10 py-5 rounded-2xl text-sm font-black transition-all shadow-[0_0_40px_rgba(254,223,0,0.3)] hover:shadow-[0_0_60px_rgba(254,223,0,0.5)] uppercase tracking-widest overflow-hidden"
+            >
+              <span className="relative z-10 flex items-center gap-2">
+                Entrar no Portal
+                <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </span>
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+            </Link>
           </div>
 
-          {/* Card 3 */}
-          <div className="p-6 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 hover:border-[#fedf00]/50 hover:-translate-y-1 transition-all duration-300 group shadow-lg">
-            <div className="h-10 w-10 rounded-xl bg-[#fedf00]/20 border border-[#fedf00]/30 flex items-center justify-center text-[#fedf00] mb-4 group-hover:bg-[#fedf00]/40 transition-colors shadow-inner">
-              <FileText className="h-5 w-5" />
+          {/* Destaques / Facilidades Premium */}
+          <div className="w-full mt-8 animate-in fade-in slide-in-from-bottom-8 duration-1000 fill-mode-both" style={{ animationDelay: '500ms' }}>
+            <div className="text-left mb-12 border-b border-white/10 pb-6 flex items-center justify-between">
+              <div>
+                <h2 className="text-2xl font-black text-white tracking-wide">Poder em suas mãos</h2>
+                <p className="text-zinc-500 mt-2 font-medium">As principais facilidades desenvolvidas para o Fiscal</p>
+              </div>
             </div>
-            <h3 className="text-sm font-black text-[#fedf00] uppercase tracking-wider mb-2">Certidões em PDF</h3>
-            <p className="text-xs text-green-50 leading-relaxed font-bold">
-              Geração automatizada de PDFs oficiais de certidões e relatórios com os dados de conformidade revisados pelos fiscais.
-            </p>
+
+            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 text-left">
+              
+              {/* Feature 1 */}
+              <div className="p-8 rounded-[2rem] bg-white/[0.02] hover:bg-white/[0.04] backdrop-blur-xl border border-white/5 hover:border-[#fedf00]/30 transition-all duration-500 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#fedf00]/5 blur-3xl rounded-full group-hover:bg-[#fedf00]/10 transition-colors" />
+                <div className="h-14 w-14 rounded-2xl bg-[#fedf00]/10 flex items-center justify-center text-[#fedf00] mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <FileSignature className="h-7 w-7" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#fedf00] transition-colors">Avaliação Descomplicada</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed font-medium">
+                  Preenchimento 100% digital e inteligente dos formulários de avaliação mensal. Esqueça planilhas complexas; use uma interface fluida que guia você passo a passo.
+                </p>
+              </div>
+
+              {/* Feature 2 */}
+              <div className="p-8 rounded-[2rem] bg-white/[0.02] hover:bg-white/[0.04] backdrop-blur-xl border border-white/5 hover:border-[#fedf00]/30 transition-all duration-500 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#fedf00]/5 blur-3xl rounded-full group-hover:bg-[#fedf00]/10 transition-colors" />
+                <div className="h-14 w-14 rounded-2xl bg-[#fedf00]/10 flex items-center justify-center text-[#fedf00] mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <FileText className="h-7 w-7" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#fedf00] transition-colors">Emissão Automática de PDFs</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed font-medium">
+                  Geração instantânea de Termos de Recebimento, Relatórios Circunstanciados e Ofícios. Tudo sai perfeitamente formatado no padrão oficial do Exército Brasileiro.
+                </p>
+              </div>
+
+              {/* Feature 3 */}
+              <div className="p-8 rounded-[2rem] bg-white/[0.02] hover:bg-white/[0.04] backdrop-blur-xl border border-white/5 hover:border-[#fedf00]/30 transition-all duration-500 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#fedf00]/5 blur-3xl rounded-full group-hover:bg-[#fedf00]/10 transition-colors" />
+                <div className="h-14 w-14 rounded-2xl bg-[#fedf00]/10 flex items-center justify-center text-[#fedf00] mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <Clock className="h-7 w-7" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#fedf00] transition-colors">Controle de Prazos Ativo</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed font-medium">
+                  Dashboards dinâmicos que mapeiam a vigência dos contratos e alertam sobre a janela de preenchimento dos relatórios antes que os prazos expirem.
+                </p>
+              </div>
+
+              {/* Feature 4 */}
+              <div className="p-8 rounded-[2rem] bg-white/[0.02] hover:bg-white/[0.04] backdrop-blur-xl border border-white/5 hover:border-[#fedf00]/30 transition-all duration-500 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#fedf00]/5 blur-3xl rounded-full group-hover:bg-[#fedf00]/10 transition-colors" />
+                <div className="h-14 w-14 rounded-2xl bg-[#fedf00]/10 flex items-center justify-center text-[#fedf00] mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <History className="h-7 w-7" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#fedf00] transition-colors">Histórico e Rastreabilidade</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed font-medium">
+                  Consulte todo o histórico de avaliações, notas e observações técnicas de qualquer empresa prestadora de serviço em um acervo digital imutável e organizado.
+                </p>
+              </div>
+
+              {/* Feature 5 */}
+              <div className="p-8 rounded-[2rem] bg-white/[0.02] hover:bg-white/[0.04] backdrop-blur-xl border border-white/5 hover:border-[#fedf00]/30 transition-all duration-500 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#fedf00]/5 blur-3xl rounded-full group-hover:bg-[#fedf00]/10 transition-colors" />
+                <div className="h-14 w-14 rounded-2xl bg-[#fedf00]/10 flex items-center justify-center text-[#fedf00] mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <Smartphone className="h-7 w-7" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#fedf00] transition-colors">Mobilidade Extrema (PWA)</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed font-medium">
+                  Precisa conferir algo na rua ou durante a ronda no pavilhão? O sistema é 100% responsivo e pode ser instalado como um aplicativo nativo no seu iOS ou Android.
+                </p>
+              </div>
+
+              {/* Feature 6 */}
+              <div className="p-8 rounded-[2rem] bg-white/[0.02] hover:bg-white/[0.04] backdrop-blur-xl border border-white/5 hover:border-[#fedf00]/30 transition-all duration-500 group relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#fedf00]/5 blur-3xl rounded-full group-hover:bg-[#fedf00]/10 transition-colors" />
+                <div className="h-14 w-14 rounded-2xl bg-[#fedf00]/10 flex items-center justify-center text-[#fedf00] mb-6 group-hover:scale-110 transition-transform duration-500">
+                  <CheckCircle2 className="h-7 w-7" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-[#fedf00] transition-colors">Segurança e Conformidade</h3>
+                <p className="text-sm text-zinc-400 leading-relaxed font-medium">
+                  Todos os ritos processuais exigidos pela Administração Pública são validados automaticamente, garantindo que nenhum passo legal seja esquecido pela Fiscalização.
+                </p>
+              </div>
+
+            </div>
           </div>
 
-        </div>
+        </main>
 
-      </main>
+        {/* Footer Minimalista Premium */}
+        <footer className="w-full text-center py-8 border-t border-white/5 mt-auto relative z-10 backdrop-blur-md">
+          <div className="flex flex-col items-center justify-center gap-2">
+            <span className="text-xs text-[#fedf00] font-black uppercase tracking-[0.2em] opacity-80">
+              71º Batalhão de Infantaria Motorizado
+            </span>
+            <span className="text-[0.65rem] text-zinc-500 font-medium uppercase tracking-widest">
+              Desenvolvido por 1º Sgt Gaudêncio &copy; {new Date().getFullYear()}
+            </span>
+          </div>
+        </footer>
 
-      {/* Footer */}
-      <footer className="relative z-10 w-full text-center py-6 border-t border-white/20 text-[0.65rem] text-[#fedf00] font-bold uppercase tracking-widest bg-gradient-to-t from-[#0a180b]/40 to-transparent flex flex-col items-center justify-center gap-1.5 px-6 backdrop-blur-sm">
-        <span className="drop-shadow-md">71º Batalhão de Infantaria Motorizado &bull; Exército Brasileiro &bull; Fiscalização &copy; {new Date().getFullYear()}</span>
-        <span className="text-white font-medium normal-case tracking-normal text-[0.6rem] opacity-90 drop-shadow-md">Desenvolvido por 1º Sgt Gaudêncio</span>
-      </footer>
-
+      </div>
     </div>
   )
 }
