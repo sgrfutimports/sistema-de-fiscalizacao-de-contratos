@@ -148,7 +148,7 @@ export default function WelcomePage() {
           &copy; {new Date().getFullYear()} 71º Batalhão de Infantaria Motorizado
         </p>
         <p className="text-zinc-600 text-[0.6rem] font-medium">
-          Todos os direitos reservados. Desenvolvido por <strong>3º Sgt João Vitor / Ricardo</strong>.
+          Todos os direitos reservados. Desenvolvido por <strong>1º Sgt Gaudencio</strong>.
         </p>
       </footer>
 
