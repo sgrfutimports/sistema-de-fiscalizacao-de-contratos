@@ -16,9 +16,15 @@ export default function LoginPage() {
         <LoginForm />
       </div>
 
-      <div className="z-10 mt-12 text-center text-sm text-green-100/90 drop-shadow-md font-medium">
-        <p>Exército Brasileiro - 71º Batalhão de Infantaria Motorizado</p>
-      </div>
+      <footer className="relative z-10 mt-auto pb-6 pt-12 text-center flex flex-col items-center justify-center">
+        <div className="w-full max-w-[200px] h-px bg-white/10 mb-4" />
+        <p className="text-green-100/60 text-[0.65rem] uppercase tracking-widest font-bold mb-1">
+          &copy; {new Date().getFullYear()} 71º Batalhão de Infantaria Motorizado
+        </p>
+        <p className="text-green-100/40 text-[0.6rem] font-medium">
+          Todos os direitos reservados. Desenvolvido por <strong>3º Sgt João Vitor / Ricardo</strong>.
+        </p>
+      </footer>
     </div>
   )
 }

@@ -141,6 +141,17 @@ export default function WelcomePage() {
         </div>
       </section>
 
+      {/* Footer Clássico */}
+      <footer className="relative z-10 w-full px-5 pb-8 text-center flex flex-col items-center justify-center animate-in fade-in duration-1000" style={{ animationDelay: '1000ms' }}>
+        <div className="w-full max-w-xs h-px bg-white/10 mb-4" />
+        <p className="text-zinc-500 text-[0.65rem] uppercase tracking-widest font-bold mb-1">
+          &copy; {new Date().getFullYear()} 71º Batalhão de Infantaria Motorizado
+        </p>
+        <p className="text-zinc-600 text-[0.6rem] font-medium">
+          Todos os direitos reservados. Desenvolvido por <strong>3º Sgt João Vitor / Ricardo</strong>.
+        </p>
+      </footer>
+
     </div>
   )
 }
